@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.xegami</groupId>
-    <artifactId>whatsapp-bot</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>wabot</artifactId>
+    <version>1.1</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -37,6 +37,12 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dizitart</groupId>
+            <artifactId>nitrite</artifactId>
+            <version>3.1.0</version>
         </dependency>
 
     </dependencies>
