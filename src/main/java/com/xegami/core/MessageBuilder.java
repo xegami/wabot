@@ -44,7 +44,7 @@ public class MessageBuilder {
 
         message += "*" + userStats.getUsername() + "* acaba de perder una partida y no se ha hecho ni una kill." + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Desinstala el Fortnite anda._";
+                + "_Desinstala el Fortnite manco._";
 
         return message;
     }
