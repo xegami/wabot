@@ -1,17 +1,8 @@
 package com.xegami.persistance;
 
-import com.xegami.pojo.bot.Player;
-import org.dizitart.no2.IndexOptions;
-import org.dizitart.no2.IndexType;
-import org.dizitart.no2.Nitrite;
-import org.dizitart.no2.objects.Cursor;
-import org.dizitart.no2.objects.ObjectRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class NitriteCrud {
 
+    /*
     private Nitrite db;
     private ObjectRepository<Player> repository;
 
@@ -24,7 +15,7 @@ public class NitriteCrud {
     }
 
     public void createEntries() {
-        String[] players = new String[] {
+        String[] players = new String[]{
                 "Xegami@pc",
                 "OH SoradeKun@pc",
                 "Fuchiniano@pc",
@@ -55,4 +46,5 @@ public class NitriteCrud {
 
         return players;
     }
+    */
 }

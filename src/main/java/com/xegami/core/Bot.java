@@ -2,7 +2,6 @@ package com.xegami.core;
 
 import com.xegami.http.Controller;
 import com.xegami.persistance.NitriteCrud;
-import com.xegami.pojo.bot.Player;
 import com.xegami.pojo.fortnite.UserId;
 import com.xegami.pojo.fortnite.UserStats;
 import org.openqa.selenium.*;
@@ -14,7 +13,7 @@ public class Bot {
 
     private WebDriver browser;
     private Commands commands;
-    private NitriteCrud crud;
+    //private NitriteCrud crud;
     private Controller controller;
 
     public Bot() {
@@ -22,7 +21,7 @@ public class Bot {
         browser = new ChromeDriver();
         browser.get("https://web.whatsapp.com");
         commands = new Commands();
-        crud = new NitriteCrud();
+        //crud = new NitriteCrud();
         controller = new Controller();
     }
 
@@ -80,23 +79,24 @@ public class Bot {
         }
     }
 
-    // todo mockup
+    /* todo mockup
     private void getWinner() {
         Controller controller = new Controller();
 
         try {
             List<Player> players = crud.getPlayers();
 
-            /*
+
             FortniteStats fortniteStats = controller.fortniteStatsCall(wins.getEpicNickname(), wins.getPlatform());
             if (wins.getStats().getP2().getTop1().getValueInt() < fortniteStats.getStats().getP2().getTop1().getValueInt()) {
                 sendMessage("¡*Xegami* acaba de ganar una win en solitario!", true);
             }
-            */
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    */
 
     private String getUsernameEncoded(String commandLine) {
         String username = commandLine.split(" ", 2)[1];
@@ -106,7 +106,7 @@ public class Bot {
     }
 
     public void run() {
-        crud.createEntries();
+        //crud.createEntries();
 
         boolean notInChatGroup = true;
 
