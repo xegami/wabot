@@ -1,27 +1,34 @@
 package com.xegami.core;
 
 import com.xegami.http.Controller;
-import com.xegami.persistance.NitriteCrud;
+import com.xegami.persistance.FortnuteroCrud;
 import com.xegami.pojo.fortnite.UserId;
 import com.xegami.pojo.fortnite.UserStats;
+import com.xegami.pojo.nitrite.Fortnutero;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Bot {
 
     private WebDriver browser;
-    private Commands commands;
-    //private NitriteCrud crud;
+    private MessageBuilder messageBuilder;
+    private FortnuteroCrud crud;
     private Controller controller;
 
     public Bot() {
         System.setProperty("webdriver.chrome.driver", "C:\\Desarrollo\\chromedriver\\chromedriver.exe");
         browser = new ChromeDriver();
         browser.get("https://web.whatsapp.com");
-        commands = new Commands();
-        //crud = new NitriteCrud();
+        messageBuilder = new MessageBuilder();
+        crud = new FortnuteroCrud();
         controller = new Controller();
     }
 
@@ -42,7 +49,7 @@ public class Bot {
         ((ChromeDriver) browser).getKeyboard().pressKey(Keys.ENTER);
     }
 
-    private void getCommand() {
+    private void commandTracker() {
         List<WebElement> messages = browser.findElements(By.xpath("//span[contains(@class, 'copyable-text')]"));
         String commandLine = messages.get(messages.size() - 1).getText().toLowerCase();
 
@@ -52,22 +59,19 @@ public class Bot {
 
                 switch (command) {
                     case "/stats":
-                        String username = getUsernameEncoded(commandLine);
-                        UserId userId = controller.getUserIdRequest(username);
-                        UserStats userStats = controller.getUserStatsRequest(userId.getUid(), userId.getPlatforms()[0]);
-                        sendMessage(commands.stats(userStats), false);
+                        sendMessage(messageBuilder.stats(getUserStatsFromCommandLine(commandLine)), false);
                         break;
 
                     case "/xegami":
-                        sendMessage(commands.xegami(), true);
+                        sendMessage(messageBuilder.xegami(), true);
                         break;
 
                     case "/pedro":
-                        sendMessage(commands.pedro(), true);
+                        sendMessage(messageBuilder.pedro(), true);
                         break;
 
                     case "/españa":
-                        sendMessage(commands.spain(), true);
+                        sendMessage(messageBuilder.spain(), true);
                         break;
 
                     default:
@@ -79,35 +83,41 @@ public class Bot {
         }
     }
 
-    /* todo mockup
-    private void getWinner() {
-        Controller controller = new Controller();
-
+    private void winnerTracker() {
         try {
-            List<Player> players = crud.getPlayers();
+            List<Fortnutero> fortnuteros = crud.findAll();
 
+            for (Fortnutero f : fortnuteros) {
+                UserStats userStats = getUserStats(f.getUsername());
 
-            FortniteStats fortniteStats = controller.fortniteStatsCall(wins.getEpicNickname(), wins.getPlatform());
-            if (wins.getStats().getP2().getTop1().getValueInt() < fortniteStats.getStats().getP2().getTop1().getValueInt()) {
-                sendMessage("¡*Xegami* acaba de ganar una win en solitario!", true);
+                if (userStats.getTotals().getWinsInt() > f.getWinsInt()) {
+                    sendMessage(messageBuilder.win(userStats, f.getKillsInt()), false);
+                    crud.updateEntry(userStats);
+                }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    */
 
-    private String getUsernameEncoded(String commandLine) {
+    private UserStats getUserStats(String username) throws IOException {
+        String usernameEncoded = username.replace(" ", "%20");
+        UserId userId = controller.getUserIdRequest(usernameEncoded);
+
+        return controller.getUserStatsRequest(userId.getUid(), userId.getPlatforms()[0]);
+    }
+
+    private UserStats getUserStatsFromCommandLine(String commandLine) throws IOException {
         String username = commandLine.split(" ", 2)[1];
         String usernameEncoded = username.replace(" ", "%20");
 
-        return usernameEncoded;
+        UserId userId = controller.getUserIdRequest(usernameEncoded);
+
+        return controller.getUserStatsRequest(userId.getUid(), userId.getPlatforms()[0]);
     }
 
     public void run() {
-        //crud.createEntries();
-
         boolean notInChatGroup = true;
 
         while (notInChatGroup) {
@@ -128,20 +138,61 @@ public class Bot {
             }
         }
 
-        while (true) {
-            try {
-                getCommand();
-                //getWinner();
+        Runnable commandTrackerThread = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        commandTracker();
 
-            } catch (Exception e) {
+                    } catch (Exception e) {
+                        System.err.println("Error al obtener el comando.");
 
-            } finally {
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } finally {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-        }
+        };
+
+        Runnable winnerTrackerThread = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        System.out.println(getTime() + " Comprobando nuevas wins...");
+                        winnerTracker();
+
+                    } catch (Exception e) {
+                        System.err.println("Error al comprobar las wins.");
+                        e.printStackTrace();
+
+                    } finally {
+                        try {
+                            Thread.sleep(30000);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        };
+
+        // to background threads
+        ExecutorService executor = Executors.newCachedThreadPool();
+        executor.submit(commandTrackerThread);
+        executor.submit(winnerTrackerThread);
+    }
+
+    private String getTime() {
+        Date date = new Date();
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(date);
+
+        return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);
     }
 }

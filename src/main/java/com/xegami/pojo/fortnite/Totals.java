@@ -12,8 +12,16 @@ public class Totals {
         return kills;
     }
 
+    public Integer getKillsInt() {
+        return Integer.parseInt(kills);
+    }
+
     public String getWins() {
         return wins;
+    }
+
+    public Integer getWinsInt() {
+        return Integer.parseInt(wins);
     }
 
     public String getMatchesplayed() {
