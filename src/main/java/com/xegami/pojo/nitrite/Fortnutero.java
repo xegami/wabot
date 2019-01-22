@@ -8,15 +8,17 @@ public class Fortnutero {
     private String username;
     private String wins;
     private String kills;
+    private String matchesplayed;
 
     public Fortnutero() {
 
     }
 
-    public Fortnutero(String username, String wins, String kills) {
+    public Fortnutero(String username, String wins, String kills, String matchesplayed) {
         this.username = username;
         this.wins = wins;
         this.kills = kills;
+        this.matchesplayed = matchesplayed;
     }
 
     public String getUsername() {
@@ -37,5 +39,13 @@ public class Fortnutero {
 
     public Integer getKillsInt() {
         return Integer.parseInt(kills);
+    }
+
+    public String getMatchesplayed() {
+        return matchesplayed;
+    }
+
+    public Integer getMatchesplayedInt() {
+        return Integer.parseInt(matchesplayed);
     }
 }

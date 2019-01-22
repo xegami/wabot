@@ -28,6 +28,10 @@ public class Totals {
         return matchesplayed;
     }
 
+    public Integer getMatchesPlayedInt() {
+        return Integer.parseInt(matchesplayed);
+    }
+
     public String getWinrate() {
         return winrate;
     }

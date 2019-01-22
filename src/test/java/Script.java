@@ -13,27 +13,29 @@ public class Script {
     public void run() {
         try {
             FortnuteroCrud crud = new FortnuteroCrud();
-            crud.newEntry(getUserStats("xegami"));
-            crud.newEntry(getUserStats("oh soradekun"));
-            crud.newEntry(getUserStats("hydroxide cherot"));
-            crud.newEntry(getUserStats("hydroxide poison"));
-            crud.newEntry(getUserStats("pedrop_monkaaaas"));
-            crud.newEntry(getUserStats("makeano"));
-            crud.newEntry(getUserStats("lacocanoesmala"));
-            crud.newEntry(getUserStats("chocofreik_"));
-            crud.newEntry(getUserStats("danir10"));
-            crud.newEntry(getUserStats("pedrop_monkaaaas"));
-            crud.newEntry(getUserStats("danalyn96"));
-            crud.newEntry(getUserStats("twitch saitrama"));
-            crud.newEntry(getUserStats("awashon"));
-            crud.newEntry(getUserStats("im rana gustavo"));
-            crud.newEntry(getUserStats("samsalokuras"));
-            crud.newEntry(getUserStats("ninja"));
+            crud.updateEntry(getUserStats("xegami"));
+            crud.updateEntry(getUserStats("oh soradekun"));
+            crud.updateEntry(getUserStats("hydroxide cherot"));
+            crud.updateEntry(getUserStats("hydroxide poison"));
+            crud.updateEntry(getUserStats("pedrop_monkaaaas"));
+            crud.updateEntry(getUserStats("makeano"));
+            crud.updateEntry(getUserStats("lacocanoesmala"));
+            crud.updateEntry(getUserStats("chocofreik_"));
+            crud.updateEntry(getUserStats("danir10"));
+            crud.updateEntry(getUserStats("pedrop_monkaaaas"));
+            crud.updateEntry(getUserStats("danalyn96"));
+            crud.updateEntry(getUserStats("twitch saitrama"));
+            crud.updateEntry(getUserStats("awashon"));
+            crud.updateEntry(getUserStats("im rana gustavo"));
+            crud.updateEntry(getUserStats("samsalokuras"));
+            crud.updateEntry(getUserStats("tulacid2000"));
+            crud.updateEntry(getUserStats("ninja"));
 
             for (Fortnutero f : crud.findAll()) {
                 System.out.print(f.getUsername());
-                System.out.print(" " + f.getWins());
-                System.out.println(" " + f.getKillsInt());
+                System.out.print(" - " + f.getWins());
+                System.out.print(" - " + f.getKillsInt());
+                System.out.println(" - " + f.getMatchesplayedInt());
             }
 
         } catch (Exception e) {

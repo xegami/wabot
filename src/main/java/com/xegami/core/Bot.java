@@ -83,7 +83,7 @@ public class Bot {
         }
     }
 
-    private void winnerTracker() {
+    private void eventTracker() {
         try {
             List<Fortnutero> fortnuteros = crud.findAll();
 
@@ -92,8 +92,19 @@ public class Bot {
 
                 if (userStats.getTotals().getWinsInt() > f.getWinsInt()) {
                     sendMessage(messageBuilder.win(userStats, f.getKillsInt()), false);
-                    crud.updateEntry(userStats);
+                    System.out.println(getTime() + " winner!");
+
+                } else if ((userStats.getTotals().getKillsInt() - f.getKillsInt()) >= 10) {
+                    sendMessage(messageBuilder.killer(userStats, f.getKillsInt()), false);
+                    System.out.println(getTime() + " killer!");
+
+                } else if ((userStats.getTotals().getMatchesPlayedInt() - f.getMatchesplayedInt()) == 1
+                        &&(userStats.getTotals().getKillsInt() - f.getKillsInt()) == 0) {
+                    sendMessage(messageBuilder.trash(userStats), false);
+                    System.out.println(getTime() + " trash!");
                 }
+
+                crud.updateEntry(userStats);
             }
 
         } catch (Exception e) {
@@ -159,16 +170,16 @@ public class Bot {
             }
         };
 
-        Runnable winnerTrackerThread = new Runnable() {
+        Runnable eventTrackerThread = new Runnable() {
             @Override
             public void run() {
                 while (true) {
                     try {
-                        System.out.println(getTime() + " Comprobando nuevas wins...");
-                        winnerTracker();
+                        System.out.println(getTime() + " Analizando a los jugadores...");
+                        eventTracker();
 
                     } catch (Exception e) {
-                        System.err.println("Error al comprobar las wins.");
+                        System.err.println("Error al analizar a los jugadores.");
                         e.printStackTrace();
 
                     } finally {
@@ -185,7 +196,7 @@ public class Bot {
         // to background threads
         ExecutorService executor = Executors.newCachedThreadPool();
         executor.submit(commandTrackerThread);
-        executor.submit(winnerTrackerThread);
+        executor.submit(eventTrackerThread);
     }
 
     private String getTime() {

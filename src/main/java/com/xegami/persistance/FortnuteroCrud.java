@@ -28,19 +28,24 @@ public class FortnuteroCrud {
     }
 
     public void newEntry(UserStats userStats) {
+        repository.insert(new Fortnutero(userStats.getUsername(), userStats.getTotals().getWins(), userStats.getTotals().getKills(), userStats.getTotals().getMatchesplayed()));
+    }
+
+    public void updateEntry(UserStats userStats) {
+        boolean inRepository = false;
         Cursor<Fortnutero> cursor = repository.find();
 
         for (Fortnutero f : cursor) {
             if (f.getUsername().equals(userStats.getUsername())){
-                return;
+                inRepository = true;
             }
         }
 
-        repository.insert(new Fortnutero(userStats.getUsername(), userStats.getTotals().getWins(), userStats.getTotals().getKills()));
-    }
-
-    public void updateEntry(UserStats userStats) {
-        repository.update(new Fortnutero(userStats.getUsername(), userStats.getTotals().getWins(), userStats.getTotals().getKills()));
+        if (inRepository){
+            repository.update(new Fortnutero(userStats.getUsername(), userStats.getTotals().getWins(), userStats.getTotals().getKills(), userStats.getTotals().getMatchesplayed()));
+        } else {
+            newEntry(userStats);
+        }
     }
 
     public List<Fortnutero> findAll() {

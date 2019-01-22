@@ -29,6 +29,26 @@ public class MessageBuilder {
         return message;
     }
 
+    public String killer(UserStats userStats, Integer oldKills) {
+        String message = "";
+
+        message += "*" + userStats.getUsername() + "* acaba de perder una partida y llevaba " + (userStats.getTotals().getKillsInt() - oldKills) + " kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + "_sadpoggers._";
+
+        return message;
+    }
+
+    public String trash(UserStats userStats) {
+        String message = "";
+
+        message += "*" + userStats.getUsername() + "* acaba de perder una partida y no se ha hecho ni una kill." + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + "_Desinstala el Fortnite anda._";
+
+        return message;
+    }
+
     public String xegami() {
         return "es la polla jeje";
     }
