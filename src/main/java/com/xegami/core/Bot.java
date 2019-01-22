@@ -2,10 +2,9 @@ package com.xegami.core;
 
 import com.xegami.http.Controller;
 import com.xegami.persistance.NitriteCrud;
-import com.xegami.pojo.bot.Parameters;
 import com.xegami.pojo.bot.Player;
-import com.xegami.pojo.trn.*;
-import com.xegami.utils.Ctts;
+import com.xegami.pojo.fortnite.UserId;
+import com.xegami.pojo.fortnite.UserStats;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -16,6 +15,7 @@ public class Bot {
     private WebDriver browser;
     private Commands commands;
     private NitriteCrud crud;
+    private Controller controller;
 
     public Bot() {
         System.setProperty("webdriver.chrome.driver", "C:\\Desarrollo\\chromedriver\\chromedriver.exe");
@@ -23,6 +23,7 @@ public class Bot {
         browser.get("https://web.whatsapp.com");
         commands = new Commands();
         crud = new NitriteCrud();
+        controller = new Controller();
     }
 
     private void joinChatGroup() {
@@ -35,7 +36,7 @@ public class Bot {
         WebElement input = browser.findElement(By.xpath("//div[contains(@spellcheck, 'true')]"));
         input.click();
         if (formatting) {
-            ((ChromeDriver) browser).getKeyboard().sendKeys(Ctts.ITALIC + message + Ctts.ITALIC);
+            ((ChromeDriver) browser).getKeyboard().sendKeys("_" + message + "_");
         } else {
             ((ChromeDriver) browser).getKeyboard().sendKeys(message);
         }
@@ -49,28 +50,29 @@ public class Bot {
         try {
             if (commandLine.startsWith("/")) {
                 String command = commandLine.split(" ")[0];
-                Parameters parameters;
 
                 switch (command) {
-                    case "/wins":
-                        parameters = buildParameters(commandLine);
-                        sendMessage(commands.wins(parameters), true);
-                        break;
                     case "/stats":
-                        parameters = buildParameters(commandLine);
-                        sendMessage(commands.lifetimeStats(parameters), false);
+                        String username = getUsernameEncoded(commandLine);
+                        UserId userId = controller.getUserIdRequest(username);
+                        UserStats userStats = controller.getUserStatsRequest(userId.getUid(), userId.getPlatforms()[0]);
+                        sendMessage(commands.stats(userStats), false);
                         break;
+
                     case "/xegami":
                         sendMessage(commands.xegami(), true);
                         break;
+
                     case "/pedro":
                         sendMessage(commands.pedro(), true);
                         break;
+
                     case "/españa":
                         sendMessage(commands.spain(), true);
                         break;
+
                     default:
-                        sendMessage("Ese comando no existe gilipollas xd.", true);
+                        sendMessage("Ese comando no existe gilipollas xdd.", true);
                 }
             }
         } catch (Exception e) {
@@ -96,14 +98,11 @@ public class Bot {
         }
     }
 
-    private Parameters buildParameters(String commandLine) {
-        int spaceStart = commandLine.indexOf(" ");
-        int spaceEnd = commandLine.lastIndexOf(" ");
-        String epicNickname = commandLine.substring(spaceStart + 1, spaceEnd);
-        String epicNicknameEncoded = epicNickname.replace(" ", "%20");
-        String platform = commandLine.substring(spaceEnd + 1, commandLine.length());
+    private String getUsernameEncoded(String commandLine) {
+        String username = commandLine.split(" ", 2)[1];
+        String usernameEncoded = username.replace(" ", "%20");
 
-        return new Parameters(epicNicknameEncoded, platform);
+        return usernameEncoded;
     }
 
     public void run() {
@@ -132,13 +131,13 @@ public class Bot {
         while (true) {
             try {
                 getCommand();
-                getWinner();
+                //getWinner();
 
             } catch (Exception e) {
 
             } finally {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

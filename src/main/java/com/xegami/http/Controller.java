@@ -1,16 +1,13 @@
 package com.xegami.http;
 
-import com.google.gson.*;
-import com.xegami.utils.Ctts;
-import com.xegami.pojo.trn.FortniteStats;
-import com.xegami.pojo.trn.Match;
+import com.google.gson.Gson;
+import com.xegami.pojo.fortnite.UserId;
+import com.xegami.pojo.fortnite.UserStats;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Controller {
 
@@ -20,38 +17,27 @@ public class Controller {
         client = new OkHttpClient();
     }
 
-    public FortniteStats fortniteStatsCall(String epicNickname, String platform) throws IOException {
-        Request request = new Request.Builder()
-                .url(Ctts.FORTNITE_BR_STATS_BASE_API_URL + platform + "/" + epicNickname)
-                .addHeader(Ctts.FORTNITE_TRN_API_HEADER_KEY, Ctts.FORTNITE_TRN_API_TOKEN)
-                .build();
+    public UserId getUserIdRequest(String username) throws IOException {
+        final String url = Endpoints.FORTNITE_API_GET_USER_ID + "?username=" + username;
 
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
         Response response = client.newCall(request).execute();
         String jsonString = response.body().string();
 
-        Gson gson = new Gson();
-
-        return gson.fromJson(jsonString, FortniteStats.class);
+        return new Gson().fromJson(jsonString, UserId.class);
     }
 
-    public List<Match> fortniteMatchesCall(String accountId) throws IOException {
-        List<Match> matches = new ArrayList<>();
+    public UserStats getUserStatsRequest(String userId, String platform) throws IOException {
+        final String url = Endpoints.FORTNITE_API_GET_USER_STATS + "?user_id=" + userId + "&platform=" + platform;
 
         Request request = new Request.Builder()
-                .url(Ctts.FORTNITE_MATCH_HISTORY_BASE_API_URL + accountId + "/matches")
-                .addHeader(Ctts.FORTNITE_TRN_API_HEADER_KEY, Ctts.FORTNITE_TRN_API_TOKEN)
+                .url(url)
                 .build();
-
         Response response = client.newCall(request).execute();
         String jsonString = response.body().string();
 
-        Gson gson = new Gson();
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = (JsonArray) jsonParser.parse(jsonString);
-        for (int i = 0; i < jsonArray.size(); i++) {
-            matches.add(gson.fromJson(jsonArray.get(i), Match.class));
-        }
-
-        return matches;
+        return new Gson().fromJson(jsonString, UserStats.class);
     }
 }
