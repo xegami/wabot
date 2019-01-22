@@ -22,7 +22,7 @@ public class MessageBuilder {
     public String win(UserStats userStats, Integer oldKills) {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* acaba de ganar una win con " + (userStats.getTotals().getKillsInt() - oldKills) + " kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
+        message += "*" + userStats.getUsername() + "* acaba de ganar una partida con " + (userStats.getTotals().getKillsInt() - oldKills) + " kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_Wins: " + userStats.getTotals().getWins() + "_";
 
