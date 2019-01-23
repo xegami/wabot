@@ -36,12 +36,12 @@ public class FortnuteroCrud {
         Cursor<Fortnutero> cursor = repository.find();
 
         for (Fortnutero f : cursor) {
-            if (f.getUsername().equals(userStats.getUsername())){
+            if (f.getUsername().equals(userStats.getUsername())) {
                 inRepository = true;
             }
         }
 
-        if (inRepository){
+        if (inRepository) {
             repository.update(new Fortnutero(userStats.getUsername(), userStats.getTotals().getWins(), userStats.getTotals().getKills(), userStats.getTotals().getMatchesplayed()));
         } else {
             newEntry(userStats);

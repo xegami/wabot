@@ -99,7 +99,7 @@ public class Bot {
                     System.out.println(getTime() + " killer!");
 
                 } else if ((userStats.getTotals().getMatchesPlayedInt() - f.getMatchesplayedInt()) == 1
-                        &&(userStats.getTotals().getKillsInt() - f.getKillsInt()) == 0) {
+                        && (userStats.getTotals().getKillsInt() - f.getKillsInt()) == 0) {
                     sendMessage(messageBuilder.trash(userStats), false);
                     System.out.println(getTime() + " trash!");
                 }
