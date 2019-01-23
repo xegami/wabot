@@ -8,6 +8,16 @@ public class Totals {
     private String winrate;
     private String kd;
 
+    public Totals() {}
+
+    public Totals(String kills, String wins, String matchesplayed, String winrate, String kd) {
+        this.kills = kills;
+        this.wins = wins;
+        this.matchesplayed = matchesplayed;
+        this.winrate = winrate;
+        this.kd = kd;
+    }
+
     public String getKills() {
         return kills;
     }

@@ -1,17 +1,16 @@
 package com.xegami.core;
 
+import com.xegami.Utils.AppConstants;
 import com.xegami.http.Controller;
 import com.xegami.persistance.FortnuteroCrud;
 import com.xegami.pojo.fortnite.UserId;
 import com.xegami.pojo.fortnite.UserStats;
 import com.xegami.pojo.nitrite.Fortnutero;
+import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,7 +23,7 @@ public class Bot {
     private Controller controller;
 
     public Bot() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Desarrollo\\chromedriver\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);
         browser = new ChromeDriver();
         browser.get("https://web.whatsapp.com");
         messageBuilder = new MessageBuilder();
@@ -35,7 +34,7 @@ public class Bot {
     private void joinChatGroup() {
         WebElement chats = ((ChromeDriver) browser).findElementById("pane-side");
 
-        chats.findElement(By.xpath("//span[contains(@title, 'FortNut OGs')]")).click();
+        chats.findElement(By.xpath("//span[contains(@title, 'Fortnut')]")).click();
     }
 
     private void sendMessage(String message, boolean formatting) {
@@ -59,7 +58,8 @@ public class Bot {
 
                 switch (command) {
                     case "/stats":
-                        sendMessage(messageBuilder.stats(getUserStatsFromCommandLine(commandLine)), false);
+                        UserStats userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
+                        sendMessage(messageBuilder.stats(userStats), false);
                         break;
 
                     case "/xegami":
@@ -85,26 +85,41 @@ public class Bot {
 
     private void eventTracker() {
         try {
+            int win, kills, matchplayed;
             List<Fortnutero> fortnuteros = crud.findAll();
 
             for (Fortnutero f : fortnuteros) {
-                UserStats userStats = getUserStats(f.getUsername());
+                System.out.println(LocalTime.now() + " Tracking ==> " + f.getUsername() + " (" + f.getPlatform() + ") ");
 
-                if (userStats.getTotals().getWinsInt() > f.getWinsInt()) {
-                    sendMessage(messageBuilder.win(userStats, f.getKillsInt()), false);
-                    System.out.println(getTime() + " winner!");
+                UserStats userStats = userStatsAction(
+                        getUsernameEncoded(
+                                f.getUsername()));
 
-                } else if ((userStats.getTotals().getKillsInt() - f.getKillsInt()) >= 10) {
+                win = userStats.getTotals().getWinsInt() - f.getWinsInt();
+                kills = userStats.getTotals().getKillsInt() - f.getKillsInt();
+                matchplayed = userStats.getTotals().getMatchesPlayedInt() - f.getMatchesplayedInt();
+
+                if (win == 1) {
+                    System.out.println(LocalTime.now() + " winner!");
+                    if (kills > 5) {
+                        sendMessage(messageBuilder.win(userStats, kills), false);
+                    } else {
+                        sendMessage(messageBuilder.camper(userStats, kills), false);
+                    }
+
+                } else if (kills >= 10) {
                     sendMessage(messageBuilder.killer(userStats, f.getKillsInt()), false);
-                    System.out.println(getTime() + " killer!");
+                    System.out.println(LocalTime.now() + " killer!");
 
-                } else if ((userStats.getTotals().getMatchesPlayedInt() - f.getMatchesplayedInt()) == 1
-                        && (userStats.getTotals().getKillsInt() - f.getKillsInt()) == 0) {
+                } else if (matchplayed == 1 && kills == 0) {
                     sendMessage(messageBuilder.trash(userStats), false);
-                    System.out.println(getTime() + " trash!");
+                    System.out.println(LocalTime.now() + " trash!");
                 }
 
-                crud.updateEntry(userStats);
+                crud.update(userStats);
+
+                // 1 second sleep before each request
+                Thread.sleep(1000);
             }
 
         } catch (Exception e) {
@@ -112,20 +127,40 @@ public class Bot {
         }
     }
 
-    private UserStats getUserStats(String username) throws IOException {
-        String usernameEncoded = username.replace(" ", "%20");
-        UserId userId = controller.getUserIdRequest(usernameEncoded);
-
-        return controller.getUserStatsRequest(userId.getUid(), userId.getPlatforms()[0]);
+    private String getUsernameEncoded(String username) {
+        return username.replace(" ", "%20");
     }
 
-    private UserStats getUserStatsFromCommandLine(String commandLine) throws IOException {
+    private String getUsernameEncodedFromCommandLine(String commandLine) {
         String username = commandLine.split(" ", 2)[1];
-        String usernameEncoded = username.replace(" ", "%20");
 
-        UserId userId = controller.getUserIdRequest(usernameEncoded);
+        return username.replace(" ", "%20");
+    }
 
-        return controller.getUserStatsRequest(userId.getUid(), userId.getPlatforms()[0]);
+    private UserStats userStatsAction(String usernameEncoded) throws IOException {
+        UserId userId = controller.getUserIdCall(usernameEncoded);
+
+        String platform = findPlatformPreference(userId.getUsername());
+
+        // if not in database uses main platform (pc default)
+        UserStats userStats = controller.getUserStatsCall(userId.getUid(), platform != null ? platform : userId.getPlatforms()[0]);
+
+        if (userStats.getTotals().getKillsInt() == 0) {
+            // backup api
+            userStats = controller.getUserStatsBackupCall(usernameEncoded, platform);
+        }
+
+        return userStats;
+    }
+
+    private String findPlatformPreference(String username) {
+        Fortnutero f = crud.findByUsername(username);
+
+        if (f != null) {
+            return f.getPlatform();
+        }
+
+        return null;
     }
 
     public void run() {
@@ -175,19 +210,13 @@ public class Bot {
             public void run() {
                 while (true) {
                     try {
-                        System.out.println(getTime() + " Analizando a los jugadores...");
+                        System.out.println(LocalTime.now() + " Buscando eventos...");
                         eventTracker();
 
                     } catch (Exception e) {
                         System.err.println("Error al analizar a los jugadores.");
                         e.printStackTrace();
 
-                    } finally {
-                        try {
-                            Thread.sleep(30000);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                     }
                 }
             }
@@ -199,11 +228,4 @@ public class Bot {
         executor.submit(eventTrackerThread);
     }
 
-    private String getTime() {
-        Date date = new Date();
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(date);
-
-        return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);
-    }
 }

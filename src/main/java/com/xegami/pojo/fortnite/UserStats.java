@@ -7,6 +7,16 @@ public class UserStats {
     private String platform;
     private Totals totals;
 
+    public UserStats() {
+
+    }
+
+    public UserStats(String username, Totals totals, String platform) {
+        this.username = username;
+        this.totals = totals;
+        this.platform = platform;
+    }
+
     public String getUid() {
         return uid;
     }
@@ -23,7 +33,4 @@ public class UserStats {
         return totals;
     }
 
-    public String getUsernameFormatted() {
-        return username.replace("_", "");
-    }
 }

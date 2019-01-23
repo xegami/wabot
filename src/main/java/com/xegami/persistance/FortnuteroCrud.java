@@ -1,5 +1,6 @@
 package com.xegami.persistance;
 
+import com.xegami.Utils.AppConstants;
 import com.xegami.pojo.fortnite.UserStats;
 import com.xegami.pojo.nitrite.Fortnutero;
 import org.dizitart.no2.IndexOptions;
@@ -18,7 +19,7 @@ public class FortnuteroCrud {
     public FortnuteroCrud() {
         db = Nitrite.builder()
                 .compressed()
-                .filePath("C:/Desarrollo/nitrite/fortnut.db")
+                .filePath(AppConstants.FORTNUT_DB_PATH)
                 .openOrCreate();
         repository = db.getRepository(Fortnutero.class);
 
@@ -27,11 +28,15 @@ public class FortnuteroCrud {
         }
     }
 
-    public void newEntry(UserStats userStats) {
-        repository.insert(new Fortnutero(userStats.getUsername(), userStats.getTotals().getWins(), userStats.getTotals().getKills(), userStats.getTotals().getMatchesplayed()));
+    public void create(UserStats userStats) {
+        repository.insert(new Fortnutero(userStats.getUsername(),
+                userStats.getTotals().getWins(),
+                userStats.getTotals().getKills(),
+                userStats.getTotals().getMatchesplayed(),
+                userStats.getPlatform()));
     }
 
-    public void updateEntry(UserStats userStats) {
+    public void update(UserStats userStats) {
         boolean inRepository = false;
         Cursor<Fortnutero> cursor = repository.find();
 
@@ -42,14 +47,30 @@ public class FortnuteroCrud {
         }
 
         if (inRepository) {
-            repository.update(new Fortnutero(userStats.getUsername(), userStats.getTotals().getWins(), userStats.getTotals().getKills(), userStats.getTotals().getMatchesplayed()));
+            repository.update(new Fortnutero(userStats.getUsername(),
+                    userStats.getTotals().getWins(),
+                    userStats.getTotals().getKills(),
+                    userStats.getTotals().getMatchesplayed(),
+                    userStats.getPlatform()));
         } else {
-            newEntry(userStats);
+            create(userStats);
         }
     }
 
     public List<Fortnutero> findAll() {
         return repository.find().toList();
+    }
+
+    public Fortnutero findByUsername(String username) {
+        Cursor<Fortnutero> cursor = repository.find();
+
+        for (Fortnutero f : cursor) {
+            if (f.getUsername().equals(username)) {
+                return f;
+            }
+        }
+
+        return null;
     }
 
 }

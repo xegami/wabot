@@ -19,22 +19,32 @@ public class MessageBuilder {
         return message;
     }
 
-    public String win(UserStats userStats, Integer oldKills) {
+    public String win(UserStats userStats, Integer kills) {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* acaba de ganar una partida con *" + (userStats.getTotals().getKillsInt() - oldKills) + "* kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
+        message += "*" + userStats.getUsername() + "* acaba de ganar una partida con *" + kills + "* kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_Wins: " + userStats.getTotals().getWins() + "_";
 
         return message;
     }
 
-    public String killer(UserStats userStats, Integer oldKills) {
+    public String killer(UserStats userStats, Integer kills) {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* acaba de perder una partida y llevaba *" + (userStats.getTotals().getKillsInt() - oldKills) + "* kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
+        message += "*" + userStats.getUsername() + "* acaba de perder una partida y llevaba *" + kills + "* kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_sadpoggers._";
+
+        return message;
+    }
+
+    public String camper(UserStats userStats, Integer kills) {
+        String message = "";
+
+        message += "*" + userStats.getUsername() + "* acaba de ganar una partida con *" + kills + "* kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + "_Campea un poco más rataaa._";
 
         return message;
     }
@@ -42,7 +52,7 @@ public class MessageBuilder {
     public String trash(UserStats userStats) {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* acaba de perder una partida y no se ha hecho ni una kill." + Keys.chord(Keys.SHIFT, Keys.ENTER)
+        message += "*" + userStats.getUsername() + "* acaba de perder una partida y no se ha hecho *ni una* kill." + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_Desinstala el Fortnite manco._";
 
