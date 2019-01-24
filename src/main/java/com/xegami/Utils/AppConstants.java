@@ -1,4 +1,4 @@
-package com.xegami.Utils;
+package com.xegami.utils;
 
 public final class AppConstants {
 

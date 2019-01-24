@@ -1,8 +1,8 @@
 package com.xegami.persistance;
 
-import com.xegami.Utils.AppConstants;
 import com.xegami.pojo.fortnite.UserStats;
 import com.xegami.pojo.nitrite.Fortnutero;
+import com.xegami.utils.AppConstants;
 import org.dizitart.no2.IndexOptions;
 import org.dizitart.no2.IndexType;
 import org.dizitart.no2.Nitrite;

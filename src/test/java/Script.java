@@ -20,7 +20,6 @@ public class Script {
 
     @Test
     public void updateFortnutDB() {
-
         // todo: this is dirty as poggers but who gives a poggers
         try {
             crud.update(userStatsAction(getUsernameEncoded("xegami"), "pc"));

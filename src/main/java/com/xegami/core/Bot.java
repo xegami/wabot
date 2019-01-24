@@ -1,11 +1,11 @@
 package com.xegami.core;
 
-import com.xegami.Utils.AppConstants;
 import com.xegami.http.Controller;
 import com.xegami.persistance.FortnuteroCrud;
 import com.xegami.pojo.fortnite.UserId;
 import com.xegami.pojo.fortnite.UserStats;
 import com.xegami.pojo.nitrite.Fortnutero;
+import com.xegami.utils.AppConstants;
 import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;

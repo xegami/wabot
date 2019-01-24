@@ -8,7 +8,8 @@ public class Totals {
     private String winrate;
     private String kd;
 
-    public Totals() {}
+    public Totals() {
+    }
 
     public Totals(String kills, String wins, String matchesplayed, String winrate, String kd) {
         this.kills = kills;
