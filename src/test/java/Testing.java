@@ -12,12 +12,7 @@ public class Testing {
 
     @Test
     public void run() {
-        try {
-            //getUserStats("/stats xegami", true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        
     }
-
 
 }
