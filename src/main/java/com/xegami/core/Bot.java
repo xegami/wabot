@@ -108,7 +108,7 @@ public class Bot {
                     }
 
                 } else if (kills >= 10) {
-                    sendMessage(messageBuilder.killer(userStats, f.getKillsInt()), false);
+                    sendMessage(messageBuilder.killer(userStats, kills), false);
                     System.out.println(LocalTime.now() + " killer!");
 
                 } else if (matchplayed == 1 && kills == 0) {
