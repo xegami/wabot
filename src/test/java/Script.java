@@ -33,8 +33,8 @@ public class Script {
             crud.update(userStatsAction(getUsernameEncoded("danalyn96"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("twitch saitrama"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("awashon"), "pc"));
-            crud.update(userStatsAction(getUsernameEncoded("im rana gustavo"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("freaking_lukas"), "ps4")); // uses backup api
+            crud.update(userStatsAction(getUsernameEncoded("im rana gustavo"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("samsalokuras"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("tulacid2000"), "xb1"));
             crud.update(userStatsAction(getUsernameEncoded("kingabdeel"), "pc"));
