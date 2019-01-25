@@ -1,6 +1,7 @@
-package com.xegami.core;
+package com.xegami.wabot.core;
 
-import com.xegami.pojo.fortnite.UserStats;
+import com.xegami.wabot.pojo.fortnite.UserStats;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.openqa.selenium.Keys;
 
 public class MessageBuilder {
@@ -22,9 +23,7 @@ public class MessageBuilder {
     public String win(UserStats userStats, Integer kills) {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* acaba de ganar una partida con *" + kills + "* kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Wins: " + userStats.getTotals().getWins() + "_";
+        message += "*" + userStats.getUsername() + "* ganó con *" + kills + "* kills.";
 
         return message;
     }
@@ -32,9 +31,7 @@ public class MessageBuilder {
     public String killer(UserStats userStats, Integer kills) {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* acaba de perder una partida y llevaba *" + kills + "* kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_sadpoggers._";
+        message += "*" + userStats.getUsername() + "* perdió pero hizo *" + kills + "* kills.";
 
         return message;
     }
@@ -52,9 +49,7 @@ public class MessageBuilder {
     public String trash(UserStats userStats) {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* acaba de perder una partida y no se ha hecho *ni una* kill." + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Desinstala el Fortnite manco._";
+        message += "*" + userStats.getUsername() + "* perdió y *ni una* kill se hizo.";
 
         return message;
     }

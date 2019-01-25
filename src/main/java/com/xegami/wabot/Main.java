@@ -1,6 +1,6 @@
-package com.xegami;
+package com.xegami.wabot;
 
-import com.xegami.core.Bot;
+import com.xegami.wabot.core.Bot;
 
 public class Main {
 

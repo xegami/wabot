@@ -1,4 +1,4 @@
-package com.xegami.pojo.trn;
+package com.xegami.wabot.pojo.trn;
 
 public class UserStatsTRN {
 

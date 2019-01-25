@@ -1,11 +1,11 @@
-package com.xegami.core;
+package com.xegami.wabot.core;
 
-import com.xegami.http.Controller;
-import com.xegami.persistance.FortnuteroCrud;
-import com.xegami.pojo.fortnite.UserId;
-import com.xegami.pojo.fortnite.UserStats;
-import com.xegami.pojo.nitrite.Fortnutero;
-import com.xegami.utils.AppConstants;
+import com.xegami.wabot.http.Controller;
+import com.xegami.wabot.persistance.FortnuteroCrud;
+import com.xegami.wabot.pojo.fortnite.UserId;
+import com.xegami.wabot.pojo.fortnite.UserStats;
+import com.xegami.wabot.pojo.nitrite.Fortnutero;
+import com.xegami.wabot.utils.AppConstants;
 import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -85,7 +85,7 @@ public class Bot {
 
     private void eventTracker() {
         try {
-            int win, kills, matchplayed;
+            int wins, kills, matches;
             List<Fortnutero> fortnuteros = crud.findAll();
 
             for (Fortnutero f : fortnuteros) {
@@ -95,23 +95,19 @@ public class Bot {
                         getUsernameEncoded(
                                 f.getUsername()));
 
-                win = userStats.getTotals().getWinsInt() - f.getWinsInt();
+                wins = userStats.getTotals().getWinsInt() - f.getWinsInt();
                 kills = userStats.getTotals().getKillsInt() - f.getKillsInt();
-                matchplayed = userStats.getTotals().getMatchesPlayedInt() - f.getMatchesplayedInt();
+                matches = userStats.getTotals().getMatchesPlayedInt() - f.getMatchesplayedInt();
 
-                if (win == 1) {
+                if (wins == 1) {
                     System.out.println(LocalTime.now() + " winner!");
-                    if (kills > 5) {
-                        sendMessage(messageBuilder.win(userStats, kills), false);
-                    } else {
-                        sendMessage(messageBuilder.camper(userStats, kills), false);
-                    }
+                    sendMessage(messageBuilder.win(userStats, kills), false);
 
                 } else if (kills >= 10) {
                     sendMessage(messageBuilder.killer(userStats, kills), false);
                     System.out.println(LocalTime.now() + " killer!");
 
-                } else if (matchplayed == 1 && kills == 0) {
+                } else if (matches == 1 && kills == 0) {
                     sendMessage(messageBuilder.trash(userStats), false);
                     System.out.println(LocalTime.now() + " trash!");
                 }

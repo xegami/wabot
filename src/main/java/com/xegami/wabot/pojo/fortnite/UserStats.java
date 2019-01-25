@@ -1,4 +1,4 @@
-package com.xegami.pojo.fortnite;
+package com.xegami.wabot.pojo.fortnite;
 
 public class UserStats {
 

@@ -1,4 +1,4 @@
-package com.xegami.pojo.nitrite;
+package com.xegami.wabot.pojo.nitrite;
 
 import org.dizitart.no2.objects.Id;
 

@@ -1,8 +1,8 @@
-import com.xegami.http.Controller;
-import com.xegami.persistance.FortnuteroCrud;
-import com.xegami.pojo.fortnite.UserId;
-import com.xegami.pojo.fortnite.UserStats;
-import com.xegami.pojo.nitrite.Fortnutero;
+import com.xegami.wabot.http.Controller;
+import com.xegami.wabot.persistance.FortnuteroCrud;
+import com.xegami.wabot.pojo.fortnite.UserId;
+import com.xegami.wabot.pojo.fortnite.UserStats;
+import com.xegami.wabot.pojo.nitrite.Fortnutero;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.xegami.http;
+package com.xegami.wabot.http;
 
 public final class Endpoints {
 

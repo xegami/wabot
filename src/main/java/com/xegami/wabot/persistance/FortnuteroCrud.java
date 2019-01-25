@@ -1,13 +1,15 @@
-package com.xegami.persistance;
+package com.xegami.wabot.persistance;
 
-import com.xegami.pojo.fortnite.UserStats;
-import com.xegami.pojo.nitrite.Fortnutero;
-import com.xegami.utils.AppConstants;
+import com.xegami.wabot.pojo.fortnite.UserStats;
+import com.xegami.wabot.pojo.nitrite.Fortnutero;
+import com.xegami.wabot.utils.AppConstants;
 import org.dizitart.no2.IndexOptions;
 import org.dizitart.no2.IndexType;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.objects.Cursor;
+import org.dizitart.no2.objects.ObjectFilter;
 import org.dizitart.no2.objects.ObjectRepository;
+import org.dizitart.no2.objects.filters.ObjectFilters;
 
 import java.util.List;
 
@@ -37,16 +39,9 @@ public class FortnuteroCrud {
     }
 
     public void update(UserStats userStats) {
-        boolean inRepository = false;
-        Cursor<Fortnutero> cursor = repository.find();
+        Fortnutero f = findByUsername(userStats.getUsername());
 
-        for (Fortnutero f : cursor) {
-            if (f.getUsername().equals(userStats.getUsername())) {
-                inRepository = true;
-            }
-        }
-
-        if (inRepository) {
+        if (f != null) {
             repository.update(new Fortnutero(userStats.getUsername(),
                     userStats.getTotals().getWins(),
                     userStats.getTotals().getKills(),
@@ -62,15 +57,7 @@ public class FortnuteroCrud {
     }
 
     public Fortnutero findByUsername(String username) {
-        Cursor<Fortnutero> cursor = repository.find();
-
-        for (Fortnutero f : cursor) {
-            if (f.getUsername().equals(username)) {
-                return f;
-            }
-        }
-
-        return null;
+        return repository.find(ObjectFilters.eq("username", username)).firstOrDefault();
     }
 
 }

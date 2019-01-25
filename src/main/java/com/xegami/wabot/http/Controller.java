@@ -1,11 +1,11 @@
-package com.xegami.http;
+package com.xegami.wabot.http;
 
 import com.google.gson.Gson;
-import com.xegami.pojo.fortnite.Totals;
-import com.xegami.pojo.fortnite.UserId;
-import com.xegami.pojo.fortnite.UserStats;
-import com.xegami.pojo.trn.LifeTimeStats;
-import com.xegami.pojo.trn.UserStatsTRN;
+import com.xegami.wabot.pojo.fortnite.Totals;
+import com.xegami.wabot.pojo.fortnite.UserId;
+import com.xegami.wabot.pojo.fortnite.UserStats;
+import com.xegami.wabot.pojo.trn.LifeTimeStats;
+import com.xegami.wabot.pojo.trn.UserStatsTRN;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
