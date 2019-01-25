@@ -40,6 +40,7 @@ public class Script {
             crud.update(userStatsAction(getUsernameEncoded("kingabdeel"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("kakemi"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("fuchiniano"), "pc")); // uses backup api
+            crud.update(userStatsAction(getUsernameEncoded("HulioElGrande"), "pc"));
 
             // extras
             crud.update(userStatsAction(getUsernameEncoded("highdistortion"), "pc"));
