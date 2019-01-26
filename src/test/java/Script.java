@@ -41,6 +41,8 @@ public class Script {
             crud.update(userStatsAction(getUsernameEncoded("kakemi"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("fuchiniano"), "pc")); // uses backup api
             crud.update(userStatsAction(getUsernameEncoded("HulioElGrande"), "pc"));
+            crud.update(userStatsAction(getUsernameEncoded("saluesp"), "ps4"));
+            crud.update(userStatsAction(getUsernameEncoded("viola niños 69"), "pc"));
 
             // extras
             crud.update(userStatsAction(getUsernameEncoded("highdistortion"), "pc"));
