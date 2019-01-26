@@ -54,12 +54,25 @@ public class Bot {
 
         try {
             if (commandLine.startsWith("/")) {
+                UserStats userStats;
                 String command = commandLine.split(" ")[0];
 
                 switch (command) {
                     case "/stats":
-                        UserStats userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
+                        userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
                         sendMessage(messageBuilder.stats(userStats), false);
+                        break;
+
+                    case "/today":
+                        userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
+                        Fortnutero f = crud.findByUsername(userStats.getUsername());
+
+                        if (f.getToday() != null) {
+                            sendMessage(messageBuilder.today(userStats, f.getToday()), false);
+                        } else {
+                            sendMessage("Sin datos todavía.", true);
+                        }
+
                         break;
 
                     case "/xegami":
@@ -112,7 +125,12 @@ public class Bot {
                     System.out.println(LocalTime.now() + " trash!");
                 }
 
-                crud.update(userStats);
+                if (isResetTime()) {
+                    System.out.println("Resetting today stats...");
+                    crud.resetToday();
+                }
+
+                crud.update(userStats, wins, kills, matches);
 
                 // 1 second sleep before each request
                 Thread.sleep(1000);
@@ -121,6 +139,13 @@ public class Bot {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isResetTime() {
+        int hour = LocalTime.now().getHourOfDay();
+        int minute = LocalTime.now().getMinuteOfHour();
+
+        return hour == 12 && minute == 0;
     }
 
     private String getUsernameEncoded(String username) {

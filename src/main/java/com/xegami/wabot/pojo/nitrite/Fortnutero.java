@@ -10,6 +10,7 @@ public class Fortnutero {
     private String kills;
     private String matchesplayed;
     private String platform;
+    private Today today;
 
     public Fortnutero() {
 
@@ -53,5 +54,13 @@ public class Fortnutero {
 
     public String getPlatform() {
         return platform;
+    }
+
+    public Today getToday() {
+        return today;
+    }
+
+    public void setToday(Today today) {
+        this.today = today;
     }
 }

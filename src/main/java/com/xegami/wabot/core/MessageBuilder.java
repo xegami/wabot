@@ -1,6 +1,7 @@
 package com.xegami.wabot.core;
 
 import com.xegami.wabot.pojo.fortnite.UserStats;
+import com.xegami.wabot.pojo.nitrite.Today;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.openqa.selenium.Keys;
 
@@ -16,6 +17,18 @@ public class MessageBuilder {
                 + "_Winrate: " + userStats.getTotals().getWinrate() + "%_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_Kills: " + userStats.getTotals().getKills() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_K/D: " + userStats.getTotals().getKd() + "_";
+
+        return message;
+    }
+
+    public String today(UserStats userStats, Today today) {
+        String message = "";
+
+        message += "*" + userStats.getUsername() + "* hoy lleva:" + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + "_Partidas jugadas: " + today.getMatches() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + "_Wins: " + today.getWins() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + "_Kills: " + today.getKills() + "_";
 
         return message;
     }

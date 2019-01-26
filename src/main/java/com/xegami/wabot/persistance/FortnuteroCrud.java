@@ -2,6 +2,7 @@ package com.xegami.wabot.persistance;
 
 import com.xegami.wabot.pojo.fortnite.UserStats;
 import com.xegami.wabot.pojo.nitrite.Fortnutero;
+import com.xegami.wabot.pojo.nitrite.Today;
 import com.xegami.wabot.utils.AppConstants;
 import org.dizitart.no2.IndexOptions;
 import org.dizitart.no2.IndexType;
@@ -11,6 +12,7 @@ import org.dizitart.no2.objects.ObjectFilter;
 import org.dizitart.no2.objects.ObjectRepository;
 import org.dizitart.no2.objects.filters.ObjectFilters;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class FortnuteroCrud {
@@ -30,25 +32,69 @@ public class FortnuteroCrud {
         }
     }
 
-    public void create(UserStats userStats) {
-        repository.insert(new Fortnutero(userStats.getUsername(),
+    private void create(UserStats userStats) {
+        repository.insert(new Fortnutero(
+                userStats.getUsername(),
                 userStats.getTotals().getWins(),
                 userStats.getTotals().getKills(),
                 userStats.getTotals().getMatchesplayed(),
-                userStats.getPlatform()));
+                userStats.getPlatform()
+        ));
     }
 
     public void update(UserStats userStats) {
         Fortnutero f = findByUsername(userStats.getUsername());
 
         if (f != null) {
-            repository.update(new Fortnutero(userStats.getUsername(),
+            repository.update(new Fortnutero(
+                    userStats.getUsername(),
                     userStats.getTotals().getWins(),
                     userStats.getTotals().getKills(),
                     userStats.getTotals().getMatchesplayed(),
-                    userStats.getPlatform()));
+                    userStats.getPlatform()
+            ));
         } else {
             create(userStats);
+        }
+    }
+
+    public void update(UserStats userStats, Integer wins, Integer kills, Integer matches) {
+        Today t;
+        Fortnutero f = findByUsername(userStats.getUsername());
+
+        if (f != null) {
+            Fortnutero newF = new Fortnutero(
+                    userStats.getUsername(),
+                    userStats.getTotals().getWins(),
+                    userStats.getTotals().getKills(),
+                    userStats.getTotals().getMatchesplayed(),
+                    userStats.getPlatform()
+            );
+
+            if (f.getToday() == null) {
+                t = new Today(wins, kills, matches);
+            } else {
+                t = new Today(f.getToday().getWins() + wins,
+                        f.getToday().getKills() + kills,
+                        f.getToday().getMatches() + matches
+                );
+            }
+
+            newF.setToday(t);
+
+            repository.update(newF);
+
+        } else {
+            create(userStats);
+        }
+    }
+
+    public void resetToday() {
+        Cursor<Fortnutero> cursor = repository.find();
+
+        for (Fortnutero f : cursor) {
+            f.setToday(new Today());
+            repository.update(f);
         }
     }
 
