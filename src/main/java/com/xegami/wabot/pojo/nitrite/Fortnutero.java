@@ -11,6 +11,7 @@ public class Fortnutero {
     private String matchesplayed;
     private String platform;
     private Today today;
+    private int zeroKillsCounter;
 
     public Fortnutero() {
 
@@ -62,5 +63,13 @@ public class Fortnutero {
 
     public void setToday(Today today) {
         this.today = today;
+    }
+
+    public int getZeroKillsCounter() {
+        return zeroKillsCounter;
+    }
+
+    public void setZeroKillsCounter(int zeroKillsCounter) {
+        this.zeroKillsCounter = zeroKillsCounter;
     }
 }

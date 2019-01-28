@@ -44,10 +44,6 @@ public class Script {
             crud.update(userStatsAction(getUsernameEncoded("xxsaluespxx"), "ps4"));
             crud.update(userStatsAction(getUsernameEncoded("viola niños 69"), "pc"));
 
-            // extras
-            crud.update(userStatsAction(getUsernameEncoded("highdistortion"), "pc"));
-            crud.update(userStatsAction(getUsernameEncoded("ninja"), "pc"));
-
             for (Fortnutero f : crud.findAll()) {
                 System.out.print(f.getUsername());
                 System.out.print(" - " + f.getWins());

@@ -99,6 +99,7 @@ public class Bot {
     private void eventTracker() {
         try {
             int wins, kills, matches;
+            boolean zeroKillsMatch = false;
             List<Fortnutero> fortnuteros = crud.findAll();
 
             for (Fortnutero f : fortnuteros) {
@@ -116,12 +117,15 @@ public class Bot {
                     System.out.println(LocalTime.now() + " winner!");
                     sendMessage(messageBuilder.win(userStats, kills), false);
 
-                } else if (kills >= 10) {
+                } else if (kills >= 7) {
                     sendMessage(messageBuilder.killer(userStats, kills), false);
                     System.out.println(LocalTime.now() + " killer!");
 
                 } else if (matches == 1 && kills == 0) {
-                    sendMessage(messageBuilder.trash(userStats), false);
+                    zeroKillsMatch = true;
+                    if (f.getZeroKillsCounter() >= 2) {
+                        sendMessage(messageBuilder.trash(userStats, f.getZeroKillsCounter() + 1), false);
+                    }
                     System.out.println(LocalTime.now() + " trash!");
                 }
 
@@ -130,7 +134,7 @@ public class Bot {
                     crud.resetToday();
                 }
 
-                crud.update(userStats, wins, kills, matches);
+                crud.update(userStats, wins, kills, matches, zeroKillsMatch);
 
                 // 1 second sleep before each request
                 Thread.sleep(1000);

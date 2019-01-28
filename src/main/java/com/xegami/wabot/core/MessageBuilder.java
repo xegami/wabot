@@ -24,7 +24,7 @@ public class MessageBuilder {
     public String today(UserStats userStats, Today today) {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* hoy lleva:" + Keys.chord(Keys.SHIFT, Keys.ENTER)
+        message += "Resumen de *" + userStats.getUsername() + "* de hoy:" + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_Partidas jugadas: " + today.getMatches() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_Wins: " + today.getWins() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
@@ -59,10 +59,10 @@ public class MessageBuilder {
         return message;
     }
 
-    public String trash(UserStats userStats) {
+    public String trash(UserStats userStats, Integer zeroKillsCounter) {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* perdió y *ni una* kill se hizo.";
+        message += "*" + userStats.getUsername() + "* lleva una racha de *" + zeroKillsCounter + "* partidas perdidas con *0* kills.";
 
         return message;
     }

@@ -58,7 +58,7 @@ public class FortnuteroCrud {
         }
     }
 
-    public void update(UserStats userStats, Integer wins, Integer kills, Integer matches) {
+    public void update(UserStats userStats, Integer wins, Integer kills, Integer matches, boolean zeroKillsMatch) {
         Today t;
         Fortnutero f = findByUsername(userStats.getUsername());
 
@@ -82,6 +82,12 @@ public class FortnuteroCrud {
 
             newF.setToday(t);
 
+            if (zeroKillsMatch) {
+                newF.setZeroKillsCounter(f.getZeroKillsCounter() + 1);
+            } else {
+                newF.setZeroKillsCounter(0);
+            }
+
             repository.update(newF);
 
         } else {
@@ -90,10 +96,11 @@ public class FortnuteroCrud {
     }
 
     public void resetToday() {
+        Today t = new Today();
         Cursor<Fortnutero> cursor = repository.find();
 
         for (Fortnutero f : cursor) {
-            f.setToday(new Today());
+            f.setToday(t);
             repository.update(f);
         }
     }
