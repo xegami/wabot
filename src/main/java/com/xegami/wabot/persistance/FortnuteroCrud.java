@@ -58,7 +58,7 @@ public class FortnuteroCrud {
         }
     }
 
-    public void update(UserStats userStats, Integer wins, Integer kills, Integer matches, boolean zeroKillsMatch) {
+    public void update(UserStats userStats, Integer wins, Integer kills, Integer matches) {
         Today t;
         Fortnutero f = findByUsername(userStats.getUsername());
 
@@ -79,14 +79,7 @@ public class FortnuteroCrud {
                         f.getToday().getMatches() + matches
                 );
             }
-
             newF.setToday(t);
-
-            if (zeroKillsMatch) {
-                newF.setZeroKillsCounter(f.getZeroKillsCounter() + 1);
-            } else {
-                newF.setZeroKillsCounter(0);
-            }
 
             repository.update(newF);
 
