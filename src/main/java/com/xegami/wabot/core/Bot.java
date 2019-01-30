@@ -137,7 +137,7 @@ public class Bot {
                 crud.update(userStats, wins, kills, matches, zeroKillsMatch);
 
                 // 1 second sleep before each request
-                Thread.sleep(1000);
+                Thread.sleep(AppConstants.EVENTS_SLEEP_TIME);
             }
 
         } catch (Exception e) {
@@ -221,7 +221,7 @@ public class Bot {
 
                     } finally {
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(AppConstants.COMMANDS_SLEEP_TIME);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
