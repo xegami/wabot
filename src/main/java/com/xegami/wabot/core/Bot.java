@@ -40,11 +40,13 @@ public class Bot {
     private void sendMessage(String message, boolean formatting) {
         WebElement input = browser.findElement(By.xpath("//div[contains(@spellcheck, 'true')]"));
         input.click();
+        
         if (formatting) {
             ((ChromeDriver) browser).getKeyboard().sendKeys("_" + message + "_");
         } else {
             ((ChromeDriver) browser).getKeyboard().sendKeys(message);
         }
+        
         ((ChromeDriver) browser).getKeyboard().pressKey(Keys.ENTER);
     }
 
@@ -62,7 +64,7 @@ public class Bot {
                         userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
                         sendMessage(messageBuilder.stats(userStats), false);
                         break;
-
+                        
                     case "/today":
                         userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
                         Fortnutero f = crud.findByUsername(userStats.getUsername());
@@ -72,21 +74,20 @@ public class Bot {
                         } else {
                             sendMessage("Sin datos todavía.", true);
                         }
-
                         break;
-
+                        
                     case "/xegami":
                         sendMessage(messageBuilder.xegami(), true);
                         break;
-
+                        
                     case "/pedro":
                         sendMessage(messageBuilder.pedro(), true);
                         break;
-
+                        
                     case "/españa":
                         sendMessage(messageBuilder.spain(), true);
                         break;
-
+                        
                     default:
                         sendMessage("Ese comando no existe gilipollas xdd.", true);
                 }
@@ -115,11 +116,9 @@ public class Bot {
                 if (wins == 1) {
                     System.out.println(LocalTime.now() + " winner!");
                     sendMessage(messageBuilder.win(userStats, kills), false);
-
                 } else if (kills >= 7) {
                     sendMessage(messageBuilder.killer(userStats, kills), false);
                     System.out.println(LocalTime.now() + " killer!");
-
                 }
 
                 if (isResetTime()) {
