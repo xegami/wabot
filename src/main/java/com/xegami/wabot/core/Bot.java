@@ -21,6 +21,7 @@ public class Bot {
     private MessageBuilder messageBuilder;
     private FortnuteroCrud crud;
     private Controller controller;
+    private boolean resetDone = false;
 
     public Bot() {
         System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);
@@ -35,6 +36,8 @@ public class Bot {
         WebElement chats = ((ChromeDriver) browser).findElementById("pane-side");
 
         chats.findElement(By.xpath("//span[contains(@title, 'Fortnut')]")).click();
+
+        sendMessage("He vuelto, bitches.", true);
     }
 
     private void sendMessage(String message, boolean formatting) {
@@ -121,9 +124,13 @@ public class Bot {
                     System.out.println(LocalTime.now() + " killer!");
                 }
 
-                if (isResetTime()) {
+                if (!resetDone && isResetTime()) {
                     System.out.println("Resetting today stats...");
                     crud.resetToday();
+                    sendMessage("Stats diarios reseteados.", true);
+                    resetDone = true;
+                } else if (isResetNeeded()) {
+                    resetDone = false;
                 }
 
                 crud.update(userStats, wins, kills, matches);
@@ -141,7 +148,14 @@ public class Bot {
         int hour = LocalTime.now().getHourOfDay();
         int minute = LocalTime.now().getMinuteOfHour();
 
-        return hour == 12 && minute == 0;
+        return hour == 9 && minute == 0;
+    }
+
+    private boolean isResetNeeded() {
+        int hour = LocalTime.now().getHourOfDay();
+        int minute = LocalTime.now().getMinuteOfHour();
+
+        return hour == 8 && minute >= 55;
     }
 
     private String getUsernameEncoded(String username) {
