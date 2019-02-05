@@ -27,7 +27,7 @@ public class Script {
             crud.update(userStatsAction(getUsernameEncoded("hydroxide cherot"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("hydroxide poison"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("makeano"), "pc"));
-            crud.update(userStatsAction(getUsernameEncoded("pedrop_monkaaaas"), "pc")); // uses backup api
+            crud.update(userStatsAction(getUsernameEncoded("sr.burger.king"), "pc")); // uses backup api
             crud.update(userStatsAction(getUsernameEncoded("lacocanoesmala"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("danir10"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("danalyn96"), "pc"));
@@ -44,6 +44,7 @@ public class Script {
             crud.update(userStatsAction(getUsernameEncoded("xxsaluespxx"), "ps4"));
             crud.update(userStatsAction(getUsernameEncoded("viola niños 69"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("x27amb27x"), "pc"));
+            crud.update(userStatsAction(getUsernameEncoded("m a r v e l"), "pc"));
 
             for (Fortnutero f : crud.findAll()) {
                 System.out.print(f.getUsername());
