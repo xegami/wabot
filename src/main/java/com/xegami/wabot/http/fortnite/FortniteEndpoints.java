@@ -1,6 +1,6 @@
-package com.xegami.wabot.http;
+package com.xegami.wabot.http.fortnite;
 
-public final class Endpoints {
+public final class FortniteEndpoints {
 
     /**
      * https://fortniteapi.com/
@@ -19,7 +19,7 @@ public final class Endpoints {
     public final static String FORTNITE_TRN_API_HEADER_KEY = "TRN-Api-Key";
     public final static String FORTNITE_TRN_API_HEADER_VALUE = "c8fd881f-ff6b-4e2a-a03b-4782986a4891";
 
-    private Endpoints() {
+    private FortniteEndpoints() {
 
     }
 

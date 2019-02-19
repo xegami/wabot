@@ -1,4 +1,4 @@
-import com.xegami.wabot.http.FortniteController;
+import com.xegami.wabot.http.fortnite.FortniteController;
 import com.xegami.wabot.persistance.FortnuteroCrud;
 import com.xegami.wabot.pojo.fortnite.UserId;
 import com.xegami.wabot.pojo.fortnite.UserStats;

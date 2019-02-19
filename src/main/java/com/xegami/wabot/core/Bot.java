@@ -44,13 +44,14 @@ public class Bot {
         String commandLine = messages.get(messages.size() - 1).getText().toLowerCase();
 
         String newMessage = fortniteService.commandAction(commandLine);
-        //String message = apexService.commandAction(commandLine);
+        //String newMessage = apexService.commandAction(commandLine);
 
         if (newMessage != null) sendMessage(newMessage);
     }
 
     private void eventTracker() {
-        String newMessage = fortniteService.eventTracker();
+        String newMessage = fortniteService.eventAction();
+        //String newMessage = apexService.eventTracker();
 
         if (newMessage != null) sendMessage(newMessage);
     }

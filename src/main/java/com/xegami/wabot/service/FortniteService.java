@@ -1,7 +1,7 @@
 package com.xegami.wabot.service;
 
 import com.xegami.wabot.core.MessageBuilder;
-import com.xegami.wabot.http.FortniteController;
+import com.xegami.wabot.http.fortnite.FortniteController;
 import com.xegami.wabot.persistance.FortnuteroCrud;
 import com.xegami.wabot.pojo.fortnite.UserId;
 import com.xegami.wabot.pojo.fortnite.UserStats;
@@ -12,7 +12,7 @@ import org.joda.time.LocalTime;
 import java.io.IOException;
 import java.util.List;
 
-public class FortniteService {
+public class FortniteService implements ServiceInterface {
 
     private MessageBuilder messageBuilder;
     private FortnuteroCrud crud;
@@ -22,8 +22,10 @@ public class FortniteService {
     public FortniteService() {
         messageBuilder = new MessageBuilder();
         crud = new FortnuteroCrud();
+        fortniteController = new FortniteController();
     }
 
+    @Override
     public String commandAction(String commandLine) {
         String message = null;
 
@@ -60,7 +62,8 @@ public class FortniteService {
         return message;
     }
 
-    public String eventTracker() {
+    @Override
+    public String eventAction() {
         String message = null;
 
         try {

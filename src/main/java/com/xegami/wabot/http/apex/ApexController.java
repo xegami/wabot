@@ -1,4 +1,4 @@
-package com.xegami.wabot.http;
+package com.xegami.wabot.http.apex;
 
 import com.google.gson.Gson;
 import com.xegami.wabot.pojo.fortnite.Totals;
@@ -12,16 +12,16 @@ import okhttp3.Response;
 
 import java.io.IOException;
 
-public class FortniteController {
+public class ApexController {
 
     private OkHttpClient client;
 
-    public FortniteController() {
+    public ApexController() {
         client = new OkHttpClient();
     }
 
     public UserId getUserIdCall(String username) throws IOException {
-        final String url = Endpoints.FORTNITE_API_GET_USER_ID + "?username=" + username;
+        final String url = ApexEndpoints.FORTNITE_API_GET_USER_ID + "?username=" + username;
 
         Request request = new Request.Builder()
                 .url(url)
@@ -33,7 +33,7 @@ public class FortniteController {
     }
 
     public UserStats getUserStatsCall(String userId, String platform) throws IOException {
-        final String url = Endpoints.FORTNITE_API_GET_USER_STATS + "?user_id=" + userId + "&platform=" + platform;
+        final String url = ApexEndpoints.FORTNITE_API_GET_USER_STATS + "?user_id=" + userId + "&platform=" + platform;
 
         Request request = new Request.Builder()
                 .url(url)
@@ -47,11 +47,11 @@ public class FortniteController {
     public UserStats getUserStatsBackupCall(String username, String platform) throws IOException {
         String kills, wins, matchesplayed, winrate, kd;
         kills = wins = matchesplayed = winrate = kd = "";
-        final String url = Endpoints.FORTNITE_TRN_API_BR_PLAYER_STATS + "/" + platform + "/" + username;
+        final String url = ApexEndpoints.FORTNITE_TRN_API_BR_PLAYER_STATS + "/" + platform + "/" + username;
 
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader(Endpoints.FORTNITE_TRN_API_HEADER_KEY, Endpoints.FORTNITE_TRN_API_HEADER_VALUE)
+                .addHeader(ApexEndpoints.FORTNITE_TRN_API_HEADER_KEY, ApexEndpoints.FORTNITE_TRN_API_HEADER_VALUE)
                 .build();
         Response response = client.newCall(request).execute();
         String jsonString = response.body().string();
