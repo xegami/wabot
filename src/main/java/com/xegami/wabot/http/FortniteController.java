@@ -12,11 +12,11 @@ import okhttp3.Response;
 
 import java.io.IOException;
 
-public class Controller {
+public class FortniteController {
 
     private OkHttpClient client;
 
-    public Controller() {
+    public FortniteController() {
         client = new OkHttpClient();
     }
 

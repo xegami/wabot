@@ -1,16 +1,11 @@
 package com.xegami.wabot.core;
 
-import com.xegami.wabot.http.Controller;
-import com.xegami.wabot.persistance.FortnuteroCrud;
-import com.xegami.wabot.pojo.fortnite.UserId;
-import com.xegami.wabot.pojo.fortnite.UserStats;
-import com.xegami.wabot.pojo.nitrite.Fortnutero;
+import com.xegami.wabot.service.FortniteService;
 import com.xegami.wabot.utils.AppConstants;
 import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,18 +13,13 @@ import java.util.concurrent.Executors;
 public class Bot {
 
     private WebDriver browser;
-    private MessageBuilder messageBuilder;
-    private FortnuteroCrud crud;
-    private Controller controller;
-    private boolean resetDone = false;
+    private FortniteService fortniteService;
 
     public Bot() {
         System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);
         browser = new ChromeDriver();
         browser.get("https://web.whatsapp.com");
-        messageBuilder = new MessageBuilder();
-        crud = new FortnuteroCrud();
-        controller = new Controller();
+        fortniteService = new FortniteService();
     }
 
     private void joinChatGroup() {
@@ -37,161 +27,32 @@ public class Bot {
 
         chats.findElement(By.xpath("//span[contains(@title, 'Fortnut')]")).click();
 
-        sendMessage("He vuelto, bitches.", true);
+        sendMessage("He vuelto, bitches.");
     }
 
-    private void sendMessage(String message, boolean formatting) {
+    private void sendMessage(String message) {
         WebElement input = browser.findElement(By.xpath("//div[contains(@spellcheck, 'true')]"));
         input.click();
-        
-        if (formatting) {
-            ((ChromeDriver) browser).getKeyboard().sendKeys("_" + message + "_");
-        } else {
-            ((ChromeDriver) browser).getKeyboard().sendKeys(message);
-        }
-        
-        ((ChromeDriver) browser).getKeyboard().pressKey(Keys.ENTER);
+
+        ChromeDriver driver = (ChromeDriver) browser;
+        driver.getKeyboard().sendKeys(message);
+        driver.getKeyboard().pressKey(Keys.ENTER);
     }
 
     private void commandTracker() {
         List<WebElement> messages = browser.findElements(By.xpath("//span[contains(@class, 'copyable-text')]"));
         String commandLine = messages.get(messages.size() - 1).getText().toLowerCase();
 
-        try {
-            if (commandLine.startsWith("/")) {
-                UserStats userStats;
-                String command = commandLine.split(" ")[0];
+        String newMessage = fortniteService.commandAction(commandLine);
+        //String message = apexService.commandAction(commandLine);
 
-                switch (command) {
-                    case "/stats":
-                        userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
-                        sendMessage(messageBuilder.stats(userStats), false);
-                        break;
-                        
-                    case "/today":
-                        userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
-                        Fortnutero f = crud.findByUsername(userStats.getUsername());
-
-                        if (f.getToday() != null) {
-                            sendMessage(messageBuilder.today(userStats, f.getToday()), false);
-                        } else {
-                            sendMessage("Sin datos todavía.", true);
-                        }
-                        break;
-                        
-                    case "/xegami":
-                        sendMessage(messageBuilder.xegami(), true);
-                        break;
-                        
-                    case "/pedro":
-                        sendMessage(messageBuilder.pedro(), true);
-                        break;
-                        
-                    case "/españa":
-                        sendMessage(messageBuilder.spain(), true);
-                        break;
-                        
-                    default:
-                        sendMessage("Ese comando no existe gilipollas xdd.", true);
-                }
-            }
-        } catch (Exception e) {
-            sendMessage("Error.", true);
-        }
+        if (newMessage != null) sendMessage(newMessage);
     }
 
     private void eventTracker() {
-        try {
-            int wins, kills, matches;
-            List<Fortnutero> fortnuteros = crud.findAll();
+        String newMessage = fortniteService.eventTracker();
 
-            for (Fortnutero f : fortnuteros) {
-                System.out.println(LocalTime.now() + " Tracking ==> " + f.getUsername() + " (" + f.getPlatform() + ") ");
-
-                UserStats userStats = userStatsAction(
-                        getUsernameEncoded(
-                                f.getUsername()));
-
-                wins = userStats.getTotals().getWinsInt() - f.getWinsInt();
-                kills = userStats.getTotals().getKillsInt() - f.getKillsInt();
-                matches = userStats.getTotals().getMatchesPlayedInt() - f.getMatchesplayedInt();
-
-                if (wins == 1) {
-                    System.out.println(LocalTime.now() + " winner!");
-                    sendMessage(messageBuilder.win(userStats, kills), false);
-                } else if (kills >= 7) {
-                    sendMessage(messageBuilder.killer(userStats, kills), false);
-                    System.out.println(LocalTime.now() + " killer!");
-                }
-
-                if (!resetDone && isResetTime()) {
-                    System.out.println("Resetting today stats...");
-                    crud.resetToday();
-                    sendMessage("Stats diarios reseteados.", true);
-                    resetDone = true;
-                } else if (isResetNeeded()) {
-                    resetDone = false;
-                }
-
-                crud.update(userStats, wins, kills, matches);
-
-                // 1 second sleep before each request
-                Thread.sleep(AppConstants.EVENTS_SLEEP_TIME);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private boolean isResetTime() {
-        int hour = LocalTime.now().getHourOfDay();
-        int minute = LocalTime.now().getMinuteOfHour();
-
-        return hour == 9 && minute == 0;
-    }
-
-    private boolean isResetNeeded() {
-        int hour = LocalTime.now().getHourOfDay();
-        int minute = LocalTime.now().getMinuteOfHour();
-
-        return hour == 8 && minute >= 55;
-    }
-
-    private String getUsernameEncoded(String username) {
-        return username.replace(" ", "%20");
-    }
-
-    private String getUsernameEncodedFromCommandLine(String commandLine) {
-        String username = commandLine.split(" ", 2)[1];
-
-        return username.replace(" ", "%20");
-    }
-
-    private UserStats userStatsAction(String usernameEncoded) throws IOException {
-        UserId userId = controller.getUserIdCall(usernameEncoded);
-
-        String platform = findPlatformPreference(userId.getUsername());
-
-        // if not in database uses main platform (pc default)
-        UserStats userStats = controller.getUserStatsCall(userId.getUid(), platform != null ? platform : userId.getPlatforms()[0]);
-
-        if (userStats.getTotals().getKillsInt() == 0) {
-            // backup api
-            userStats = controller.getUserStatsBackupCall(usernameEncoded, platform);
-        }
-
-        return userStats;
-    }
-
-    private String findPlatformPreference(String username) {
-        Fortnutero f = crud.findByUsername(username);
-
-        if (f != null) {
-            return f.getPlatform();
-        }
-
-        return null;
+        if (newMessage != null) sendMessage(newMessage);
     }
 
     public void run() {

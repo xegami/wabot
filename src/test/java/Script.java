@@ -1,4 +1,4 @@
-import com.xegami.wabot.http.Controller;
+import com.xegami.wabot.http.FortniteController;
 import com.xegami.wabot.persistance.FortnuteroCrud;
 import com.xegami.wabot.pojo.fortnite.UserId;
 import com.xegami.wabot.pojo.fortnite.UserStats;
@@ -10,12 +10,12 @@ import java.io.IOException;
 
 public class Script {
     FortnuteroCrud crud;
-    Controller controller;
+    FortniteController fortniteController;
 
     @Before
     public void before() {
         crud = new FortnuteroCrud();
-        controller = new Controller();
+        fortniteController = new FortniteController();
     }
 
     @Test
@@ -65,12 +65,12 @@ public class Script {
     }
 
     private UserStats userStatsAction(String usernameEncoded, String platform) throws IOException {
-        UserId userId = controller.getUserIdCall(usernameEncoded);
+        UserId userId = fortniteController.getUserIdCall(usernameEncoded);
 
-        UserStats userStats = controller.getUserStatsCall(userId.getUid(), platform);
+        UserStats userStats = fortniteController.getUserStatsCall(userId.getUid(), platform);
 
         if (userStats.getTotals().getKillsInt() == 0) {
-            return controller.getUserStatsBackupCall(usernameEncoded, platform);
+            return fortniteController.getUserStatsBackupCall(usernameEncoded, platform);
         } else {
             return userStats;
         }
