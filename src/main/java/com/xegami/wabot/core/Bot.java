@@ -1,5 +1,6 @@
 package com.xegami.wabot.core;
 
+import com.xegami.wabot.service.ApexService;
 import com.xegami.wabot.service.FortniteService;
 import com.xegami.wabot.utils.AppConstants;
 import org.joda.time.LocalTime;
@@ -13,19 +14,21 @@ import java.util.concurrent.Executors;
 public class Bot {
 
     private WebDriver browser;
-    private FortniteService fortniteService;
+    //private FortniteService fortniteService;
+    private ApexService apexService;
 
     public Bot() {
         System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);
         browser = new ChromeDriver();
         browser.get("https://web.whatsapp.com");
-        fortniteService = new FortniteService();
+        //fortniteService = new FortniteService();
+        apexService = new ApexService();
     }
 
     private void joinChatGroup() {
         WebElement chats = ((ChromeDriver) browser).findElementById("pane-side");
 
-        chats.findElement(By.xpath("//span[contains(@title, 'Fortnut')]")).click();
+        chats.findElement(By.xpath("//span[contains(@title, 'Los Mozambiques')]")).click();
 
         sendMessage("He vuelto, bitches.");
     }
@@ -43,17 +46,17 @@ public class Bot {
         List<WebElement> messages = browser.findElements(By.xpath("//span[contains(@class, 'copyable-text')]"));
         String commandLine = messages.get(messages.size() - 1).getText().toLowerCase();
 
-        String newMessage = fortniteService.commandAction(commandLine);
-        //String newMessage = apexService.commandAction(commandLine);
+        //String newMessage = fortniteService.commandAction(commandLine);
+        String newMessage = apexService.commandAction(commandLine);
 
         if (newMessage != null) sendMessage(newMessage);
     }
 
     private void eventTracker() {
-        String newMessage = fortniteService.eventAction();
-        //String newMessage = apexService.eventTracker();
+        //String newMessage = fortniteService.eventAction();
+        // todo String newMessage = apexService.eventTracker();
 
-        if (newMessage != null) sendMessage(newMessage);
+        //if (newMessage != null) sendMessage(newMessage);
     }
 
     public void run() {
@@ -118,7 +121,7 @@ public class Bot {
         // to background threads
         ExecutorService executor = Executors.newCachedThreadPool();
         executor.submit(commandTrackerThread);
-        executor.submit(eventTrackerThread);
+        //executor.submit(eventTrackerThread);
     }
 
 }

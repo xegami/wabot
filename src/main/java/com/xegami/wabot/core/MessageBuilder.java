@@ -1,5 +1,7 @@
 package com.xegami.wabot.core;
 
+import com.xegami.wabot.pojo.apex.ApexPlayerData;
+import com.xegami.wabot.pojo.apex.MyApexPlayerData;
 import com.xegami.wabot.pojo.fortnite.UserStats;
 import com.xegami.wabot.pojo.nitrite.Today;
 import jdk.nashorn.internal.ir.annotations.Ignore;
@@ -17,6 +19,18 @@ public class MessageBuilder {
                 + "_Winrate: " + userStats.getTotals().getWinrate() + "%_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_Kills: " + userStats.getTotals().getKills() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
                 + "_K/D: " + userStats.getTotals().getKd() + "_";
+
+        return message;
+    }
+
+    public String stats(MyApexPlayerData apexPlayerData) {
+        String message = "";
+
+        message += "Stats de *" + apexPlayerData.getUsername() + "*:" + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + "_Kills: " + apexPlayerData.getKills() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + "_Daño: " + apexPlayerData.getDamage() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
+                + "_Headshots: " + apexPlayerData.getHeadshots() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER);
 
         return message;
     }

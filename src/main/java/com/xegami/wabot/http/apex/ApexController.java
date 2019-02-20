@@ -1,11 +1,11 @@
 package com.xegami.wabot.http.apex;
 
 import com.google.gson.Gson;
+import com.xegami.wabot.pojo.apex.ApexPlayerData;
+import com.xegami.wabot.pojo.apex.MyApexPlayerData;
+import com.xegami.wabot.pojo.apex.Stats;
 import com.xegami.wabot.pojo.fortnite.Totals;
-import com.xegami.wabot.pojo.fortnite.UserId;
-import com.xegami.wabot.pojo.fortnite.UserStats;
 import com.xegami.wabot.pojo.trn.LifeTimeStats;
-import com.xegami.wabot.pojo.trn.UserStatsTRN;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -20,68 +20,50 @@ public class ApexController {
         client = new OkHttpClient();
     }
 
-    public UserId getUserIdCall(String username) throws IOException {
-        final String url = ApexEndpoints.FORTNITE_API_GET_USER_ID + "?username=" + username;
+    public MyApexPlayerData getApexPlayerData(String username, String platform) throws IOException {
+        Integer level, kills, damage, headshots, matchesPlayed;
+        level = kills = damage = headshots = matchesPlayed = 0;
+        final String url = ApexEndpoints.APEX_TRN_API_PLAYER_DATA_URL + "/" + platform + "/" + username;
 
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader(ApexEndpoints.APEX_TRN_API_HEADER_KEY, ApexEndpoints.APEX_TRN_API_HEADER_VALUE)
                 .build();
         Response response = client.newCall(request).execute();
         String jsonString = response.body().string();
 
-        return new Gson().fromJson(jsonString, UserId.class);
-    }
+        ApexPlayerData apexPlayerData = new Gson().fromJson(jsonString, ApexPlayerData.class);
 
-    public UserStats getUserStatsCall(String userId, String platform) throws IOException {
-        final String url = ApexEndpoints.FORTNITE_API_GET_USER_STATS + "?user_id=" + userId + "&platform=" + platform;
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        Response response = client.newCall(request).execute();
-        String jsonString = response.body().string();
-
-        return new Gson().fromJson(jsonString, UserStats.class);
-    }
-
-    public UserStats getUserStatsBackupCall(String username, String platform) throws IOException {
-        String kills, wins, matchesplayed, winrate, kd;
-        kills = wins = matchesplayed = winrate = kd = "";
-        final String url = ApexEndpoints.FORTNITE_TRN_API_BR_PLAYER_STATS + "/" + platform + "/" + username;
-
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader(ApexEndpoints.FORTNITE_TRN_API_HEADER_KEY, ApexEndpoints.FORTNITE_TRN_API_HEADER_VALUE)
-                .build();
-        Response response = client.newCall(request).execute();
-        String jsonString = response.body().string();
-
-        UserStatsTRN userStatsTRN = new Gson().fromJson(jsonString, UserStatsTRN.class);
-
-        LifeTimeStats lifeTimeStats;
-        for (int i = 0; i < userStatsTRN.getLifeTimeStats().length; i++) {
-            lifeTimeStats = userStatsTRN.getLifeTimeStats()[i];
-
-            switch (lifeTimeStats.getKey()) {
-                case "Matches Played":
-                    matchesplayed = lifeTimeStats.getValue();
-                    break;
-                case "Wins":
-                    wins = lifeTimeStats.getValue();
-                    break;
-                case "Win%":
-                    winrate = lifeTimeStats.getValue().replace("%", "");
+        Stats[] stats = apexPlayerData.getData().getStats();
+        for (int i = 0; i < stats.length; i++) {
+            String key = stats[i].getMetadata().getKey();
+            switch (key) {
+                case "Level":
+                    level = stats[i].getValue();
                     break;
                 case "Kills":
-                    kills = lifeTimeStats.getValue();
+                    kills = stats[i].getValue();
                     break;
-                case "K/d":
-                    kd = lifeTimeStats.getValue();
+                case "Damage":
+                    damage = stats[i].getValue();
+                    break;
+                case "Headshots":
+                    headshots = stats[i].getValue();
+                    break;
+                case "matchesPlayed":
+                    matchesPlayed = stats[i].getValue();
                     break;
             }
         }
 
-        return new UserStats(userStatsTRN.getEpicUserHandle(), new Totals(kills, wins, matchesplayed, winrate, kd), platform);
+        return new MyApexPlayerData(
+                apexPlayerData.getData().getMetadata().getPlatformUserHandle(),
+                level,
+                kills,
+                damage,
+                headshots,
+                matchesPlayed
+                );
     }
 
 }
