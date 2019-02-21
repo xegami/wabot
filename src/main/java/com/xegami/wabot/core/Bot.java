@@ -17,8 +17,8 @@ public class Bot {
     //private FortniteService fortniteService;
     private ApexService apexService;
     private TwitterService twitterService;
-    //private String chatName = "Los Mozambiques";
-    private String chatName = "Frikus programeitors";
+    private String chatName = "Los Mozambiques";
+    //private String chatName = "Frikus programeitors";
     private static Bot bot;
 
     public Bot() {
