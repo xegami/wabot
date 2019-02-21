@@ -16,6 +16,8 @@ public class Bot {
     private WebDriver browser;
     //private FortniteService fortniteService;
     private ApexService apexService;
+    private String chatName = "Los Mozambiques";
+    //private String chatName = "Frikus programeitors";
 
     public Bot() {
         System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);
@@ -27,9 +29,7 @@ public class Bot {
 
     private void joinChatGroup() {
         WebElement chats = ((ChromeDriver) browser).findElementById("pane-side");
-
-        chats.findElement(By.xpath("//span[contains(@title, 'Los Mozambiques')]")).click();
-
+        chats.findElement(By.xpath("//span[contains(@title, '"+ chatName +"')]")).click();
         sendMessage("He vuelto, bitches.");
     }
 

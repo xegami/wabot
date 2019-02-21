@@ -1,23 +1,26 @@
 package com.xegami.wabot.core;
 
-import com.xegami.wabot.pojo.apex.ApexPlayerData;
 import com.xegami.wabot.pojo.apex.MyApexPlayerData;
 import com.xegami.wabot.pojo.fortnite.UserStats;
 import com.xegami.wabot.pojo.nitrite.Today;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.openqa.selenium.Keys;
 
 public class MessageBuilder {
 
+    // new line
+    private String n() {
+        return Keys.chord(Keys.SHIFT, Keys.ENTER);
+    }
+
     public String stats(UserStats userStats) {
         String message = "";
 
-        message += "Stats de *" + userStats.getUsername() + "*:" + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Partidas jugadas: " + userStats.getTotals().getMatchesplayed() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Wins: " + userStats.getTotals().getWins() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Winrate: " + userStats.getTotals().getWinrate() + "%_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Kills: " + userStats.getTotals().getKills() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
+        message += "Stats de *" + userStats.getUsername() + "*:" + n()
+                + n()
+                + "_Partidas jugadas: " + userStats.getTotals().getMatchesplayed() + "_" + n()
+                + "_Wins: " + userStats.getTotals().getWins() + "_" + n()
+                + "_Winrate: " + userStats.getTotals().getWinrate() + "%_" + n()
+                + "_Kills: " + userStats.getTotals().getKills() + "_" + n()
                 + "_K/D: " + userStats.getTotals().getKd() + "_";
 
         return message;
@@ -26,11 +29,11 @@ public class MessageBuilder {
     public String stats(MyApexPlayerData apexPlayerData) {
         String message = "";
 
-        message += "Stats de *" + apexPlayerData.getUsername() + "*:" + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Kills: " + apexPlayerData.getKills() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Daño: " + apexPlayerData.getDamage() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Headshots: " + apexPlayerData.getHeadshots() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER);
+        message += "Stats de *" + apexPlayerData.getUsername() + "*:" + n()
+                + n()
+                + "_Kills: " + apexPlayerData.getKills() + "_" + n()
+                + "_Daño: " + apexPlayerData.getDamage() + "_" + n()
+                + "_Headshots: " + apexPlayerData.getHeadshots() + "_" + n();
 
         return message;
     }
@@ -38,10 +41,10 @@ public class MessageBuilder {
     public String today(UserStats userStats, Today today) {
         String message = "";
 
-        message += "Resumen de *" + userStats.getUsername() + "* de hoy:" + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Partidas jugadas: " + today.getMatches() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Wins: " + today.getWins() + "_" + Keys.chord(Keys.SHIFT, Keys.ENTER)
+        message += "Resumen de *" + userStats.getUsername() + "* de hoy:" + n()
+                + n()
+                + "_Partidas jugadas: " + today.getMatches() + "_" + n()
+                + "_Wins: " + today.getWins() + "_" + n()
                 + "_Kills: " + today.getKills() + "_";
 
         return message;
@@ -63,34 +66,14 @@ public class MessageBuilder {
         return message;
     }
 
-    public String camper(UserStats userStats, Integer kills) {
+    public String info() {
         String message = "";
 
-        message += "*" + userStats.getUsername() + "* acaba de ganar una partida con *" + kills + "* kills." + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + Keys.chord(Keys.SHIFT, Keys.ENTER)
-                + "_Campea un poco más rataaa._";
+        message += "*1. /stats (nombre) (pc, ps4 o xbox)*:" + n()
+                + "El bot solo registra los datos de las leyendas que" + n()
+                + "tengas en https://apex.tracker.gg (mira la descripción del grupo para más información).";
 
         return message;
-    }
-
-    public String trash(UserStats userStats, Integer zeroKillsCounter) {
-        String message = "";
-
-        message += "*" + userStats.getUsername() + "* lleva una racha de *" + zeroKillsCounter + "* partidas perdidas con *0* kills.";
-
-        return message;
-    }
-
-    public String xegami() {
-        return "es la polla jeje";
-    }
-
-    public String pedro() {
-        return "tiene hambre jeje";
-    }
-
-    public String spain() {
-        return "ARRIBA";
     }
 
 }
