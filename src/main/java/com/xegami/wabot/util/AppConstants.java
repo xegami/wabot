@@ -1,4 +1,4 @@
-package com.xegami.wabot.utils;
+package com.xegami.wabot.util;
 
 public final class AppConstants {
 

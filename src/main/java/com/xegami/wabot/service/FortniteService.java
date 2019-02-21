@@ -6,7 +6,7 @@ import com.xegami.wabot.persistance.FortnuteroCrud;
 import com.xegami.wabot.pojo.fortnite.UserId;
 import com.xegami.wabot.pojo.fortnite.UserStats;
 import com.xegami.wabot.pojo.nitrite.Fortnutero;
-import com.xegami.wabot.utils.AppConstants;
+import com.xegami.wabot.util.AppConstants;
 import org.joda.time.LocalTime;
 
 import java.io.IOException;

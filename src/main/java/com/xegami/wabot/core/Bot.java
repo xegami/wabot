@@ -1,8 +1,8 @@
 package com.xegami.wabot.core;
 
 import com.xegami.wabot.service.ApexService;
-import com.xegami.wabot.service.FortniteService;
-import com.xegami.wabot.utils.AppConstants;
+import com.xegami.wabot.service.TwitterService;
+import com.xegami.wabot.util.AppConstants;
 import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -16,8 +16,10 @@ public class Bot {
     private WebDriver browser;
     //private FortniteService fortniteService;
     private ApexService apexService;
+    private TwitterService twitterService;
     //private String chatName = "Los Mozambiques";
     private String chatName = "Frikus programeitors";
+    private static Bot bot;
 
     public Bot() {
         System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);
@@ -25,6 +27,16 @@ public class Bot {
         browser.get("https://web.whatsapp.com");
         //fortniteService = new FortniteService();
         apexService = new ApexService();
+        twitterService = new TwitterService();
+        bot = this;
+    }
+
+    public static Bot getInstance() {
+        if (bot != null) {
+            return bot;
+        }
+
+        return null;
     }
 
     private void joinChatGroup() {
@@ -33,7 +45,7 @@ public class Bot {
         sendMessage("He vuelto, bitches.");
     }
 
-    private void sendMessage(String message) {
+    public void sendMessage(String message) {
         WebElement input = browser.findElement(By.xpath("//div[contains(@spellcheck, 'true')]"));
         input.click();
 

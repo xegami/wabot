@@ -4,6 +4,7 @@ import com.xegami.wabot.pojo.apex.MyApexPlayerData;
 import com.xegami.wabot.pojo.fortnite.UserStats;
 import com.xegami.wabot.pojo.nitrite.Today;
 import org.openqa.selenium.Keys;
+import twitter4j.Status;
 
 public class MessageBuilder {
 
@@ -31,9 +32,9 @@ public class MessageBuilder {
 
         message += "Stats de *" + apexPlayerData.getUsername() + "*:" + n()
                 + n()
+                + "_Nivel: " + apexPlayerData.getLevel() + "_" + n()
                 + "_Kills: " + apexPlayerData.getKills() + "_" + n()
-                + "_Daño: " + apexPlayerData.getDamage() + "_" + n()
-                + "_Headshots: " + apexPlayerData.getHeadshots() + "_" + n();
+                + "_Daño: " + apexPlayerData.getDamage() + "_";
 
         return message;
     }
@@ -70,8 +71,17 @@ public class MessageBuilder {
         String message = "";
 
         message += "*1. /stats (nombre) (pc, ps4 o xbox)*:" + n()
-                + "El bot solo registra los datos de las leyendas que" + n()
-                + "tengas en https://apex.tracker.gg (mira la descripción del grupo para más información).";
+                + "El bot solo registra los datos de las leyendas que tengas en https://apex.tracker.gg (mira la descripción del grupo para más información).";
+
+        return message;
+    }
+
+    public String tuit(Status status) {
+        String message = "";
+
+        message += "*Tuit oficial reciente de @PlayApex:*" + n()
+                + n()
+                + "\"" + status.getText() + "\"";
 
         return message;
     }

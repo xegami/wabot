@@ -3,16 +3,14 @@ package com.xegami.wabot.persistance;
 import com.xegami.wabot.pojo.fortnite.UserStats;
 import com.xegami.wabot.pojo.nitrite.Fortnutero;
 import com.xegami.wabot.pojo.nitrite.Today;
-import com.xegami.wabot.utils.AppConstants;
+import com.xegami.wabot.util.AppConstants;
 import org.dizitart.no2.IndexOptions;
 import org.dizitart.no2.IndexType;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.objects.Cursor;
-import org.dizitart.no2.objects.ObjectFilter;
 import org.dizitart.no2.objects.ObjectRepository;
 import org.dizitart.no2.objects.filters.ObjectFilters;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class FortnuteroCrud {
