@@ -27,7 +27,7 @@ public class Bot {
         browser.get("https://web.whatsapp.com");
         //fortniteService = new FortniteService();
         apexService = new ApexService();
-        twitterService = new TwitterService();
+        //twitterService = new TwitterService();
         bot = this;
     }
 
