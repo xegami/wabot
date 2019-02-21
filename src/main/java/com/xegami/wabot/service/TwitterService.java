@@ -28,7 +28,7 @@ public class TwitterService implements StatusListener {
                 .setOAuthAccessTokenSecret(ACCESS_TOKEN_SECRET);
         stream = new TwitterStreamFactory(cb.build()).getInstance();
         stream.addListener(this);
-        stream.filter(new FilterQuery().follow(XEGAMI_ID));
+        stream.filter(new FilterQuery().follow(PLAYAPEX_ID));
     }
 
     @Override
