@@ -16,8 +16,8 @@ public class Bot {
     private WebDriver browser;
     //private FortniteService fortniteService;
     private ApexService apexService;
-    private String chatName = "Los Mozambiques";
-    //private String chatName = "Frikus programeitors";
+    //private String chatName = "Los Mozambiques";
+    private String chatName = "Frikus programeitors";
 
     public Bot() {
         System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);

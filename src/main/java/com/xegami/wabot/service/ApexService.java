@@ -58,7 +58,6 @@ public class ApexService implements ServiceInterface {
 
     @Override
     public String eventAction() {
-
         return null;
     }
 
