@@ -8,14 +8,16 @@ public class MyApexPlayerData {
     private Integer damage;
     private Integer headshots;
     private Integer matchesPlayed;
+    private String source;
 
-    public MyApexPlayerData(String username, Integer level, Integer kills, Integer damage, Integer headshots, Integer matchesPlayed) {
+    public MyApexPlayerData(String username, Integer level, Integer kills, Integer damage, Integer headshots, Integer matchesPlayed, String source) {
         this.username = username;
         this.level = level;
         this.kills = kills;
         this.damage = damage;
         this.headshots = headshots;
         this.matchesPlayed = matchesPlayed;
+        this.source = source;
     }
 
     public String getUsername() {
@@ -40,5 +42,9 @@ public class MyApexPlayerData {
 
     public Integer getMatchesPlayed() {
         return matchesPlayed;
+    }
+
+    public String getSource() {
+        return source;
     }
 }

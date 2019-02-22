@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.xegami.wabot.pojo.apex.ApexPlayerData;
 import com.xegami.wabot.pojo.apex.MyApexPlayerData;
 import com.xegami.wabot.pojo.apex.Stats;
-import com.xegami.wabot.pojo.fortnite.Totals;
-import com.xegami.wabot.pojo.trn.LifeTimeStats;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -62,8 +60,32 @@ public class ApexController {
                 kills,
                 damage,
                 headshots,
-                matchesPlayed
-                );
+                matchesPlayed,
+                buildSource(username, platform)
+        );
+    }
+
+    private String buildSource(String username, String platformCode) {
+        final String baseUrl = "https://apex.tracker.gg/profile";
+        String platform = null;
+
+        switch (platformCode) {
+            case "5":
+                platform = "pc";
+                break;
+            case "2":
+                platform = "psn";
+                break;
+            case "1":
+                platform = "xbl";
+                break;
+        }
+
+        if (platform == null) {
+            return "";
+        }
+
+        return baseUrl + "/" + platform + "/" + username;
     }
 
 }

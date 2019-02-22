@@ -5,14 +5,18 @@ import com.xegami.wabot.core.MessageBuilder;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
 public class TwitterService implements StatusListener {
 
     private static final String CONSUMER_KEY = "i8AJV3qw9rRD3179ZyZyPCO7h";
     private static final String COMSUMER_SECRET = "SGQS9dXG0S8CYcs8XOytJ4t3WAuGl3OZNhdF2iXcZ7WNuhmkFC";
     private static final String ACCESS_TOKEN = "3187348179-t8NMgY6rVgLz0Xv7KXlL4Qe1hAZDFoj7vPcUWuo";
     private static final String ACCESS_TOKEN_SECRET = "btnvLerCLxt3zgHjUx0qq5h5bf2lrEsXL0RP4uBhXPLv4";
-    private static final long XEGAMI_ID = 3187348179L;
     private static final long PLAYAPEX_ID = 1048018930785083392L;
+    private static final long WABOT_ID = 1098939511910875136L;
 
     private MessageBuilder messageBuilder;
     private TwitterStream stream;
@@ -47,9 +51,12 @@ public class TwitterService implements StatusListener {
     public void onStallWarning(StallWarning warning) {
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onStatus(Status status) {
-        Bot.getInstance().sendMessage(messageBuilder.tuit(status));
+        if (status.getUser().getId() == PLAYAPEX_ID) {
+            Bot.getInstance().sendMessage(messageBuilder.tuit(status));
+        }
     }
 
     @Override

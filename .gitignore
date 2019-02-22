@@ -19,3 +19,6 @@ proguard/
 
 # Manifest
 META-INF/
+
+# Selenium data
+user-data/

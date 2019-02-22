@@ -6,6 +6,8 @@ import com.xegami.wabot.pojo.nitrite.Today;
 import org.openqa.selenium.Keys;
 import twitter4j.Status;
 
+import java.util.Calendar;
+
 public class MessageBuilder {
 
     // new line
@@ -34,7 +36,9 @@ public class MessageBuilder {
                 + n()
                 + "_Nivel: " + apexPlayerData.getLevel() + "_" + n()
                 + "_Kills: " + apexPlayerData.getKills() + "_" + n()
-                + "_Daño: " + apexPlayerData.getDamage() + "_";
+                + "_Daño: " + apexPlayerData.getDamage() + "_" + n()
+                + n()
+                + apexPlayerData.getSource();
 
         return message;
     }
@@ -70,7 +74,7 @@ public class MessageBuilder {
     public String info() {
         String message = "";
 
-        message += "*1. /stats (nombre) (pc, ps4 o xbox)*:" + n()
+        message += "*1. /stats (usuario) (pc, ps4 o xbox)*:" + n()
                 + "El bot solo registra los datos de las leyendas que tengas en https://apex.tracker.gg (mira la descripción del grupo para más información).";
 
         return message;
@@ -78,10 +82,13 @@ public class MessageBuilder {
 
     public String tuit(Status status) {
         String message = "";
+        String url = "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
 
-        message += "*Tuit oficial reciente de @PlayApex:*" + n()
+        message += "*@PlayApex hace unos segundos:*" + n()
                 + n()
-                + "\"" + status.getText() + "\"";
+                + "\"" + status.getText() + "\"" + n()
+                + n()
+                + url;
 
         return message;
     }

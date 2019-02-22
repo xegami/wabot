@@ -43,14 +43,14 @@ public class ApexService implements ServiceInterface {
                         break;
 
                     default:
-                        message = "Ese comando no existe.";
+                        message = "_Ese comando no existe._";
                 }
             }
 
         } catch (IllegalStateException e) {
             message = e.getMessage();
         } catch (Exception e) {
-            message = "Error, ¿has puesto bien el usuario?";
+            message = "_Error, ¿has puesto bien el usuario?_";
         }
 
         return message;
@@ -67,7 +67,7 @@ public class ApexService implements ServiceInterface {
 
     private void parseCommandLine(String commandLine) {
         String[] splittedCommandLine = commandLine.split(" ", 3);
-        if (splittedCommandLine.length < 3) throw new IllegalStateException("Plataforma no especificada (pc, ps4 o xbox).");
+        if (splittedCommandLine.length < 3) throw new IllegalStateException("_Plataforma no especificada (pc, ps4 o xbox)._");
 
         username = splittedCommandLine[1];
 
@@ -85,7 +85,7 @@ public class ApexService implements ServiceInterface {
                 platform = "1";
                 break;
             default:
-                throw new IllegalStateException("Esa plataforma no existe (debe ser pc, ps4 o xbox).");
+                throw new IllegalStateException("_Esa plataforma no existe (debe ser pc, ps4 o xbox)._");
         }
     }
 }

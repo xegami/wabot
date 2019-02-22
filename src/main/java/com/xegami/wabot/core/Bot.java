@@ -6,6 +6,7 @@ import com.xegami.wabot.util.AppConstants;
 import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -14,21 +15,27 @@ import java.util.concurrent.Executors;
 public class Bot {
 
     private WebDriver browser;
-    //private FortniteService fortniteService;
     private ApexService apexService;
     private TwitterService twitterService;
-    private String chatName = "Los Mozambiques";
-    //private String chatName = "Frikus programeitors";
+    //private String chatName = "Los Mozambiques";
+    private String chatName = "wabot debug";
     private static Bot bot;
 
     public Bot() {
-        System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);
-        browser = new ChromeDriver();
-        browser.get("https://web.whatsapp.com");
-        //fortniteService = new FortniteService();
-        apexService = new ApexService();
-        //twitterService = new TwitterService();
+        setupDriver();
         bot = this;
+    }
+
+    private void setupDriver() {
+        System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);
+        ChromeOptions options = new ChromeOptions().addArguments("--user-data-dir=./user-data");
+        browser = new ChromeDriver(options);
+        browser.get("https://web.whatsapp.com");
+    }
+
+    private void initServices() {
+        apexService = new ApexService();
+        twitterService = new TwitterService();
     }
 
     public static Bot getInstance() {
@@ -41,7 +48,7 @@ public class Bot {
 
     private void joinChatGroup() {
         WebElement chats = ((ChromeDriver) browser).findElementById("pane-side");
-        chats.findElement(By.xpath("//span[contains(@title, '"+ chatName +"')]")).click();
+        chats.findElement(By.xpath("//span[contains(@title, '" + chatName + "')]")).click();
         //sendMessage("He vuelto, bitches.");
     }
 
@@ -58,14 +65,12 @@ public class Bot {
         List<WebElement> messages = browser.findElements(By.xpath("//span[contains(@class, 'copyable-text')]"));
         String commandLine = messages.get(messages.size() - 1).getText().toLowerCase();
 
-        //String newMessage = fortniteService.commandAction(commandLine);
         String newMessage = apexService.commandAction(commandLine);
 
         if (newMessage != null) sendMessage(newMessage);
     }
 
     private void eventTracker() {
-        //String newMessage = fortniteService.eventAction();
         // todo String newMessage = apexService.eventTracker();
 
         //if (newMessage != null) sendMessage(newMessage);
@@ -77,6 +82,7 @@ public class Bot {
         while (notInChatGroup) {
             try {
                 joinChatGroup();
+                initServices();
                 notInChatGroup = false;
                 System.out.println("Sesión iniciada.");
 
