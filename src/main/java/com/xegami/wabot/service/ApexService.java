@@ -73,17 +73,19 @@ public class ApexService implements ServiceInterface {
 
         switch (splittedCommandLine[2]) {
             case "pc":
+            case "origin":
                 platform = "5";
                 break;
             case "psn":
+            case "ps4":
                 platform = "2";
                 break;
             case "xbox":
+            case "xb1":
                 platform = "1";
                 break;
             default:
                 throw new IllegalStateException("Esa plataforma no existe (debe ser pc, ps4 o xbox).");
         }
     }
-
 }
