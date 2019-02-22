@@ -17,8 +17,8 @@ public class Bot {
     private WebDriver browser;
     private ApexService apexService;
     private TwitterService twitterService;
-    //private String chatName = "Los Mozambiques";
-    private String chatName = "wabot debug";
+    private String chatName = "Los Mozambiques";
+    //private String chatName = "wabot debug";
     private static Bot bot;
 
     public Bot() {
