@@ -1,11 +1,11 @@
 package com.xegami.wabot.http.fortnite;
 
 import com.google.gson.Gson;
-import com.xegami.wabot.pojo.fortnite.Totals;
-import com.xegami.wabot.pojo.fortnite.UserId;
-import com.xegami.wabot.pojo.fortnite.UserStats;
-import com.xegami.wabot.pojo.trn.LifeTimeStats;
-import com.xegami.wabot.pojo.trn.UserStatsTRN;
+import com.xegami.wabot.pojo.dto.fortnite.TotalsDto;
+import com.xegami.wabot.pojo.dto.fortnite.UserIdDto;
+import com.xegami.wabot.pojo.dto.fortnite.UserStatsDto;
+import com.xegami.wabot.pojo.dto.fortnite.LifeTimeStatsDto;
+import com.xegami.wabot.pojo.dto.fortnite.UserStatsTrnDto;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -20,7 +20,7 @@ public class FortniteController {
         client = new OkHttpClient();
     }
 
-    public UserId getUserIdCall(String username) throws IOException {
+    public UserIdDto getUserIdCall(String username) throws IOException {
         final String url = FortniteEndpoints.FORTNITE_API_GET_USER_ID + "?username=" + username;
 
         Request request = new Request.Builder()
@@ -29,10 +29,10 @@ public class FortniteController {
         Response response = client.newCall(request).execute();
         String jsonString = response.body().string();
 
-        return new Gson().fromJson(jsonString, UserId.class);
+        return new Gson().fromJson(jsonString, UserIdDto.class);
     }
 
-    public UserStats getUserStatsCall(String userId, String platform) throws IOException {
+    public UserStatsDto getUserStatsCall(String userId, String platform) throws IOException {
         final String url = FortniteEndpoints.FORTNITE_API_GET_USER_STATS + "?user_id=" + userId + "&platform=" + platform;
 
         Request request = new Request.Builder()
@@ -41,10 +41,10 @@ public class FortniteController {
         Response response = client.newCall(request).execute();
         String jsonString = response.body().string();
 
-        return new Gson().fromJson(jsonString, UserStats.class);
+        return new Gson().fromJson(jsonString, UserStatsDto.class);
     }
 
-    public UserStats getUserStatsBackupCall(String username, String platform) throws IOException {
+    public UserStatsDto getUserStatsBackupCall(String username, String platform) throws IOException {
         String kills, wins, matchesplayed, winrate, kd;
         kills = wins = matchesplayed = winrate = kd = "";
         final String url = FortniteEndpoints.FORTNITE_TRN_API_BR_PLAYER_STATS + "/" + platform + "/" + username;
@@ -56,9 +56,9 @@ public class FortniteController {
         Response response = client.newCall(request).execute();
         String jsonString = response.body().string();
 
-        UserStatsTRN userStatsTRN = new Gson().fromJson(jsonString, UserStatsTRN.class);
+        UserStatsTrnDto userStatsTRN = new Gson().fromJson(jsonString, UserStatsTrnDto.class);
 
-        LifeTimeStats lifeTimeStats;
+        LifeTimeStatsDto lifeTimeStats;
         for (int i = 0; i < userStatsTRN.getLifeTimeStats().length; i++) {
             lifeTimeStats = userStatsTRN.getLifeTimeStats()[i];
 
@@ -81,7 +81,7 @@ public class FortniteController {
             }
         }
 
-        return new UserStats(userStatsTRN.getEpicUserHandle(), new Totals(kills, wins, matchesplayed, winrate, kd), platform);
+        return new UserStatsDto(userStatsTRN.getEpicUserHandle(), new TotalsDto(kills, wins, matchesplayed, winrate, kd), platform);
     }
 
 }

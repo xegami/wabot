@@ -1,4 +1,4 @@
-package com.xegami.wabot.pojo.nitrite;
+package com.xegami.wabot.pojo.domain.fortnite;
 
 public class Today {
 

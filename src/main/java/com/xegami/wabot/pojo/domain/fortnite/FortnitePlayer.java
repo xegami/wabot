@@ -1,8 +1,8 @@
-package com.xegami.wabot.pojo.nitrite;
+package com.xegami.wabot.pojo.domain.fortnite;
 
 import org.dizitart.no2.objects.Id;
 
-public class Fortnutero {
+public class FortnitePlayer {
 
     @Id
     private String username;
@@ -12,11 +12,11 @@ public class Fortnutero {
     private String platform;
     private Today today;
 
-    public Fortnutero() {
+    public FortnitePlayer() {
 
     }
 
-    public Fortnutero(String username, String wins, String kills, String matchesplayed, String platform) {
+    public FortnitePlayer(String username, String wins, String kills, String matchesplayed, String platform) {
         this.username = username;
         this.wins = wins;
         this.kills = kills;

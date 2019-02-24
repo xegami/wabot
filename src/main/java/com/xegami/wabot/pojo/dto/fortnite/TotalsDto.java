@@ -1,6 +1,6 @@
-package com.xegami.wabot.pojo.fortnite;
+package com.xegami.wabot.pojo.dto.fortnite;
 
-public class Totals {
+public class TotalsDto {
 
     private String kills;
     private String wins;
@@ -8,10 +8,10 @@ public class Totals {
     private String winrate;
     private String kd;
 
-    public Totals() {
+    public TotalsDto() {
     }
 
-    public Totals(String kills, String wins, String matchesplayed, String winrate, String kd) {
+    public TotalsDto(String kills, String wins, String matchesplayed, String winrate, String kd) {
         this.kills = kills;
         this.wins = wins;
         this.matchesplayed = matchesplayed;

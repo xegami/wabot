@@ -1,6 +1,6 @@
-package com.xegami.wabot.pojo.apex;
+package com.xegami.wabot.pojo.dto.apex;
 
-public class Metadata {
+public class MetadataDto {
 
     private String key;
 

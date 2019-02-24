@@ -4,5 +4,5 @@ public interface ServiceInterface {
 
     String commandAction(String commandLine);
 
-    String eventAction();
+    void eventAction();
 }

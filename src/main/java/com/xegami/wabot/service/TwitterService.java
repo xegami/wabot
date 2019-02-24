@@ -1,13 +1,9 @@
 package com.xegami.wabot.service;
 
 import com.xegami.wabot.core.Bot;
-import com.xegami.wabot.core.MessageBuilder;
+import com.xegami.wabot.util.TwitterMessages;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
-
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 public class TwitterService implements StatusListener {
 
@@ -18,12 +14,9 @@ public class TwitterService implements StatusListener {
     private static final long PLAYAPEX_ID = 1048018930785083392L;
     private static final long WABOT_ID = 1098939511910875136L;
 
-    private MessageBuilder messageBuilder;
     private TwitterStream stream;
 
     public TwitterService() {
-        messageBuilder = new MessageBuilder();
-
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true)
                 .setOAuthConsumerKey(CONSUMER_KEY)
@@ -55,7 +48,7 @@ public class TwitterService implements StatusListener {
     @Override
     public void onStatus(Status status) {
         if (status.getUser().getId() == PLAYAPEX_ID) {
-            Bot.getInstance().sendMessage(messageBuilder.tuit(status));
+            Bot.getInstance().sendMessage(TwitterMessages.tuit(status));
         }
     }
 

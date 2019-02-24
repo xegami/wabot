@@ -1,6 +1,6 @@
-package com.xegami.wabot.pojo.apex;
+package com.xegami.wabot.pojo.dto.apex;
 
-public class PlayerMetadata {
+public class PlayerMetadataDto {
 
     private String platformUserHandle;
 

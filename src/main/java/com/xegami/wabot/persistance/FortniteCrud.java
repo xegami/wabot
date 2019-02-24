@@ -1,9 +1,9 @@
 package com.xegami.wabot.persistance;
 
-import com.xegami.wabot.pojo.fortnite.UserStats;
-import com.xegami.wabot.pojo.nitrite.Fortnutero;
-import com.xegami.wabot.pojo.nitrite.Today;
-import com.xegami.wabot.util.AppConstants;
+import com.xegami.wabot.pojo.dto.fortnite.UserStatsDto;
+import com.xegami.wabot.pojo.domain.fortnite.FortnitePlayer;
+import com.xegami.wabot.pojo.domain.fortnite.Today;
+import com.xegami.wabot.core.Constants;
 import org.dizitart.no2.IndexOptions;
 import org.dizitart.no2.IndexType;
 import org.dizitart.no2.Nitrite;
@@ -13,25 +13,25 @@ import org.dizitart.no2.objects.filters.ObjectFilters;
 
 import java.util.List;
 
-public class FortnuteroCrud {
+public class FortniteCrud {
 
     private Nitrite db;
-    private ObjectRepository<Fortnutero> repository;
+    private ObjectRepository<FortnitePlayer> repository;
 
-    public FortnuteroCrud() {
+    public FortniteCrud() {
         db = Nitrite.builder()
                 .compressed()
-                .filePath(AppConstants.FORTNUT_DB_PATH)
+                .filePath(Constants.FORTNITE_PLAYERS_DB_PATH)
                 .openOrCreate();
-        repository = db.getRepository(Fortnutero.class);
+        repository = db.getRepository(FortnitePlayer.class);
 
         if (!repository.hasIndex("username")) {
             repository.createIndex("username", IndexOptions.indexOptions(IndexType.Unique));
         }
     }
 
-    private void create(UserStats userStats) {
-        repository.insert(new Fortnutero(
+    private void create(UserStatsDto userStats) {
+        repository.insert(new FortnitePlayer(
                 userStats.getUsername(),
                 userStats.getTotals().getWins(),
                 userStats.getTotals().getKills(),
@@ -40,11 +40,11 @@ public class FortnuteroCrud {
         ));
     }
 
-    public void update(UserStats userStats) {
-        Fortnutero f = findByUsername(userStats.getUsername());
+    public void update(UserStatsDto userStats) {
+        FortnitePlayer f = findByUsername(userStats.getUsername());
 
         if (f != null) {
-            repository.update(new Fortnutero(
+            repository.update(new FortnitePlayer(
                     userStats.getUsername(),
                     userStats.getTotals().getWins(),
                     userStats.getTotals().getKills(),
@@ -56,12 +56,12 @@ public class FortnuteroCrud {
         }
     }
 
-    public void update(UserStats userStats, Integer wins, Integer kills, Integer matches) {
+    public void update(UserStatsDto userStats, Integer wins, Integer kills, Integer matches) {
         Today t;
-        Fortnutero f = findByUsername(userStats.getUsername());
+        FortnitePlayer f = findByUsername(userStats.getUsername());
 
         if (f != null) {
-            Fortnutero newF = new Fortnutero(
+            FortnitePlayer newF = new FortnitePlayer(
                     userStats.getUsername(),
                     userStats.getTotals().getWins(),
                     userStats.getTotals().getKills(),
@@ -88,19 +88,19 @@ public class FortnuteroCrud {
 
     public void resetToday() {
         Today t = new Today();
-        Cursor<Fortnutero> cursor = repository.find();
+        Cursor<FortnitePlayer> cursor = repository.find();
 
-        for (Fortnutero f : cursor) {
+        for (FortnitePlayer f : cursor) {
             f.setToday(t);
             repository.update(f);
         }
     }
 
-    public List<Fortnutero> findAll() {
+    public List<FortnitePlayer> findAll() {
         return repository.find().toList();
     }
 
-    public Fortnutero findByUsername(String username) {
+    public FortnitePlayer findByUsername(String username) {
         return repository.find(ObjectFilters.eq("username", username)).firstOrDefault();
     }
 

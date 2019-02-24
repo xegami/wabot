@@ -1,24 +1,23 @@
 package com.xegami.wabot.service;
 
-import com.xegami.wabot.core.MessageBuilder;
+import com.xegami.wabot.core.Bot;
+import com.xegami.wabot.core.Constants;
 import com.xegami.wabot.http.apex.ApexController;
-import com.xegami.wabot.pojo.apex.ApexPlayerData;
-import com.xegami.wabot.pojo.apex.MyApexPlayerData;
-import com.xegami.wabot.pojo.fortnite.UserId;
-import com.xegami.wabot.pojo.fortnite.UserStats;
-import com.xegami.wabot.pojo.nitrite.Fortnutero;
+import com.xegami.wabot.persistance.ApexCrud;
+import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
+import com.xegami.wabot.util.ApexMessages;
+import org.joda.time.LocalTime;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ApexService implements ServiceInterface {
 
-    private MessageBuilder messageBuilder;
+    private ApexCrud apexCrud;
     private ApexController apexController;
-    private String username;
-    private String platform;
 
     public ApexService() {
-        messageBuilder = new MessageBuilder();
+        apexCrud = new ApexCrud();
         apexController = new ApexController();
     }
 
@@ -28,18 +27,19 @@ public class ApexService implements ServiceInterface {
 
         try {
             if (commandLine.startsWith("/")) {
-                MyApexPlayerData myApexPlayerData;
+                ApexPlayer apexPlayer;
                 String command = commandLine.split(" ")[0];
+                String username = parseUsername(commandLine);
+                String platform = parsePlatform(commandLine);
 
                 switch (command) {
                     case "/stats":
-                        parseCommandLine(commandLine);
-                        myApexPlayerData = apexPlayerDataAction(username, platform);
-                        message = messageBuilder.stats(myApexPlayerData);
+                        apexPlayer = apexPlayerDataAction(username, platform);
+                        message = ApexMessages.stats(apexPlayer);
                         break;
 
                     case "/info":
-                        message = messageBuilder.info();
+                        message = ApexMessages.info();
                         break;
 
                     default:
@@ -57,19 +57,48 @@ public class ApexService implements ServiceInterface {
     }
 
     @Override
-    public String eventAction() {
-        return null;
+    public void eventAction() {
+        try {
+            List<ApexPlayer> apexPlayers = apexCrud.findAll();
+
+            for (ApexPlayer a : apexPlayers) {
+                ApexPlayer apexPlayer = apexPlayerDataAction(a.getUsername(), a.getPlatform());
+                int kills = apexPlayer.getKills() - a.getKills();
+
+                System.out.println(LocalTime.now() + " Tracking ==> " + a.getUsername() + " (" + a.getPlatform() + ") ");
+
+                if (kills >= 7) {
+                    System.out.println(LocalTime.now() + " killer!" + " (" + kills + ") ");
+                    Bot.getInstance().sendMessage(ApexMessages.killer(apexPlayer.getUsername(), kills));
+                }
+
+                apexCrud.update(apexPlayer);
+
+                Thread.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
-    private MyApexPlayerData apexPlayerDataAction(String username, String platform) throws IOException {
+    private ApexPlayer apexPlayerDataAction(String username, String platform) throws IOException {
         return apexController.getApexPlayerData(username, platform);
     }
 
-    private void parseCommandLine(String commandLine) {
-        String[] splittedCommandLine = commandLine.split(" ", 3);
-        if (splittedCommandLine.length < 3) throw new IllegalStateException("_Plataforma no especificada (pc, ps4 o xbox)._");
+    private String parseUsername(String commandLine) {
+        String[] splittedCommandLine = commandLine.split(" ");
 
-        username = splittedCommandLine[1];
+        return splittedCommandLine[1];
+    }
+
+    private String parsePlatform(String commandLine) {
+        String platform;
+        String[] splittedCommandLine = commandLine.split(" ", 3);
+
+        if (splittedCommandLine.length < 3)
+            throw new IllegalStateException("_Plataforma no especificada (pc, ps4 o xbox)._");
 
         switch (splittedCommandLine[2]) {
             case "pc":
@@ -87,5 +116,7 @@ public class ApexService implements ServiceInterface {
             default:
                 throw new IllegalStateException("_Esa plataforma no existe (debe ser pc, ps4 o xbox)._");
         }
+
+        return platform;
     }
 }

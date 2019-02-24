@@ -1,12 +1,12 @@
 package com.xegami.wabot.service;
 
-import com.xegami.wabot.core.MessageBuilder;
+import com.xegami.wabot.core.Constants;
 import com.xegami.wabot.http.fortnite.FortniteController;
-import com.xegami.wabot.persistance.FortnuteroCrud;
-import com.xegami.wabot.pojo.fortnite.UserId;
-import com.xegami.wabot.pojo.fortnite.UserStats;
-import com.xegami.wabot.pojo.nitrite.Fortnutero;
-import com.xegami.wabot.util.AppConstants;
+import com.xegami.wabot.persistance.FortniteCrud;
+import com.xegami.wabot.pojo.domain.fortnite.FortnitePlayer;
+import com.xegami.wabot.pojo.dto.fortnite.UserIdDto;
+import com.xegami.wabot.pojo.dto.fortnite.UserStatsDto;
+import com.xegami.wabot.util.FortniteMessages;
 import org.joda.time.LocalTime;
 
 import java.io.IOException;
@@ -14,14 +14,12 @@ import java.util.List;
 
 public class FortniteService implements ServiceInterface {
 
-    private MessageBuilder messageBuilder;
-    private FortnuteroCrud crud;
+    private FortniteCrud crud;
     private FortniteController fortniteController;
     private boolean resetDone = false;
 
     public FortniteService() {
-        messageBuilder = new MessageBuilder();
-        crud = new FortnuteroCrud();
+        crud = new FortniteCrud();
         fortniteController = new FortniteController();
     }
 
@@ -31,21 +29,21 @@ public class FortniteService implements ServiceInterface {
 
         try {
             if (commandLine.startsWith("/")) {
-                UserStats userStats;
+                UserStatsDto userStats;
                 String command = commandLine.split(" ")[0];
 
                 switch (command) {
                     case "/stats":
                         userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
-                        message = messageBuilder.stats(userStats);
+                        message = FortniteMessages.stats(userStats);
                         break;
 
                     case "/today":
                         userStats = userStatsAction(getUsernameEncodedFromCommandLine(commandLine));
-                        Fortnutero f = crud.findByUsername(userStats.getUsername());
+                        FortnitePlayer f = crud.findByUsername(userStats.getUsername());
 
                         if (f.getToday() != null) {
-                            message = messageBuilder.today(userStats, f.getToday());
+                            message = FortniteMessages.today(userStats, f.getToday());
                         } else {
                             message = "Sin datos todavía.";
                         }
@@ -63,17 +61,18 @@ public class FortniteService implements ServiceInterface {
     }
 
     @Override
-    public String eventAction() {
+    public void eventAction() {
+        /*
         String message = null;
 
         try {
             int wins, kills, matches;
-            List<Fortnutero> fortnuteros = crud.findAll();
+            List<FortnitePlayer> fortnuteros = crud.findAll();
 
-            for (Fortnutero f : fortnuteros) {
+            for (FortnitePlayer f : fortnuteros) {
                 System.out.println(LocalTime.now() + " Tracking ==> " + f.getUsername() + " (" + f.getPlatform() + ") ");
 
-                UserStats userStats = userStatsAction(
+                UserStatsDto userStats = userStatsAction(
                         getUsernameEncoded(
                                 f.getUsername()));
 
@@ -83,10 +82,10 @@ public class FortniteService implements ServiceInterface {
 
                 if (wins == 1) {
                     System.out.println(LocalTime.now() + " winner!");
-                    message = messageBuilder.win(userStats, kills);
+                    message = fortniteMessages.win(userStats, kills);
                 } else if (kills >= 7) {
                     System.out.println(LocalTime.now() + " killer!");
-                    message = messageBuilder.killer(userStats, kills);
+                    message = fortniteMessages.killer(userStats, kills);
                 }
 
                 if (!resetDone && isResetTime()) {
@@ -100,7 +99,7 @@ public class FortniteService implements ServiceInterface {
                 crud.update(userStats, wins, kills, matches);
 
                 // 1 second sleep before each request
-                Thread.sleep(AppConstants.EVENTS_SLEEP_TIME);
+                Thread.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
             }
 
         } catch (Exception e) {
@@ -108,15 +107,16 @@ public class FortniteService implements ServiceInterface {
         }
 
         return message;
+        */
     }
 
-    private UserStats userStatsAction(String usernameEncoded) throws IOException {
-        UserId userId = fortniteController.getUserIdCall(usernameEncoded);
+    private UserStatsDto userStatsAction(String usernameEncoded) throws IOException {
+        UserIdDto userId = fortniteController.getUserIdCall(usernameEncoded);
 
         String platform = findPlatformPreference(userId.getUsername());
 
         // if not in database uses main platform (pc default)
-        UserStats userStats = fortniteController.getUserStatsCall(userId.getUid(), platform != null ? platform : userId.getPlatforms()[0]);
+        UserStatsDto userStats = fortniteController.getUserStatsCall(userId.getUid(), platform != null ? platform : userId.getPlatforms()[0]);
 
         if (userStats.getTotals().getKillsInt() == 0) {
             // backup api
@@ -151,7 +151,7 @@ public class FortniteService implements ServiceInterface {
     }
 
     private String findPlatformPreference(String username) {
-        Fortnutero f = crud.findByUsername(username);
+        FortnitePlayer f = crud.findByUsername(username);
 
         if (f != null) {
             return f.getPlatform();

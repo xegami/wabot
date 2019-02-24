@@ -1,6 +1,6 @@
-package com.xegami.wabot.pojo.trn;
+package com.xegami.wabot.pojo.dto.fortnite;
 
-public class LifeTimeStats {
+public class LifeTimeStatsDto {
 
     private String value;
     private String key;

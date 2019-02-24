@@ -1,17 +1,17 @@
-package com.xegami.wabot.pojo.fortnite;
+package com.xegami.wabot.pojo.dto.fortnite;
 
-public class UserStats {
+public class UserStatsDto {
 
     private String uid;
     private String username;
     private String platform;
-    private Totals totals;
+    private TotalsDto totals;
 
-    public UserStats() {
+    public UserStatsDto() {
 
     }
 
-    public UserStats(String username, Totals totals, String platform) {
+    public UserStatsDto(String username, TotalsDto totals, String platform) {
         this.username = username;
         this.totals = totals;
         this.platform = platform;
@@ -29,7 +29,7 @@ public class UserStats {
         return platform;
     }
 
-    public Totals getTotals() {
+    public TotalsDto getTotals() {
         return totals;
     }
 

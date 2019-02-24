@@ -1,6 +1,6 @@
-package com.xegami.wabot.pojo.fortnite;
+package com.xegami.wabot.pojo.dto.fortnite;
 
-public class UserId {
+public class UserIdDto {
 
     private String uid;
     private String username;

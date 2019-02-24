@@ -1,9 +1,10 @@
 package com.xegami.wabot.http.apex;
 
 import com.google.gson.Gson;
-import com.xegami.wabot.pojo.apex.ApexPlayerData;
-import com.xegami.wabot.pojo.apex.MyApexPlayerData;
-import com.xegami.wabot.pojo.apex.Stats;
+import com.xegami.wabot.pojo.domain.apex.TodayApexPlayer;
+import com.xegami.wabot.pojo.dto.apex.ApexPlayerDataDto;
+import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
+import com.xegami.wabot.pojo.dto.apex.StatsDto;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -18,7 +19,7 @@ public class ApexController {
         client = new OkHttpClient();
     }
 
-    public MyApexPlayerData getApexPlayerData(String username, String platform) throws IOException {
+    public ApexPlayer getApexPlayerData(String username, String platform) throws IOException {
         Integer level, kills, damage, headshots, matchesPlayed;
         level = kills = damage = headshots = matchesPlayed = 0;
         final String url = ApexEndpoints.APEX_TRN_API_PLAYER_DATA_URL + "/" + platform + "/" + username;
@@ -30,9 +31,9 @@ public class ApexController {
         Response response = client.newCall(request).execute();
         String jsonString = response.body().string();
 
-        ApexPlayerData apexPlayerData = new Gson().fromJson(jsonString, ApexPlayerData.class);
+        ApexPlayerDataDto apexPlayerDataDto = new Gson().fromJson(jsonString, ApexPlayerDataDto.class);
 
-        Stats[] stats = apexPlayerData.getData().getStats();
+        StatsDto[] stats = apexPlayerDataDto.getData().getStats();
         for (int i = 0; i < stats.length; i++) {
             String key = stats[i].getMetadata().getKey();
             switch (key) {
@@ -54,14 +55,16 @@ public class ApexController {
             }
         }
 
-        return new MyApexPlayerData(
-                apexPlayerData.getData().getMetadata().getPlatformUserHandle(),
+        return new ApexPlayer(
+                apexPlayerDataDto.getData().getMetadata().getPlatformUserHandle(),
                 level,
                 kills,
                 damage,
                 headshots,
                 matchesPlayed,
-                buildSource(username, platform)
+                buildSource(username, platform),
+                platform,
+                null
         );
     }
 

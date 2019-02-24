@@ -2,7 +2,6 @@ package com.xegami.wabot.core;
 
 import com.xegami.wabot.service.ApexService;
 import com.xegami.wabot.service.TwitterService;
-import com.xegami.wabot.util.AppConstants;
 import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,8 +16,8 @@ public class Bot {
     private WebDriver browser;
     private ApexService apexService;
     private TwitterService twitterService;
-    private String chatName = "Los Mozambiques";
-    //private String chatName = "wabot debug";
+    //private String chatName = "Los Mozambiques";
+    private String chatName = "wabot debug";
     private static Bot bot;
 
     public Bot() {
@@ -27,8 +26,8 @@ public class Bot {
     }
 
     private void setupDriver() {
-        System.setProperty("webdriver.chrome.driver", AppConstants.CHROMEDRIVER_PATH);
-        ChromeOptions options = new ChromeOptions().addArguments("--user-data-dir=./user-data");
+        System.setProperty("webdriver.chrome.driver", Constants.CHROMEDRIVER_PATH);
+        ChromeOptions options = new ChromeOptions().addArguments("--user-data-dir=./USER-DATA");
         browser = new ChromeDriver(options);
         browser.get("https://web.whatsapp.com");
     }
@@ -71,9 +70,7 @@ public class Bot {
     }
 
     private void eventTracker() {
-        // todo String newMessage = apexService.eventTracker();
-
-        //if (newMessage != null) sendMessage(newMessage);
+        apexService.eventAction();
     }
 
     public void run() {
@@ -110,7 +107,7 @@ public class Bot {
 
                     } finally {
                         try {
-                            Thread.sleep(AppConstants.COMMANDS_SLEEP_TIME);
+                            Thread.sleep(Constants.COMMAND_TRACKER_SLEEP_TIME);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -139,7 +136,7 @@ public class Bot {
         // to background threads
         ExecutorService executor = Executors.newCachedThreadPool();
         executor.submit(commandTrackerThread);
-        //executor.submit(eventTrackerThread);
+        executor.submit(eventTrackerThread);
     }
 
 }

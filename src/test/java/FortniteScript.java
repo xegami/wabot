@@ -1,20 +1,20 @@
 import com.xegami.wabot.http.fortnite.FortniteController;
-import com.xegami.wabot.persistance.FortnuteroCrud;
-import com.xegami.wabot.pojo.fortnite.UserId;
-import com.xegami.wabot.pojo.fortnite.UserStats;
-import com.xegami.wabot.pojo.nitrite.Fortnutero;
+import com.xegami.wabot.persistance.FortniteCrud;
+import com.xegami.wabot.pojo.dto.fortnite.UserIdDto;
+import com.xegami.wabot.pojo.dto.fortnite.UserStatsDto;
+import com.xegami.wabot.pojo.domain.fortnite.FortnitePlayer;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
-public class Script {
-    FortnuteroCrud crud;
+public class FortniteScript {
+    FortniteCrud crud;
     FortniteController fortniteController;
 
     @Before
     public void before() {
-        crud = new FortnuteroCrud();
+        crud = new FortniteCrud();
         fortniteController = new FortniteController();
     }
 
@@ -46,7 +46,7 @@ public class Script {
             crud.update(userStatsAction(getUsernameEncoded("x27amb27x"), "pc"));
             crud.update(userStatsAction(getUsernameEncoded("m a r v e l"), "pc"));
 
-            for (Fortnutero f : crud.findAll()) {
+            for (FortnitePlayer f : crud.findAll()) {
                 System.out.print(f.getUsername());
                 System.out.print(" - " + f.getWins());
                 System.out.print(" - " + f.getKillsInt());
@@ -64,10 +64,10 @@ public class Script {
         return username.replace(" ", "%20");
     }
 
-    private UserStats userStatsAction(String usernameEncoded, String platform) throws IOException {
-        UserId userId = fortniteController.getUserIdCall(usernameEncoded);
+    private UserStatsDto userStatsAction(String usernameEncoded, String platform) throws IOException {
+        UserIdDto userId = fortniteController.getUserIdCall(usernameEncoded);
 
-        UserStats userStats = fortniteController.getUserStatsCall(userId.getUid(), platform);
+        UserStatsDto userStats = fortniteController.getUserStatsCall(userId.getUid(), platform);
 
         if (userStats.getTotals().getKillsInt() == 0) {
             return fortniteController.getUserStatsBackupCall(usernameEncoded, platform);
