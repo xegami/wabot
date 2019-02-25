@@ -1,7 +1,6 @@
 package com.xegami.wabot.http.apex;
 
 import com.google.gson.Gson;
-import com.xegami.wabot.pojo.domain.apex.TodayApexPlayer;
 import com.xegami.wabot.pojo.dto.apex.ApexPlayerDataDto;
 import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
 import com.xegami.wabot.pojo.dto.apex.StatsDto;
@@ -20,6 +19,7 @@ public class ApexController {
     }
 
     public ApexPlayer getApexPlayerData(String username, String platform) throws IOException {
+        String usernameHandle, source;
         Integer level, kills, damage, headshots, matchesPlayed;
         level = kills = damage = headshots = matchesPlayed = 0;
         final String url = ApexEndpoints.APEX_TRN_API_PLAYER_DATA_URL + "/" + platform + "/" + username;
@@ -32,6 +32,7 @@ public class ApexController {
         String jsonString = response.body().string();
 
         ApexPlayerDataDto apexPlayerDataDto = new Gson().fromJson(jsonString, ApexPlayerDataDto.class);
+        usernameHandle = apexPlayerDataDto.getData().getMetadata().getPlatformUserHandle();
 
         StatsDto[] stats = apexPlayerDataDto.getData().getStats();
         for (int i = 0; i < stats.length; i++) {
@@ -55,17 +56,9 @@ public class ApexController {
             }
         }
 
-        return new ApexPlayer(
-                apexPlayerDataDto.getData().getMetadata().getPlatformUserHandle(),
-                level,
-                kills,
-                damage,
-                headshots,
-                matchesPlayed,
-                buildSource(username, platform),
-                platform,
-                null
-        );
+        source = buildSource(username, platform);
+
+        return new ApexPlayer(usernameHandle, platform, level, kills, source);
     }
 
     private String buildSource(String username, String platformCode) {

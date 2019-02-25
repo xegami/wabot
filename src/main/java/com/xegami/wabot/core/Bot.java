@@ -18,11 +18,11 @@ public class Bot {
     private TwitterService twitterService;
     //private String chatName = "Los Mozambiques";
     private String chatName = "wabot debug";
-    private static Bot bot;
+    private static Bot instance;
 
     public Bot() {
         setupDriver();
-        bot = this;
+        instance = this;
     }
 
     private void setupDriver() {
@@ -38,8 +38,8 @@ public class Bot {
     }
 
     public static Bot getInstance() {
-        if (bot != null) {
-            return bot;
+        if (instance != null) {
+            return instance;
         }
 
         return null;

@@ -6,33 +6,26 @@ public class ApexPlayer {
 
     @Id
     private String username;
+    private String platform;
     private Integer level;
     private Integer kills;
-    private Integer damage;
-    private Integer headshots;
-    private Integer matchesPlayed;
+    private Integer startingKills;
     private String source;
-    private String platform;
-    private TodayApexPlayer todayApexPlayer;
 
-    public ApexPlayer() {
-
-    }
-
-    public ApexPlayer(String username, Integer level, Integer kills, Integer damage, Integer headshots, Integer matchesPlayed, String source, String platform, TodayApexPlayer todayApexPlayer) {
+    public ApexPlayer(String username, String platform, Integer level, Integer kills, String source) {
         this.username = username;
+        this.platform = platform;
         this.level = level;
         this.kills = kills;
-        this.damage = damage;
-        this.headshots = headshots;
-        this.matchesPlayed = matchesPlayed;
         this.source = source;
-        this.platform = platform;
-        this.todayApexPlayer = todayApexPlayer;
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public String getPlatform() {
+        return platform;
     }
 
     public Integer getLevel() {
@@ -43,27 +36,20 @@ public class ApexPlayer {
         return kills;
     }
 
-    public Integer getDamage() {
-        return damage;
-    }
-
-    public Integer getHeadshots() {
-        return headshots;
-    }
-
-    public Integer getMatchesPlayed() {
-        return matchesPlayed;
+    public Integer getStartingKills() {
+        return startingKills;
     }
 
     public String getSource() {
         return source;
     }
 
-    public String getPlatform() {
-        return platform;
+    public void setStartingKills(Integer startingKills) {
+        this.startingKills = startingKills;
     }
 
-    public TodayApexPlayer getTodayApexPlayer() {
-        return todayApexPlayer;
+    public ApexPlayer() {
+
     }
+
 }

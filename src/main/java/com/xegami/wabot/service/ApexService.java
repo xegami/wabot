@@ -38,6 +38,11 @@ public class ApexService implements ServiceInterface {
                         message = ApexMessages.stats(apexPlayer);
                         break;
 
+                    case "/today":
+                        apexPlayer = apexPlayerDataAction(username, platform);
+                        message = ApexMessages.today(apexPlayer);
+                        break;
+
                     case "/info":
                         message = ApexMessages.info();
                         break;
@@ -70,6 +75,10 @@ public class ApexService implements ServiceInterface {
                 if (kills >= 7) {
                     System.out.println(LocalTime.now() + " killer!" + " (" + kills + ") ");
                     Bot.getInstance().sendMessage(ApexMessages.killer(apexPlayer.getUsername(), kills));
+                }
+
+                if (apexPlayer.getStartingKills() == null || isResetTime()) {
+                    apexPlayer.setStartingKills(apexPlayer.getKills());
                 }
 
                 apexCrud.update(apexPlayer);
@@ -119,4 +128,12 @@ public class ApexService implements ServiceInterface {
 
         return platform;
     }
+
+    private boolean isResetTime() {
+        int hour = LocalTime.now().getHourOfDay();
+        int minute = LocalTime.now().getMinuteOfHour();
+
+        return hour == 9 && minute < 5;
+    }
+
 }
