@@ -42,7 +42,7 @@ public class ApexScript {
             apexCrud.update(apexController.getApexPlayerData("xxxsaluespxxx", "5"));
 
             for (ApexPlayer a : apexCrud.findAll()) {
-                System.out.println(a.getUsername() + " :: " + a.getKills() + " :: " + a.getPlatform());
+                System.out.println(a.getUsernameHandle() + " :: " + a.getKills() + " :: " + a.getPlatform());
             }
 
             System.out.println("Database updated.");

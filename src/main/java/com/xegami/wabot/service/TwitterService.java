@@ -1,7 +1,7 @@
 package com.xegami.wabot.service;
 
 import com.xegami.wabot.core.Bot;
-import com.xegami.wabot.util.TwitterMessages;
+import com.xegami.wabot.message.TwitterMessages;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 

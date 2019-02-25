@@ -6,14 +6,16 @@ public class ApexPlayer {
 
     @Id
     private String username;
+    private String usernameHandle;
     private String platform;
     private Integer level;
     private Integer kills;
     private Integer startingKills;
     private String source;
 
-    public ApexPlayer(String username, String platform, Integer level, Integer kills, String source) {
+    public ApexPlayer(String username, String usernameHandle, String platform, Integer level, Integer kills, String source) {
         this.username = username;
+        this.usernameHandle = usernameHandle;
         this.platform = platform;
         this.level = level;
         this.kills = kills;
@@ -22,6 +24,10 @@ public class ApexPlayer {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getUsernameHandle() {
+        return usernameHandle;
     }
 
     public String getPlatform() {

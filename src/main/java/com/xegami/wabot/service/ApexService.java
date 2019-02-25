@@ -5,10 +5,12 @@ import com.xegami.wabot.core.Constants;
 import com.xegami.wabot.http.apex.ApexController;
 import com.xegami.wabot.persistance.ApexCrud;
 import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
-import com.xegami.wabot.util.ApexMessages;
+import com.xegami.wabot.message.ApexMessages;
+import com.xegami.wabot.util.Utils;
 import org.joda.time.LocalTime;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 public class ApexService implements ServiceInterface {
@@ -27,24 +29,23 @@ public class ApexService implements ServiceInterface {
 
         try {
             if (commandLine.startsWith("/")) {
-                ApexPlayer apexPlayer;
                 String command = commandLine.split(" ")[0];
-                String username = parseUsername(commandLine);
-                String platform = parsePlatform(commandLine);
 
                 switch (command) {
                     case "/stats":
-                        apexPlayer = apexPlayerDataAction(username, platform);
-                        message = ApexMessages.stats(apexPlayer);
+                        message = cmdStats(commandLine);
                         break;
 
                     case "/today":
-                        apexPlayer = apexPlayerDataAction(username, platform);
-                        message = ApexMessages.today(apexPlayer);
+                        message = cmdToday(commandLine);
+                        break;
+
+                    case "/ranking":
+                        message = cmdRanking();
                         break;
 
                     case "/info":
-                        message = ApexMessages.info();
+                        message = cmdInfo();
                         break;
 
                     default:
@@ -66,6 +67,10 @@ public class ApexService implements ServiceInterface {
         try {
             List<ApexPlayer> apexPlayers = apexCrud.findAll();
 
+            if (apexPlayers.size() == 0) {
+                throw new IllegalStateException("No hay jugadores que trackear.");
+            }
+
             for (ApexPlayer a : apexPlayers) {
                 ApexPlayer apexPlayer = apexPlayerDataAction(a.getUsername(), a.getPlatform());
                 int kills = apexPlayer.getKills() - a.getKills();
@@ -74,7 +79,7 @@ public class ApexService implements ServiceInterface {
 
                 if (kills >= 7) {
                     System.out.println(LocalTime.now() + " killer!" + " (" + kills + ") ");
-                    Bot.getInstance().sendMessage(ApexMessages.killer(apexPlayer.getUsername(), kills));
+                    Bot.getInstance().sendMessage(ApexMessages.killer(apexPlayer.getUsernameHandle(), kills));
                 }
 
                 if (apexPlayer.getStartingKills() == null || isResetTime()) {
@@ -83,7 +88,7 @@ public class ApexService implements ServiceInterface {
 
                 apexCrud.update(apexPlayer);
 
-                Thread.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
+                Utils.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
             }
 
         } catch (Exception e) {
@@ -106,8 +111,16 @@ public class ApexService implements ServiceInterface {
         String platform;
         String[] splittedCommandLine = commandLine.split(" ", 3);
 
-        if (splittedCommandLine.length < 3)
-            throw new IllegalStateException("_Plataforma no especificada (pc, ps4 o xbox)._");
+        if (splittedCommandLine.length < 3) {
+            ApexPlayer apexPlayerDb = apexCrud.findByUsername(parseUsername(commandLine));
+            if (apexPlayerDb != null) {
+                platform = apexPlayerDb.getPlatform();
+                return platform;
+
+            } else {
+                throw new IllegalStateException("_Plataforma no especificada (pc, ps4 o xbox)._");
+            }
+        }
 
         switch (splittedCommandLine[2]) {
             case "pc":
@@ -134,6 +147,52 @@ public class ApexService implements ServiceInterface {
         int minute = LocalTime.now().getMinuteOfHour();
 
         return hour == 9 && minute < 5;
+    }
+
+    private String cmdStats(String commandLine) throws Exception {
+        String username = parseUsername(commandLine);
+        String platform = parsePlatform(commandLine);
+        ApexPlayer apexPlayer = apexPlayerDataAction(username, platform);
+
+        return ApexMessages.stats(apexPlayer);
+    }
+
+    private String cmdToday(String commandLine) throws Exception {
+        String username = parseUsername(commandLine);
+        ApexPlayer apexPlayerDb = apexCrud.findByUsername(username);
+
+        if (apexPlayerDb != null) {
+            ApexPlayer apexPlayer = apexPlayerDataAction(username, apexPlayerDb.getPlatform());
+            int kills = apexPlayer.getKills() - apexPlayerDb.getStartingKills();
+            return ApexMessages.today(apexPlayer.getUsernameHandle(), kills);
+
+        } else {
+            throw new IllegalStateException("_Este jugador no se está trackeando._");
+        }
+
+    }
+
+    private String cmdInfo() {
+        return ApexMessages.info();
+    }
+
+    private String cmdRanking() {
+        List<ApexPlayer> apexPlayers = apexCrud.findAll();
+
+        apexPlayers.sort(new Comparator<ApexPlayer>() {
+            @Override
+            public int compare(ApexPlayer o1, ApexPlayer o2) {
+                if (o1.getKills() > o2.getKills()) {
+                    return -1;
+                }
+                if (o1.getKills() < o2.getKills()) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+
+        return ApexMessages.ranking(apexPlayers);
     }
 
 }

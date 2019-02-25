@@ -1,4 +1,4 @@
-package com.xegami.wabot.util;
+package com.xegami.wabot.message;
 
 import com.xegami.wabot.pojo.domain.fortnite.Today;
 import com.xegami.wabot.pojo.dto.fortnite.UserStatsDto;

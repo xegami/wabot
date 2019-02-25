@@ -58,7 +58,7 @@ public class ApexController {
 
         source = buildSource(username, platform);
 
-        return new ApexPlayer(usernameHandle, platform, level, kills, source);
+        return new ApexPlayer(username, usernameHandle, platform, level, kills, source);
     }
 
     private String buildSource(String username, String platformCode) {

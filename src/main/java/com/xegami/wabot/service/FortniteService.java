@@ -1,16 +1,14 @@
 package com.xegami.wabot.service;
 
-import com.xegami.wabot.core.Constants;
 import com.xegami.wabot.http.fortnite.FortniteController;
 import com.xegami.wabot.persistance.FortniteCrud;
 import com.xegami.wabot.pojo.domain.fortnite.FortnitePlayer;
 import com.xegami.wabot.pojo.dto.fortnite.UserIdDto;
 import com.xegami.wabot.pojo.dto.fortnite.UserStatsDto;
-import com.xegami.wabot.util.FortniteMessages;
+import com.xegami.wabot.message.FortniteMessages;
 import org.joda.time.LocalTime;
 
 import java.io.IOException;
-import java.util.List;
 
 public class FortniteService implements ServiceInterface {
 

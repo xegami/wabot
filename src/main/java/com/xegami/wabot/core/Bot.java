@@ -2,6 +2,7 @@ package com.xegami.wabot.core;
 
 import com.xegami.wabot.service.ApexService;
 import com.xegami.wabot.service.TwitterService;
+import com.xegami.wabot.util.Utils;
 import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -88,7 +89,7 @@ public class Bot {
 
             } finally {
                 try {
-                    Thread.sleep(5000);
+                    Utils.sleep(5000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -107,7 +108,7 @@ public class Bot {
 
                     } finally {
                         try {
-                            Thread.sleep(Constants.COMMAND_TRACKER_SLEEP_TIME);
+                            Utils.sleep(Constants.COMMAND_TRACKER_SLEEP_TIME);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -127,7 +128,7 @@ public class Bot {
                     } catch (Exception e) {
                         System.err.println("Error al analizar a los jugadores.");
                         e.printStackTrace();
-
+                        Utils.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
                     }
                 }
             }

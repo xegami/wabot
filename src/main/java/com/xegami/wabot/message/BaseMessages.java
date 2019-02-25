@@ -1,4 +1,4 @@
-package com.xegami.wabot.util;
+package com.xegami.wabot.message;
 
 import org.openqa.selenium.Keys;
 
