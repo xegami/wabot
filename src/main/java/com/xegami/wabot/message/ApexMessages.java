@@ -31,9 +31,10 @@ public class ApexMessages extends BaseMessages {
         String message = "";
 
         message += "*1. /stats (usuario) (pc, ps4 o xbox)*" + n()
-                + "*2. /today (usuario)*" +n()
+                + "*2. /today (usuario)*" + n()
                 + "*3. /ranking*" + n()
-                +n()
+                + "*4. /all*" + n()
+                + n()
                 + "El bot solo registra los datos de las leyendas que tengas en https://apex.tracker.gg (mira la descripción del grupo para más información).";
 
         return message;

@@ -10,7 +10,13 @@ public final class ApexEndpoints {
 
     // auth
     public final static String APEX_TRN_API_HEADER_KEY = "TRN-Api-Key";
+
+    // xegami api key
     public final static String APEX_TRN_API_HEADER_VALUE = "0cb989cf-68fe-4ee4-9d6a-5a2267eb0716";
+
+    // raclos api key
+    //public final static String APEX_TRN_API_HEADER_VALUE = "279f287b-f4b7-47e0-b758-f197c62653e7";
+
 
     private ApexEndpoints() {
 

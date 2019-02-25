@@ -1,14 +1,18 @@
 package com.xegami.wabot.service;
 
+import com.google.gson.Gson;
 import com.xegami.wabot.core.Bot;
 import com.xegami.wabot.core.Constants;
 import com.xegami.wabot.http.apex.ApexController;
+import com.xegami.wabot.message.ApexMessages;
 import com.xegami.wabot.persistance.ApexCrud;
 import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
-import com.xegami.wabot.message.ApexMessages;
+import com.xegami.wabot.pojo.domain.apex.Mozambiques;
 import com.xegami.wabot.util.Utils;
 import org.joda.time.LocalTime;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
@@ -17,6 +21,7 @@ public class ApexService implements ServiceInterface {
 
     private ApexCrud apexCrud;
     private ApexController apexController;
+    private LocalTime allBlockTime;
 
     public ApexService() {
         apexCrud = new ApexCrud();
@@ -48,6 +53,10 @@ public class ApexService implements ServiceInterface {
                         message = cmdInfo();
                         break;
 
+                    case "/all":
+                        message = cmdAll();
+                        break;
+
                     default:
                         message = "_Ese comando no existe._";
                 }
@@ -71,19 +80,21 @@ public class ApexService implements ServiceInterface {
                 throw new IllegalStateException("No hay jugadores que trackear.");
             }
 
-            for (ApexPlayer a : apexPlayers) {
-                ApexPlayer apexPlayer = apexPlayerDataAction(a.getUsername(), a.getPlatform());
-                int kills = apexPlayer.getKills() - a.getKills();
+            for (ApexPlayer apdb : apexPlayers) {
+                ApexPlayer apexPlayer = apexPlayerDataAction(apdb.getUsername(), apdb.getPlatform());
+                int kills = apexPlayer.getKills() - apdb.getKills();
 
-                System.out.println(LocalTime.now() + " Tracking ==> " + a.getUsername() + " (" + a.getPlatform() + ") ");
+                System.out.println(LocalTime.now() + " Tracking ==> " + apdb.getUsername() + " (" + apdb.getPlatform() + ") ");
 
                 if (kills >= 7) {
                     System.out.println(LocalTime.now() + " killer!" + " (" + kills + ") ");
                     Bot.getInstance().sendMessage(ApexMessages.killer(apexPlayer.getUsernameHandle(), kills));
                 }
 
-                if (apexPlayer.getStartingKills() == null || isResetTime()) {
+                if (apdb.getStartingKills() == null || isResetTime()) {
                     apexPlayer.setStartingKills(apexPlayer.getKills());
+                } else {
+                    apexPlayer.setStartingKills(apdb.getStartingKills());
                 }
 
                 apexCrud.update(apexPlayer);
@@ -193,6 +204,23 @@ public class ApexService implements ServiceInterface {
         });
 
         return ApexMessages.ranking(apexPlayers);
+    }
+
+    private String cmdAll() {
+        if (allBlockTime == null || allBlockTime.plusMinutes(15).isBefore(LocalTime.now())) {
+            allBlockTime = LocalTime.now();
+
+            try {
+                Mozambiques mozambiques = new Gson().fromJson(new FileReader(Constants.MOZAMBIQUES_DATA_PATH), Mozambiques.class);
+                return ApexMessages.all(mozambiques.getContacts());
+
+            } catch (FileNotFoundException e) {
+                throw new IllegalStateException("_Archivo de datos no encontrado._");
+            }
+
+        } else {
+            throw new IllegalStateException("_Comando bloqueado por " + (allBlockTime.plusMinutes(15).minusMinutes(LocalTime.now().getMinuteOfHour()).getMinuteOfHour()) + " minutos._");
+        }
     }
 
 }
