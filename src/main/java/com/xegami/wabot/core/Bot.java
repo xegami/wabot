@@ -49,7 +49,7 @@ public class Bot {
     private void joinChatGroup() {
         WebElement chats = ((ChromeDriver) browser).findElementById("pane-side");
         chats.findElement(By.xpath("//span[contains(@title, '" + chatName + "')]")).click();
-        sendMessage("He vuelto, bitches.");
+        //sendMessage("_He vuelto, bitches._");
     }
 
     public void sendMessage(String message) {

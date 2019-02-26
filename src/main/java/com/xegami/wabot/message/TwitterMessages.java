@@ -8,9 +8,9 @@ public class TwitterMessages extends BaseMessages {
         String message = "";
         String url = "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
 
-        message += "*@PlayApex hace unos segundos:*" + n()
+        message += "*" + status.getUser().getName() + "* @" + status.getUser().getScreenName() + n()
                 + n()
-                + "\"" + status.getText() + "\"" + n()
+                + "\"" + status.getText().replace("\n", n()) + "\"" + n()
                 + n()
                 + url;
 

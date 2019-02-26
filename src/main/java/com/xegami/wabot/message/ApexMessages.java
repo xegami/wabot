@@ -11,8 +11,8 @@ public class ApexMessages extends BaseMessages {
 
         message += "Stats de *" + apexPlayer.getUsernameHandle() + "*:" + n()
                 + n()
-                + "_Nivel: " + apexPlayer.getLevel() + "_" + n()
-                + "_Kills: " + apexPlayer.getKills() + "_" + n()
+                + "Nivel: *" + apexPlayer.getLevel() + "*" + n()
+                + "Kills: *" + apexPlayer.getKills() + "*" + n()
                 + n()
                 + apexPlayer.getSource();
 
@@ -22,7 +22,7 @@ public class ApexMessages extends BaseMessages {
     public static String killer(String username, Integer kills) {
         String message = "";
 
-        message += "¡*" + username + "* se acaba de hacer *" + kills + "* kills!";
+        message += "*" + username + "* se acaba de hacer *" + kills + "* kills!";
 
         return message;
     }
