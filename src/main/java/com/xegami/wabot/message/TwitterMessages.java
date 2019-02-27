@@ -10,7 +10,7 @@ public class TwitterMessages extends BaseMessages {
 
         message += "*" + status.getUser().getName() + "* @" + status.getUser().getScreenName() + n()
                 + n()
-                + "\"" + status.getText().replace("\n", n()) + "\"" + n()
+                + "<<" + status.getText().replace("\n", n()) + ">>" + n()
                 + n()
                 + url;
 
