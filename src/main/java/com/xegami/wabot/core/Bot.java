@@ -16,9 +16,6 @@ public class Bot {
 
     private WebDriver browser;
     private ApexService apexService;
-    private TwitterService twitterService;
-    private String chatName = "Los Mozambiques";
-    //private String chatName = "wabot debug";
     private static Bot instance;
 
     public Bot() {
@@ -35,7 +32,8 @@ public class Bot {
 
     private void initServices() {
         apexService = new ApexService();
-        twitterService = new TwitterService();
+        // doesn't need instance
+        new TwitterService();
     }
 
     public static Bot getInstance() {
@@ -48,7 +46,7 @@ public class Bot {
 
     private void joinChatGroup() {
         WebElement chats = ((ChromeDriver) browser).findElementById("pane-side");
-        chats.findElement(By.xpath("//span[contains(@title, '" + chatName + "')]")).click();
+        chats.findElement(By.xpath("//span[contains(@title, '" + Constants.CHAT_NAME + "')]")).click();
         //sendMessage("_He vuelto, bitches._");
     }
 

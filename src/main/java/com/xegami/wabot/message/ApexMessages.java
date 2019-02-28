@@ -22,7 +22,7 @@ public class ApexMessages extends BaseMessages {
     public static String killer(String username, Integer kills) {
         String message = "";
 
-        message += "*" + username + "* se acaba de hacer *" + kills + "* kills!";
+        message += "*" + username + "*, ¡SE ACABA DE HACER *" + kills + "* KILLS!";
 
         return message;
     }

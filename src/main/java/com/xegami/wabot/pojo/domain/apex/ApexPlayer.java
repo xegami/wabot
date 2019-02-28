@@ -26,36 +26,59 @@ public class ApexPlayer {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getUsernameHandle() {
         return usernameHandle;
+    }
+
+    public void setUsernameHandle(String usernameHandle) {
+        this.usernameHandle = usernameHandle;
     }
 
     public String getPlatform() {
         return platform;
     }
 
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
     public Integer getLevel() {
         return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     public Integer getKills() {
         return kills;
     }
 
-    public Integer getStartingKills() {
-        return startingKills;
+    public void setKills(Integer kills) {
+        this.kills = kills;
     }
 
-    public String getSource() {
-        return source;
+    public Integer getStartingKills() {
+        return startingKills;
     }
 
     public void setStartingKills(Integer startingKills) {
         this.startingKills = startingKills;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     public ApexPlayer() {
 
     }
-
 }

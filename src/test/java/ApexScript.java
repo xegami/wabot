@@ -34,9 +34,27 @@ public class ApexScript {
             for (String u : mozambiques.getUsernames()) {
                 String username = u.split("@")[0];
                 String platform = u.split("@")[1];
-                apexCrud.update(apexController.getApexPlayerData(username, platform));
+
+                ApexPlayer result = apexController.getApexPlayerData(username, platform);
+                System.out.println(result.getUsernameHandle() + " :: " + result.getKills() + " :: " + result.getPlatform());
+
                 ApexPlayer a = apexCrud.findByUsername(username);
-                System.out.println(a.getUsernameHandle() + " :: " + a.getKills() + " :: " + a.getPlatform());
+
+                ApexPlayer newApexPlayer = new ApexPlayer();
+                newApexPlayer.setKills(result.getKills());
+                newApexPlayer.setLevel(result.getLevel());
+                newApexPlayer.setPlatform(result.getPlatform());
+                newApexPlayer.setSource(result.getSource());
+                newApexPlayer.setUsername(result.getUsername());
+                newApexPlayer.setUsernameHandle(result.getUsernameHandle());
+
+                if (a != null && a.getStartingKills() != null) {
+                    newApexPlayer.setStartingKills(a.getStartingKills());
+                } else {
+                    newApexPlayer.setStartingKills(result.getKills());
+                }
+
+                apexCrud.update(newApexPlayer);
             }
 
             System.out.println("Database updated.");

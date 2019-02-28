@@ -73,39 +73,48 @@ public class ApexService implements ServiceInterface {
 
     @Override
     public void eventAction() {
-        try {
-            List<ApexPlayer> apexPlayers = apexCrud.findAll();
+        List<ApexPlayer> apexPlayers = apexCrud.findAll();
 
-            if (apexPlayers.size() == 0) {
-                throw new IllegalStateException("No hay jugadores que trackear.");
-            }
+        if (apexPlayers.size() == 0) {
+            throw new IllegalStateException("No hay jugadores que trackear.");
+        }
 
-            for (ApexPlayer apdb : apexPlayers) {
-                ApexPlayer apexPlayer = apexPlayerDataAction(apdb.getUsername(), apdb.getPlatform());
-                int kills = apexPlayer.getKills() - apdb.getKills();
+        for (ApexPlayer a : apexPlayers) {
+            System.out.println(LocalTime.now() + " Tracking ==> " + a.getUsername() + " (" + a.getPlatform() + ") ");
 
-                System.out.println(LocalTime.now() + " Tracking ==> " + apdb.getUsername() + " (" + apdb.getPlatform() + ") ");
+            try {
+                ApexPlayer result = apexPlayerDataAction(a.getUsername(), a.getPlatform());
+
+                ApexPlayer newApexPlayer = new ApexPlayer();
+                newApexPlayer.setKills(result.getKills());
+                newApexPlayer.setLevel(result.getLevel());
+                newApexPlayer.setPlatform(result.getPlatform());
+                newApexPlayer.setSource(result.getSource());
+                newApexPlayer.setUsername(result.getUsername());
+                newApexPlayer.setUsernameHandle(result.getUsernameHandle());
+
+                if (a.getStartingKills() == null || isResetTime()) {
+                    newApexPlayer.setStartingKills(result.getKills());
+                } else {
+                    newApexPlayer.setStartingKills(a.getStartingKills());
+                }
+
+                int kills = result.getKills() - a.getKills();
 
                 if (kills >= 7) {
                     System.out.println(LocalTime.now() + " killer!" + " (" + kills + ") ");
-                    Bot.getInstance().sendMessage(ApexMessages.killer(apexPlayer.getUsernameHandle(), kills));
+                    Bot.getInstance().sendMessage(ApexMessages.killer(result.getUsernameHandle(), kills));
                 }
 
-                if (apdb.getStartingKills() == null || isResetTime()) {
-                    apexPlayer.setStartingKills(apexPlayer.getKills());
-                } else {
-                    apexPlayer.setStartingKills(apdb.getStartingKills());
-                }
-
-                apexCrud.update(apexPlayer);
+                apexCrud.update(newApexPlayer);
 
                 Utils.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
     }
 
     private ApexPlayer apexPlayerDataAction(String username, String platform) throws IOException {

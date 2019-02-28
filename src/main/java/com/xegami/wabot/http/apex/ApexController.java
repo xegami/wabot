@@ -39,19 +39,19 @@ public class ApexController {
             String key = stats[i].getMetadata().getKey();
             switch (key) {
                 case "Level":
-                    level = stats[i].getValue();
+                    level = stats[i].getValue().intValue();
                     break;
                 case "Kills":
-                    kills = stats[i].getValue();
+                    kills = stats[i].getValue().intValue();
                     break;
                 case "Damage":
-                    damage = stats[i].getValue();
+                    damage = stats[i].getValue().intValue();
                     break;
                 case "Headshots":
-                    headshots = stats[i].getValue();
+                    headshots = stats[i].getValue().intValue();
                     break;
                 case "matchesPlayed":
-                    matchesPlayed = stats[i].getValue();
+                    matchesPlayed = stats[i].getValue().intValue();
                     break;
             }
         }
