@@ -4,6 +4,7 @@ import twitter4j.Status;
 
 public class TwitterMessages extends BaseMessages {
 
+    /*
     public static String tuit(Status status) {
         String message = "";
         String url = "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
@@ -18,5 +19,12 @@ public class TwitterMessages extends BaseMessages {
                 + url;
 
         return message;
+    }
+    */
+
+    public static String tuit(Status status) {
+        String url = "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
+
+        return url;
     }
 }

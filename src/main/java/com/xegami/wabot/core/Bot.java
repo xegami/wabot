@@ -8,6 +8,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.rmi.server.ExportException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,7 +33,8 @@ public class Bot {
 
     private void initServices() {
         apexService = new ApexService();
-        new TwitterService(); // doesn't need instance
+        // todo make this bullshit useful oof
+        //new TwitterService(); // doesn't need instance
     }
 
     public static Bot getInstance() {

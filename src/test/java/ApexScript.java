@@ -57,7 +57,7 @@ public class ApexScript {
                 apexCrud.update(newApexPlayer);
             }
 
-            System.out.println("Database updated.");
+            System.out.println("\nDatabase updated.");
 
         } catch (Exception e) {
             e.printStackTrace();

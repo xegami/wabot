@@ -53,7 +53,7 @@ public class ApexMessages extends BaseMessages {
 
         int cont = 1;
         for (ApexPlayer a : apexPlayers) {
-            message += "#" + String.format("%02d", cont) + " => *" + a.getUsernameHandle() + "* con *" + a.getKills() + "* kills." + n();
+            message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* con *" + a.getKills() + "* kills." + n();
             cont++;
         }
 

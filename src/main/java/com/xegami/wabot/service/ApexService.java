@@ -14,6 +14,7 @@ import org.joda.time.LocalTime;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class ApexService implements ServiceInterface {
 
     private ApexCrud apexCrud;
     private ApexController apexController;
-    private LocalTime allBlockTime;
+    private Long cmdAllBlockMillis;
 
     public ApexService() {
         apexCrud = new ApexCrud();
@@ -215,20 +216,34 @@ public class ApexService implements ServiceInterface {
         return ApexMessages.ranking(apexPlayers);
     }
 
-    private String cmdAll() {
-        if (allBlockTime == null || allBlockTime.plusMinutes(15).isBefore(LocalTime.now())) {
-            allBlockTime = LocalTime.now();
-
-            try {
-                Mozambiques mozambiques = new Gson().fromJson(new FileReader(Constants.MOZAMBIQUES_DATA_PATH), Mozambiques.class);
-                return ApexMessages.all(mozambiques.getContacts());
-
-            } catch (FileNotFoundException e) {
-                throw new IllegalStateException("_Archivo de datos no encontrado._");
-            }
+    private void updateCmdAllBlockTime(int blockTime) {
+        if (cmdAllBlockMillis == null) {
+            cmdAllBlockMillis = System.currentTimeMillis();
 
         } else {
-            throw new IllegalStateException("_Comando bloqueado por " + (allBlockTime.plusMinutes(15).minusMinutes(LocalTime.now().getMinuteOfHour()).getMinuteOfHour()) + " minutos._");
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(System.currentTimeMillis() - cmdAllBlockMillis);
+            int minutesPassed = cal.get(Calendar.MINUTE);
+
+            if (minutesPassed >= blockTime) {
+                cmdAllBlockMillis = System.currentTimeMillis();
+
+            } else {
+                int minutesLeft = blockTime - minutesPassed;
+                throw new IllegalStateException("_Comando bloqueado por " + minutesLeft + " minutos._");
+            }
+        }
+    }
+
+    private String cmdAll() {
+        updateCmdAllBlockTime(15);
+
+        try {
+            Mozambiques mozambiques = new Gson().fromJson(new FileReader(Constants.MOZAMBIQUES_DATA_PATH), Mozambiques.class);
+            return ApexMessages.all(mozambiques.getContacts());
+
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("_Archivo de datos no encontrado._");
         }
     }
 
