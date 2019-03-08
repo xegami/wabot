@@ -6,7 +6,7 @@
 
     <groupId>com.xegami</groupId>
     <artifactId>wabot</artifactId>
-    <version>4.4</version>
+    <version>4.6</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

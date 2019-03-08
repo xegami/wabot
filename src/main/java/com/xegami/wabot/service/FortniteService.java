@@ -10,7 +10,7 @@ import org.joda.time.LocalTime;
 
 import java.io.IOException;
 
-public class FortniteService implements ServiceInterface {
+public class FortniteService {
 
     private FortniteCrud crud;
     private FortniteController fortniteController;
@@ -21,7 +21,6 @@ public class FortniteService implements ServiceInterface {
         fortniteController = new FortniteController();
     }
 
-    @Override
     public String commandAction(String commandLine) {
         String message = null;
 
@@ -58,7 +57,6 @@ public class FortniteService implements ServiceInterface {
         return message;
     }
 
-    @Override
     public void eventAction() {
         /*
         String message = null;

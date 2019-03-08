@@ -34,6 +34,7 @@ public class ApexMessages extends BaseMessages {
                 + "*2. /today (usuario)*" + n()
                 + "*3. /ranking*" + n()
                 + "*4. /all*" + n()
+                + "*5. /about*" + n()
                 + n()
                 + "El bot solo registra los datos de las leyendas que tengas en https://apex.tracker.gg (mira la descripción del grupo para más información).";
 

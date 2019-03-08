@@ -5,6 +5,8 @@ import com.xegami.wabot.core.Bot;
 import com.xegami.wabot.core.Constants;
 import com.xegami.wabot.http.apex.ApexController;
 import com.xegami.wabot.message.ApexMessages;
+import com.xegami.wabot.message.BaseMessages;
+import com.xegami.wabot.message.CommonMessages;
 import com.xegami.wabot.persistance.ApexCrud;
 import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
 import com.xegami.wabot.pojo.domain.apex.Mozambiques;
@@ -20,7 +22,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
-public class ApexService implements ServiceInterface {
+public class ApexService {
 
     private ApexCrud apexCrud;
     private ApexController apexController;
@@ -32,7 +34,7 @@ public class ApexService implements ServiceInterface {
         apexController = new ApexController();
     }
 
-    @Override
+    // TODO: command parser class
     public String commandAction(String commandLine) {
         String message = null;
 
@@ -61,6 +63,10 @@ public class ApexService implements ServiceInterface {
                         message = cmdAll();
                         break;
 
+                    case "/about":
+                        message = cmdAbout();
+                        break;
+
                     default:
                         message = "_Ese comando no existe._";
                 }
@@ -75,7 +81,6 @@ public class ApexService implements ServiceInterface {
         return message;
     }
 
-    @Override
     public void eventAction() {
         List<ApexPlayer> apexPlayers = apexCrud.findAll();
 
@@ -245,7 +250,7 @@ public class ApexService implements ServiceInterface {
 
         try {
             Mozambiques mozambiques = new Gson().fromJson(new FileReader(Constants.MOZAMBIQUES_DATA_PATH), Mozambiques.class);
-            return ApexMessages.all(mozambiques.getContacts());
+            return CommonMessages.all(mozambiques.getContacts());
 
         } catch (FileNotFoundException e) {
             throw new IllegalStateException("_Archivo de datos no encontrado._");
@@ -264,6 +269,10 @@ public class ApexService implements ServiceInterface {
         }
 
         resetDayStamp = new DateTime().getDayOfYear();
+    }
+
+    private String cmdAbout() {
+        return CommonMessages.about();
     }
 
 }
