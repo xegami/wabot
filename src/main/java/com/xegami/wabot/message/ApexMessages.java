@@ -53,7 +53,25 @@ public class ApexMessages extends BaseMessages {
 
         int cont = 1;
         for (ApexPlayer a : apexPlayers) {
-            message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* con *" + a.getKills() + "* kills." + n();
+            message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* con *" + a.getKills() + (a.getKills() == 1 ? "* kill." : "* kills.") + n();
+            cont++;
+        }
+
+        return message;
+    }
+
+    public static String reset(List<ApexPlayer> apexPlayers) {
+        String message = "";
+
+        message += "*ATENCIÓN*" + n()
+                + n()
+                + "Los stats diarios se han reseteado, este ha sido el resumen de hoy:" + n()
+                + n();
+
+        int cont = 1;
+        for (ApexPlayer a : apexPlayers) {
+            int todayKills = a.getKills() - a.getStartingKills();
+            message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* hizo *" + todayKills + (todayKills == 1 ? "* kill." : "* kills.") + n();
             cont++;
         }
 

@@ -8,7 +8,9 @@ import com.xegami.wabot.message.ApexMessages;
 import com.xegami.wabot.persistance.ApexCrud;
 import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
 import com.xegami.wabot.pojo.domain.apex.Mozambiques;
+import com.xegami.wabot.util.ApexComparators;
 import com.xegami.wabot.util.Utils;
+import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 
 import java.io.FileNotFoundException;
@@ -23,6 +25,7 @@ public class ApexService implements ServiceInterface {
     private ApexCrud apexCrud;
     private ApexController apexController;
     private Long cmdAllBlockMillis;
+    private int resetDayStamp;
 
     public ApexService() {
         apexCrud = new ApexCrud();
@@ -94,7 +97,7 @@ public class ApexService implements ServiceInterface {
                 newApexPlayer.setUsername(result.getUsername());
                 newApexPlayer.setUsernameHandle(result.getUsernameHandle());
 
-                if (a.getStartingKills() == null || isResetTime()) {
+                if (a.getStartingKills() == null) {
                     newApexPlayer.setStartingKills(result.getKills());
                 } else {
                     newApexPlayer.setStartingKills(a.getStartingKills());
@@ -108,6 +111,13 @@ public class ApexService implements ServiceInterface {
                 }
 
                 apexCrud.update(newApexPlayer);
+
+                if (isResetTime()) {
+                    int dayOfYear = new DateTime().getDayOfYear();
+                    if (dayOfYear != resetDayStamp) {
+                        resetToday();
+                    }
+                }
 
                 Utils.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
 
@@ -167,7 +177,7 @@ public class ApexService implements ServiceInterface {
         int hour = LocalTime.now().getHourOfDay();
         int minute = LocalTime.now().getMinuteOfHour();
 
-        return hour == 9 && minute < 5;
+        return hour == 9 && minute == 0;
     }
 
     private String cmdStats(String commandLine) throws Exception {
@@ -184,7 +194,13 @@ public class ApexService implements ServiceInterface {
 
         if (apexPlayerDb != null) {
             ApexPlayer apexPlayer = apexPlayerDataAction(username, apexPlayerDb.getPlatform());
+
+            if (apexPlayerDb.getStartingKills() == null) {
+                throw new IllegalStateException("_Todavía no tiene datos, ejecuta el comando más tarde._");
+            }
+
             int kills = apexPlayer.getKills() - apexPlayerDb.getStartingKills();
+
             return ApexMessages.today(apexPlayer.getUsernameHandle(), kills);
 
         } else {
@@ -200,18 +216,7 @@ public class ApexService implements ServiceInterface {
     private String cmdRanking() {
         List<ApexPlayer> apexPlayers = apexCrud.findAll();
 
-        apexPlayers.sort(new Comparator<ApexPlayer>() {
-            @Override
-            public int compare(ApexPlayer o1, ApexPlayer o2) {
-                if (o1.getKills() > o2.getKills()) {
-                    return -1;
-                }
-                if (o1.getKills() < o2.getKills()) {
-                    return 1;
-                }
-                return 0;
-            }
-        });
+        apexPlayers.sort(ApexComparators.byKillsDescendant());
 
         return ApexMessages.ranking(apexPlayers);
     }
@@ -245,6 +250,20 @@ public class ApexService implements ServiceInterface {
         } catch (FileNotFoundException e) {
             throw new IllegalStateException("_Archivo de datos no encontrado._");
         }
+    }
+
+    private void resetToday() {
+        List<ApexPlayer> apexPlayers = apexCrud.findAll();
+
+        apexPlayers.sort(ApexComparators.byTodayKillsDescendant());
+        Bot.getInstance().sendMessage(ApexMessages.reset(apexPlayers));
+
+        for (ApexPlayer a : apexPlayers) {
+            a.setStartingKills(null);
+            apexCrud.update(a);
+        }
+
+        resetDayStamp = new DateTime().getDayOfYear();
     }
 
 }
