@@ -52,6 +52,9 @@ public class ApexMessages extends BaseMessages {
     public static String ranking(List<ApexPlayer> apexPlayers) {
         String message = "";
 
+        message += "*RANKING GENERAL*" + n()
+                + n();
+
         int cont = 1;
         for (ApexPlayer a : apexPlayers) {
             message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* con *" + a.getKills() + (a.getKills() == 1 ? "* kill." : "* kills.") + n();
@@ -66,13 +69,29 @@ public class ApexMessages extends BaseMessages {
 
         message += "*ATENCIÓN*" + n()
                 + n()
-                + "Los stats diarios se han reseteado, este ha sido el resumen de hoy:" + n()
+                + "Los stats diarios se han reseteado, este ha sido el resumen:" + n()
                 + n();
 
         int cont = 1;
         for (ApexPlayer a : apexPlayers) {
             int todayKills = a.getKills() - a.getStartingKills();
             message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* hizo *" + todayKills + (todayKills == 1 ? "* kill." : "* kills.") + n();
+            cont++;
+        }
+
+        return message;
+    }
+
+    public static String todayRanking(List<ApexPlayer> apexPlayers) {
+        String message = "";
+
+        message += "*RANKING HOY*" + n()
+                + n();
+
+        int cont = 1;
+        for (ApexPlayer a : apexPlayers) {
+            int todayKills = a.getKills() - a.getStartingKills();
+            message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* lleva hoy *" + todayKills + (todayKills == 1 ? "* kill." : "* kills.") + n();
             cont++;
         }
 

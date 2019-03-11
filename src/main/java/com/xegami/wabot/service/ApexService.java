@@ -194,6 +194,13 @@ public class ApexService {
     }
 
     private String cmdToday(String commandLine) throws Exception {
+        if (commandLine.split(" ").length == 1) {
+            List<ApexPlayer> apexPlayers = apexCrud.findAll();
+            apexPlayers.sort(ApexComparators.byTodayKillsDescendant());
+
+            return ApexMessages.todayRanking(apexPlayers);
+        }
+
         String username = parseUsername(commandLine);
         ApexPlayer apexPlayerDb = apexCrud.findByUsername(username);
 

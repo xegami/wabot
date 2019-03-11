@@ -26,7 +26,7 @@ public class Bot {
 
     private void setupDriver() {
         System.setProperty("webdriver.chrome.driver", Constants.CHROMEDRIVER_PATH);
-        ChromeOptions options = new ChromeOptions().addArguments("--user-data-dir=./USER-DATA");
+        ChromeOptions options = new ChromeOptions().addArguments("--user-data-dir=./user_data");
         browser = new ChromeDriver(options);
         browser.get("https://web.whatsapp.com");
     }
