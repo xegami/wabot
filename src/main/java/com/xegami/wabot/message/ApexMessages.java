@@ -98,6 +98,8 @@ public class ApexMessages extends BaseMessages {
             }
         }
 
+        if (cont == 1) message = "_Parece que aún no se ha jugado ninguna partida, o sois basura._";
+
         return message;
     }
 
