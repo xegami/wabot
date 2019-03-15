@@ -27,7 +27,6 @@ public class ApexService {
     private ApexCrud apexCrud;
     private ApexController apexController;
     private Long cmdAllBlockMillis;
-    private int resetDayStamp;
 
     public ApexService() {
         apexCrud = new ApexCrud();
@@ -102,7 +101,7 @@ public class ApexService {
                 newApexPlayer.setUsername(result.getUsername());
                 newApexPlayer.setUsernameHandle(result.getUsernameHandle());
 
-                if (a.getStartingKills() == null) {
+                if (a.getStartingKills() == null || isResetTime()) {
                     newApexPlayer.setStartingKills(result.getKills());
                 } else {
                     newApexPlayer.setStartingKills(a.getStartingKills());
@@ -116,13 +115,6 @@ public class ApexService {
                 }
 
                 apexCrud.update(newApexPlayer);
-
-                if (isResetTime()) {
-                    int dayOfYear = new DateTime().getDayOfYear();
-                    if (dayOfYear != resetDayStamp) {
-                        resetToday();
-                    }
-                }
 
                 Utils.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
 
@@ -182,7 +174,7 @@ public class ApexService {
         int hour = LocalTime.now().getHourOfDay();
         int minute = LocalTime.now().getMinuteOfHour();
 
-        return hour == 9 && minute == 0;
+        return hour == 9 && minute < 5;
     }
 
     private String cmdStats(String commandLine) throws Exception {
@@ -262,20 +254,6 @@ public class ApexService {
         } catch (FileNotFoundException e) {
             throw new IllegalStateException("_Archivo de datos no encontrado._");
         }
-    }
-
-    private void resetToday() {
-        List<ApexPlayer> apexPlayers = apexCrud.findAll();
-
-        apexPlayers.sort(ApexComparators.byTodayKillsDescendant());
-        Bot.getInstance().sendMessage(ApexMessages.reset(apexPlayers));
-
-        for (ApexPlayer a : apexPlayers) {
-            a.setStartingKills(null);
-            apexCrud.update(a);
-        }
-
-        resetDayStamp = new DateTime().getDayOfYear();
     }
 
     private String cmdAbout() {
