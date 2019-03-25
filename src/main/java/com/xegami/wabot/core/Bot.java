@@ -33,8 +33,7 @@ public class Bot {
 
     private void initServices() {
         apexService = new ApexService();
-        // todo make this bullshit useful oof
-        //new TwitterService(); // doesn't need instance
+        new TwitterService(); // doesn't need instance
     }
 
     public static Bot getInstance() {

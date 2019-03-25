@@ -13,6 +13,7 @@ public class TwitterService implements StatusListener {
     private static final String ACCESS_TOKEN_SECRET = "btnvLerCLxt3zgHjUx0qq5h5bf2lrEsXL0RP4uBhXPLv4";
     private static final long PLAYAPEX_ID = 1048018930785083392L;
     private static final long WABOT_ID = 1098939511910875136L;
+    private static final long PLAYAPEXINFO_ID = 1005019747120041984L;
     private static final long TITANFALLBLOG_ID = 1488707239L;
 
     private TwitterStream stream;
@@ -26,7 +27,7 @@ public class TwitterService implements StatusListener {
                 .setOAuthAccessTokenSecret(ACCESS_TOKEN_SECRET);
         stream = new TwitterStreamFactory(cb.build()).getInstance();
         stream.addListener(this);
-        stream.filter(new FilterQuery().follow(TITANFALLBLOG_ID));
+        stream.filter(new FilterQuery().follow(PLAYAPEXINFO_ID));
     }
 
     @Override
@@ -48,7 +49,7 @@ public class TwitterService implements StatusListener {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onStatus(Status status) {
-        if (status.getUser().getId() == TITANFALLBLOG_ID) {
+        if (status.getUser().getId() == PLAYAPEXINFO_ID) {
             Bot.getInstance().sendMessage(TwitterMessages.tuit(status));
         }
     }

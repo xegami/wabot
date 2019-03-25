@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import com.xegami.wabot.Main;
 import com.xegami.wabot.core.Constants;
 import com.xegami.wabot.http.apex.ApexController;
 import com.xegami.wabot.http.fortnite.FortniteController;
@@ -22,6 +23,7 @@ public class ApexScript {
 
     @Before
     public void before() {
+        Main.DEBUG = true;
         apexCrud = new ApexCrud();
         apexController = new ApexController();
     }

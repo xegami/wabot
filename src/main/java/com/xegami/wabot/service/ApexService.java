@@ -5,7 +5,6 @@ import com.xegami.wabot.core.Bot;
 import com.xegami.wabot.core.Constants;
 import com.xegami.wabot.http.apex.ApexController;
 import com.xegami.wabot.message.ApexMessages;
-import com.xegami.wabot.message.BaseMessages;
 import com.xegami.wabot.message.CommonMessages;
 import com.xegami.wabot.persistance.ApexCrud;
 import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
@@ -13,20 +12,19 @@ import com.xegami.wabot.pojo.domain.apex.Mozambiques;
 import com.xegami.wabot.util.ApexComparators;
 import com.xegami.wabot.util.Utils;
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Comparator;
 import java.util.List;
 
 public class ApexService {
 
     private ApexCrud apexCrud;
     private ApexController apexController;
-    private Long cmdAllBlockMillis;
+    private DateTime blockTimeStamp;
 
     public ApexService() {
         apexCrud = new ApexCrud();
@@ -225,27 +223,27 @@ public class ApexService {
         return ApexMessages.ranking(apexPlayers);
     }
 
-    private void updateCmdAllBlockTime(int blockTime) {
-        if (cmdAllBlockMillis == null) {
-            cmdAllBlockMillis = System.currentTimeMillis();
+    private void checkForBlock(int blockTime) {
+        if (DateTime.now().getHourOfDay() >= 0 && DateTime.now().getHourOfDay() < 9) {
+            throw new IllegalStateException("_No se puede usar este comando por la noche (00:00-08:59)._");
 
-        } else {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(System.currentTimeMillis() - cmdAllBlockMillis);
-            int minutesPassed = cal.get(Calendar.MINUTE);
+        } else if (blockTimeStamp != null) {
+            Interval interval = new Interval(blockTimeStamp, DateTime.now());
+            int hours = interval.toPeriod().getHours();
+            int minutes = interval.toPeriod().getMinutes();
 
-            if (minutesPassed >= blockTime) {
-                cmdAllBlockMillis = System.currentTimeMillis();
-
-            } else {
-                int minutesLeft = blockTime - minutesPassed;
-                throw new IllegalStateException("_Comando bloqueado por " + minutesLeft + " minutos._");
+            if (hours == 0 && minutes < blockTime) {
+                int minutesLeft = blockTime - minutes;
+                throw new IllegalStateException("_Comando bloqueado por " + minutesLeft + (minutesLeft == 1 ? " minuto._" : " minutos._"));
             }
+
         }
+
+        blockTimeStamp = DateTime.now();
     }
 
     private String cmdAll() {
-        updateCmdAllBlockTime(15);
+        checkForBlock(30);
 
         try {
             Mozambiques mozambiques = new Gson().fromJson(new FileReader(Constants.MOZAMBIQUES_DATA_PATH), Mozambiques.class);
