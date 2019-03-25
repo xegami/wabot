@@ -10,7 +10,8 @@ public class TwitterMessages extends BaseMessages {
         String url = "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
         String text = EmojiParser.removeAllEmojis(status.getText()) // no emojis
                 .replace("\n", n()) // using selenium new line
-                .replaceAll("http.*", ""); // no links
+                .replaceAll("http.*", "") // no links
+                .trim(); // no white lines
 
         message += text + n()
                 + n()
