@@ -90,11 +90,13 @@ public class ApexMessages extends BaseMessages {
 
         int cont = 1;
         for (ApexPlayer a : apexPlayers) {
-            int todayKills = a.getKills() - a.getStartingKills();
+            if (a.getStartingKills() != -1) {
+                int todayKills = a.getKills() - a.getStartingKills();
 
-            if (todayKills > 0) {
-                message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* lleva hoy *" + todayKills + (todayKills == 1 ? "* kill." : "* kills.") + n();
-                cont++;
+                if (todayKills > 0) {
+                    message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* lleva hoy *" + todayKills + (todayKills == 1 ? "* kill." : "* kills.") + n();
+                    cont++;
+                }
             }
         }
 

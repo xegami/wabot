@@ -25,6 +25,7 @@ public class ApexService {
     private ApexCrud apexCrud;
     private ApexController apexController;
     private DateTime blockTimeStamp;
+    private int resetDayStamp;
 
     public ApexService() {
         apexCrud = new ApexCrud();
@@ -79,10 +80,25 @@ public class ApexService {
     }
 
     public void eventAction() {
+        int currentDay = DateTime.now().getDayOfYear();
         List<ApexPlayer> apexPlayers = apexCrud.findAll();
 
         if (apexPlayers.size() == 0) {
             throw new IllegalStateException("No hay jugadores que trackear.");
+        }
+
+        if (isResetTime() && currentDay != resetDayStamp) { // 09:00 am
+            apexPlayers.sort(ApexComparators.byTodayKillsDescendant());
+            Bot.getInstance().sendMessage(ApexMessages.reset(apexPlayers));
+
+            for (ApexPlayer a : apexPlayers) {
+                a.setStartingKills(-1); // -1 stands for resetted
+                apexCrud.update(a);
+            }
+
+            resetDayStamp = currentDay;
+
+            return;
         }
 
         for (ApexPlayer a : apexPlayers) {
@@ -99,7 +115,7 @@ public class ApexService {
                 newApexPlayer.setUsername(result.getUsername());
                 newApexPlayer.setUsernameHandle(result.getUsernameHandle());
 
-                if (a.getStartingKills() == null || isResetTime()) {
+                if (a.getStartingKills() == null || a.getStartingKills() == -1) {
                     newApexPlayer.setStartingKills(result.getKills());
                 } else {
                     newApexPlayer.setStartingKills(a.getStartingKills());
@@ -172,7 +188,7 @@ public class ApexService {
         int hour = LocalTime.now().getHourOfDay();
         int minute = LocalTime.now().getMinuteOfHour();
 
-        return hour == 9 && minute < 5;
+        return hour == 9 && minute == 0;
     }
 
     private String cmdStats(String commandLine) throws Exception {
@@ -197,7 +213,7 @@ public class ApexService {
         if (apexPlayerDb != null) {
             ApexPlayer apexPlayer = apexPlayerDataAction(username, apexPlayerDb.getPlatform());
 
-            if (apexPlayerDb.getStartingKills() == null) {
+            if (apexPlayerDb.getStartingKills() == null || apexPlayerDb.getStartingKills() == -1) {
                 throw new IllegalStateException("_Todavía no tiene datos, ejecuta el comando más tarde._");
             }
 
