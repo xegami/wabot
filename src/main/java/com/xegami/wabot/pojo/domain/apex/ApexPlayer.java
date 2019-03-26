@@ -12,14 +12,20 @@ public class ApexPlayer {
     private Integer kills;
     private Integer startingKills;
     private String source;
+    private Legends legends;
 
-    public ApexPlayer(String username, String usernameHandle, String platform, Integer level, Integer kills, String source) {
+    public ApexPlayer() {
+
+    }
+
+    public ApexPlayer(String username, String usernameHandle, String platform, Integer level, Integer kills, String source, Legends legends) {
         this.username = username;
         this.usernameHandle = usernameHandle;
         this.platform = platform;
         this.level = level;
         this.kills = kills;
         this.source = source;
+        this.legends = legends;
     }
 
     public String getUsername() {
@@ -78,7 +84,12 @@ public class ApexPlayer {
         this.source = source;
     }
 
-    public ApexPlayer() {
-
+    public Legends getLegends() {
+        return legends;
     }
+
+    public void setLegends(Legends legends) {
+        this.legends = legends;
+    }
+
 }

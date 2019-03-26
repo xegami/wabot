@@ -8,6 +8,7 @@ import com.xegami.wabot.message.ApexMessages;
 import com.xegami.wabot.message.CommonMessages;
 import com.xegami.wabot.persistance.ApexCrud;
 import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
+import com.xegami.wabot.pojo.domain.apex.ApexPlayerMain;
 import com.xegami.wabot.pojo.domain.apex.Mozambiques;
 import com.xegami.wabot.util.ApexComparators;
 import com.xegami.wabot.util.Utils;
@@ -18,7 +19,10 @@ import org.joda.time.LocalTime;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ApexService {
 
@@ -53,6 +57,10 @@ public class ApexService {
                         message = cmdRanking();
                         break;
 
+                    case "/mains":
+                        message = cmdMains();
+                        break;
+
                     case "/info":
                         message = cmdInfo();
                         break;
@@ -74,6 +82,7 @@ public class ApexService {
             message = e.getMessage();
         } catch (Exception e) {
             message = "_Error, ¿has puesto bien el usuario?_";
+            e.printStackTrace();
         }
 
         return message;
@@ -114,6 +123,7 @@ public class ApexService {
                 newApexPlayer.setSource(result.getSource());
                 newApexPlayer.setUsername(result.getUsername());
                 newApexPlayer.setUsernameHandle(result.getUsernameHandle());
+                newApexPlayer.setLegends(result.getLegends());
 
                 if (a.getStartingKills() == null || a.getStartingKills() == -1) {
                     newApexPlayer.setStartingKills(result.getKills());
@@ -272,6 +282,113 @@ public class ApexService {
 
     private String cmdAbout() {
         return CommonMessages.about();
+    }
+
+    private String cmdMains() {
+        List<ApexPlayer> apexPlayers = apexCrud.findAll();
+        List<ApexPlayerMain> mains = new ArrayList<>();
+        String username = "";
+        int topKills;
+
+        // 1. bloodhound
+        topKills = 0;
+        for (ApexPlayer a : apexPlayers) {
+            int kills = a.getLegends().getBloodhoundKills();
+            if (kills > topKills) {
+                topKills = kills;
+                username = a.getUsernameHandle();
+            }
+        }
+        mains.add(new ApexPlayerMain(username, "Bloodhound", topKills));
+
+        // 2. gibraltar
+        topKills = 0;
+        for (ApexPlayer a : apexPlayers) {
+            int kills = a.getLegends().getGibraltarKills();
+            if (kills > topKills) {
+                topKills = kills;
+                username = a.getUsernameHandle();
+            }
+        }
+        mains.add(new ApexPlayerMain(username, "Gibraltar", topKills));
+
+        // 3. lifeline
+        topKills = 0;
+        for (ApexPlayer a : apexPlayers) {
+            int kills = a.getLegends().getLifelineKills();
+            if (kills > topKills) {
+                topKills = kills;
+                username = a.getUsernameHandle();
+            }
+        }
+        mains.add(new ApexPlayerMain(username, "Lifeline", topKills));
+
+        // 4. pathfinder
+        topKills = 0;
+        for (ApexPlayer a : apexPlayers) {
+            int kills = a.getLegends().getPathfinderKills();
+            if (kills > topKills) {
+                topKills = kills;
+                username = a.getUsernameHandle();
+            }
+        }
+        mains.add(new ApexPlayerMain(username, "Pathfinder", topKills));
+
+        // 5. octane
+        topKills = 0;
+        for (ApexPlayer a : apexPlayers) {
+            int kills = a.getLegends().getOctaneKills();
+            if (kills > topKills) {
+                topKills = kills;
+                username = a.getUsernameHandle();
+            }
+        }
+        mains.add(new ApexPlayerMain(username, "Octane", topKills));
+
+        // 6. wraith
+        for (ApexPlayer a : apexPlayers) {
+            int kills = a.getLegends().getWraithKills();
+            if (kills > topKills) {
+                topKills = kills;
+                username = a.getUsernameHandle();
+            }
+        }
+        mains.add(new ApexPlayerMain(username, "Wraith", topKills));
+
+        // 7. bangalore
+        topKills = 0;
+        for (ApexPlayer a : apexPlayers) {
+            int kills = a.getLegends().getBangaloreKills();
+            if (kills > topKills) {
+                topKills = kills;
+                username = a.getUsernameHandle();
+            }
+        }
+        mains.add(new ApexPlayerMain(username, "Bangalore", topKills));
+
+        // 8. caustic
+        topKills = 0;
+        for (ApexPlayer a : apexPlayers) {
+            int kills = a.getLegends().getCausticKills();
+            if (kills > topKills) {
+                topKills = kills;
+                username = a.getUsernameHandle();
+            }
+        }
+        mains.add(new ApexPlayerMain(username, "Caustic", topKills));
+
+        // 9. mirage
+        topKills = 0;
+        for (ApexPlayer a : apexPlayers) {
+            int kills = a.getLegends().getMirageKills();
+            if (kills > topKills) {
+                topKills = kills;
+                username = a.getUsernameHandle();
+            }
+        }
+        mains.add(new ApexPlayerMain(username, "Mirage", topKills));
+
+        return ApexMessages.mains(mains);
     }
 
 }

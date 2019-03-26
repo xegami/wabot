@@ -4,6 +4,7 @@ public class DataDto {
 
     private PlayerMetadataDto metadata;
     private StatsDto[] stats;
+    private ChildrenDto[] children;
 
     public PlayerMetadataDto getMetadata() {
         return metadata;
@@ -11,5 +12,9 @@ public class DataDto {
 
     public StatsDto[] getStats() {
         return stats;
+    }
+
+    public ChildrenDto[] getChildren() {
+        return children;
     }
 }

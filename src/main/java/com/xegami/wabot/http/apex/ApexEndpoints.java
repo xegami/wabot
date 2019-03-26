@@ -5,7 +5,7 @@ import com.xegami.wabot.Main;
 public final class ApexEndpoints {
 
     /**
-     * @apiNote Main API
+     * @apiNote Apex Legends API
      * https://apex.tracker.gg
      */
     public final static String APEX_TRN_API_PLAYER_DATA_URL = "https://public-api.tracker.gg/apex/v1/standard/profile";

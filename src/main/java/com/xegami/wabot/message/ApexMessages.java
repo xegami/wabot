@@ -1,8 +1,10 @@
 package com.xegami.wabot.message;
 
 import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
+import com.xegami.wabot.pojo.domain.apex.ApexPlayerMain;
 
 import java.util.List;
+import java.util.Map;
 
 public class ApexMessages extends BaseMessages {
 
@@ -119,6 +121,30 @@ public class ApexMessages extends BaseMessages {
                 + "_Total: " + total + (total == 1 ? " kill." : " kills.") + "_";
 
         if (cont == 1) message = "_Parece que aún no se ha jugado ninguna partida, o bien, sois basura._";
+
+        return message;
+    }
+
+    public static String mains(List<ApexPlayerMain> mains) {
+        String message = "";
+
+        message += "*LOS MAINS*" + n()
+                + n();
+
+        for (ApexPlayerMain m : mains) {
+            boolean woman = false;
+
+            switch (m.getLegend()) {
+                case "Wraith":
+                case "Bangalore":
+                case "Bloodhound":
+                case "Lifeline":
+                    woman = true;
+                    break;
+            }
+
+            message += (woman ? "*×* _La " : "*×* _El ") + m.getLegend() + "_ de *" + m.getUsername() + "* (*" + m.getKills() + (m.getKills() == 1 ? "* kill)." : "* kills).") + n();
+        }
 
         return message;
     }
