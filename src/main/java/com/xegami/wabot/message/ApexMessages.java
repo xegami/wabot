@@ -55,11 +55,17 @@ public class ApexMessages extends BaseMessages {
         message += "*RANKING GENERAL*" + n()
                 + n();
 
+        int total = 0;
         int cont = 1;
         for (ApexPlayer a : apexPlayers) {
             message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* con *" + a.getKills() + (a.getKills() == 1 ? "* kill." : "* kills.") + n();
+
+            total += a.getKills();
             cont++;
         }
+
+        message += n()
+                + "_Total: " + total + (total == 1 ? " kill." : " kills.") + "_";
 
         return message;
     }
@@ -72,12 +78,18 @@ public class ApexMessages extends BaseMessages {
                 + "Los stats diarios se han reseteado, este ha sido el resumen:" + n()
                 + n();
 
+        int total = 0;
         int cont = 1;
         for (ApexPlayer a : apexPlayers) {
             int todayKills = a.getKills() - a.getStartingKills();
             message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* hizo *" + todayKills + (todayKills == 1 ? "* kill." : "* kills.") + n();
+
+            total += todayKills;
             cont++;
         }
+
+        message += n()
+                + "_Total: " + total + (total == 1 ? " kill." : " kills.") + "_";
 
         return message;
     }
@@ -88,6 +100,7 @@ public class ApexMessages extends BaseMessages {
         message += "*RANKING HOY*" + n()
                 + n();
 
+        int total = 0;
         int cont = 1;
         for (ApexPlayer a : apexPlayers) {
             if (a.getStartingKills() != -1) {
@@ -95,10 +108,15 @@ public class ApexMessages extends BaseMessages {
 
                 if (todayKills > 0) {
                     message += "```#" + String.format("%02d", cont) + "``` → *" + a.getUsernameHandle() + "* lleva hoy *" + todayKills + (todayKills == 1 ? "* kill." : "* kills.") + n();
+
+                    total += todayKills;
                     cont++;
                 }
             }
         }
+
+        message += n()
+                + "_Total: " + total + (total == 1 ? " kill." : " kills.") + "_";
 
         if (cont == 1) message = "_Parece que aún no se ha jugado ninguna partida, o bien, sois basura._";
 

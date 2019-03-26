@@ -14,7 +14,6 @@ public class TwitterMessages extends BaseMessages {
                 .trim(); // no white lines
 
         message += text + n()
-                + n()
                 + url;
 
         return message;
