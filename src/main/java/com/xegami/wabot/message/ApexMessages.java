@@ -144,7 +144,7 @@ public class ApexMessages extends BaseMessages {
                     break;
             }
 
-            message += (woman ? "*×* _La " : "*×* _El ") + m.getLegend() + "_ de *" + m.getUsername() + "* (*" + m.getKills() + (m.getKills() == 1 ? "* kill)." : "* kills).") + n();
+            message += (woman ? "× _La " : "× _El ") + m.getLegend() + "_ de *" + m.getUsername() + "* (*" + m.getKills() + (m.getKills() == 1 ? "* kill)." : "* kills).") + n();
         }
 
         return message;
