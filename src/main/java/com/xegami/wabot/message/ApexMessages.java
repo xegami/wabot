@@ -133,18 +133,7 @@ public class ApexMessages extends BaseMessages {
                 + n();
 
         for (ApexPlayerMain m : mains) {
-            boolean woman = false;
-
-            switch (m.getLegend()) {
-                case "Wraith":
-                case "Bangalore":
-                case "Bloodhound":
-                case "Lifeline":
-                    woman = true;
-                    break;
-            }
-
-            message += (woman ? "× _La " : "× _El ") + m.getLegend() + "_ de *" + m.getUsername() + "* con *" + m.getKills() + (m.getKills() == 1 ? "* kill." : "* kills.") + n();
+            message += "(" + m.getLegend() + ") *" + m.getUsername() + "* con *" + m.getKills() + (m.getKills() == 1 ? "* kill." : "* kills.") + n();
         }
 
         return message;

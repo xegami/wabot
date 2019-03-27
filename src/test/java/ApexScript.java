@@ -23,7 +23,7 @@ public class ApexScript {
 
     @Before
     public void before() {
-        Main.DEBUG = true;
+        Main.DEBUG = false;
         apexCrud = new ApexCrud();
         apexController = new ApexController();
     }
