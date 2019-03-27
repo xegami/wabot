@@ -49,7 +49,7 @@ public class TwitterService implements StatusListener {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onStatus(Status status) {
-        if (status.getUser().getId() == PLAYAPEXINFO_ID) {
+        if (status.getUser().getId() == PLAYAPEXINFO_ID && !status.getText().startsWith("RT")) {
             Bot.getInstance().sendMessage(TwitterMessages.tuit(status));
         }
     }
