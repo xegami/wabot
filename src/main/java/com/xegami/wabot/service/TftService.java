@@ -90,14 +90,13 @@ public class TftService {
             try {
                 TftPlayer tftPlayerNew = tftPlayerDataAction(tftPlayerDDBB.getSummonerName());
 
-                if (Tiers.valueOf(tftPlayerNew.getTier()).ordinal() > Tiers.valueOf(tftPlayerDDBB.getTier()).ordinal()
-                        || Ranks.valueOf(tftPlayerNew.getRank()).ordinal() > Ranks.valueOf(tftPlayerDDBB.getRank()).ordinal()) {
-                    System.out.println("TIER UP! " + tftPlayerNew + " " + tftPlayerNew.getTier());
-                    Bot.getInstance().sendMessage(TftMessages.tierUp(tftPlayerNew.getSummonerName(), tftPlayerNew.getTier(), tftPlayerNew.getRank()));
+                int code = getLeagueStatusCode(tftPlayerNew, tftPlayerDDBB);
 
-                } else if (Tiers.valueOf(tftPlayerNew.getTier()).ordinal() < Tiers.valueOf(tftPlayerDDBB.getTier()).ordinal()
-                        || Ranks.valueOf(tftPlayerNew.getRank()).ordinal() < Ranks.valueOf(tftPlayerDDBB.getRank()).ordinal()) {
-                    System.out.println("TIER DROP! " + tftPlayerNew + " " + tftPlayerNew.getTier());
+                if (code == 1) {
+                    System.out.println("TIER UP! " + tftPlayerNew);
+                    Bot.getInstance().sendMessage(TftMessages.tierUp(tftPlayerNew.getSummonerName(), tftPlayerNew.getTier(), tftPlayerNew.getRank()));
+                } else if (code == -1) {
+                    System.out.println("TIER DROP! " + tftPlayerNew);
                     Bot.getInstance().sendMessage(TftMessages.tierDrop(tftPlayerNew.getSummonerName(), tftPlayerNew.getTier(), tftPlayerNew.getRank()));
                 }
 
@@ -109,6 +108,26 @@ public class TftService {
 
             Utils.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
         }
+    }
+
+    private int getLeagueStatusCode(TftPlayer tftPlayerNew, TftPlayer tftPlayerDDBB) {
+        if (Tiers.valueOf(tftPlayerNew.getTier()).ordinal() > Tiers.valueOf(tftPlayerDDBB.getTier()).ordinal()) {
+            return 1;
+        }
+
+        if (Tiers.valueOf(tftPlayerNew.getTier()).ordinal() < Tiers.valueOf(tftPlayerDDBB.getTier()).ordinal()) {
+            return -1;
+        }
+
+        if (Ranks.valueOf(tftPlayerNew.getRank()).ordinal() > Ranks.valueOf(tftPlayerDDBB.getRank()).ordinal()) {
+            return 1;
+        }
+
+        if (Ranks.valueOf(tftPlayerNew.getRank()).ordinal() < Ranks.valueOf(tftPlayerDDBB.getRank()).ordinal()) {
+            return -1;
+        }
+
+        return 0;
     }
 
     private TftPlayer tftPlayerDataAction(String username) throws IOException {

@@ -19,7 +19,7 @@ public class TftController {
     }
 
     private SummonerDTO getSummoner(String username) throws IOException {
-        final String url = TftEndpoints.TFT_API_GET_SUMMONER_BY_NAME_URL + username.replace(" ", "%20");
+        final String url = TftEndpoints.TFT_API_GET_SUMMONER_BY_NAME_URL + username.replace(" ", "%20").trim();
 
         Request request = new Request.Builder()
                 .url(url)
