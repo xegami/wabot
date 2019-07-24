@@ -1,5 +1,5 @@
 # wabot
-Standalone WhatsApp chatbot.
+Standalone WhatsApp chatbot. Add your own bot to your WhatsApp chat groups or for whatever business you need. Right now, the purpose of the bot is to obtain League of Legends players statistics and provide them to the desired chat.
 
 ## How to install
 Checkout the *Constants* class in the *core* folder. There, add the last Selenium driver to the path it says (or change it if you don't like),
