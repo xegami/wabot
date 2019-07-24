@@ -2,29 +2,27 @@ package com.xegami.wabot.service;
 
 import com.xegami.wabot.core.Bot;
 import com.xegami.wabot.message.TwitterMessages;
+import com.xegami.wabot.pojo.values.ApiKeys;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterService implements StatusListener {
 
-    // TODO: load keys from .properties
-    private static final long PLAYAPEX_ID = 1048018930785083392L;
-    private static final long WABOT_ID = 1098939511910875136L;
-    private static final long PLAYAPEXINFO_ID = 1005019747120041984L;
-    private static final long TITANFALLBLOG_ID = 1488707239L;
-
-    private TwitterStream stream;
+    private static final long LOL_OFFICIAL_ID = 577401044L;
 
     public TwitterService() {
+        ApiKeys apiKeys = Bot.getInstance().getValues().getApiKeys();
+
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true)
-                .setOAuthConsumerKey(CONSUMER_KEY)
-                .setOAuthConsumerSecret(COMSUMER_SECRET)
-                .setOAuthAccessToken(ACCESS_TOKEN)
-                .setOAuthAccessTokenSecret(ACCESS_TOKEN_SECRET);
-        stream = new TwitterStreamFactory(cb.build()).getInstance();
+                .setOAuthConsumerKey(apiKeys.getTwitter().getConsumerKey())
+                .setOAuthConsumerSecret(apiKeys.getTwitter().getConsumerSecret())
+                .setOAuthAccessToken(apiKeys.getTwitter().getAccessToken())
+                .setOAuthAccessTokenSecret(apiKeys.getTwitter().getAccessTokenSecret());
+
+        TwitterStream stream = new TwitterStreamFactory(cb.build()).getInstance();
         stream.addListener(this);
-        stream.filter(new FilterQuery().follow(PLAYAPEXINFO_ID));
+        stream.filter(new FilterQuery().follow(LOL_OFFICIAL_ID));
     }
 
     @Override
@@ -46,7 +44,7 @@ public class TwitterService implements StatusListener {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onStatus(Status status) {
-        if (status.getUser().getId() == PLAYAPEXINFO_ID && !status.getText().startsWith("RT")) {
+        if (status.getUser().getId() == LOL_OFFICIAL_ID && !status.getText().startsWith("RT") && status.getText().contains("TFT") && status.getText().contains("Patch")) {
             Bot.getInstance().sendMessage(TwitterMessages.tuit(status));
         }
     }

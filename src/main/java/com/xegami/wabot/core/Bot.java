@@ -1,14 +1,16 @@
 package com.xegami.wabot.core;
 
-import com.xegami.wabot.service.ApexService;
-import com.xegami.wabot.service.TwitterService;
+import com.google.gson.Gson;
+import com.xegami.wabot.pojo.values.WabotValues;
+import com.xegami.wabot.service.TftService;
 import com.xegami.wabot.util.Utils;
 import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.rmi.server.ExportException;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,12 +18,27 @@ import java.util.concurrent.Executors;
 public class Bot {
 
     private WebDriver browser;
-    private ApexService apexService;
+    private TftService tftService;
     private static Bot instance;
+    private static WabotValues wabotValues;
 
     public Bot() {
         setupDriver();
+        loadOrReloadValues();
         instance = this;
+    }
+
+    public WabotValues getValues() {
+        return wabotValues;
+    }
+
+    public void loadOrReloadValues() {
+        try {
+            wabotValues = new Gson().fromJson(new FileReader(Constants.WABOT_VALUES_PATH), WabotValues.class);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
     }
 
     private void setupDriver() {
@@ -32,8 +49,8 @@ public class Bot {
     }
 
     private void initServices() {
-        apexService = new ApexService();
-        new TwitterService(); // doesn't need instance
+        tftService = new TftService();
+        //new TwitterService(); // doesn't need instance
     }
 
     public static Bot getInstance() {
@@ -63,13 +80,13 @@ public class Bot {
         List<WebElement> messages = browser.findElements(By.xpath("//span[contains(@class, 'copyable-text')]"));
         String commandLine = messages.get(messages.size() - 1).getText().toLowerCase();
 
-        String newMessage = apexService.commandAction(commandLine);
+        String newMessage = tftService.commandAction(commandLine);
 
         if (newMessage != null) sendMessage(newMessage);
     }
 
     private void eventTracker() {
-        apexService.eventAction();
+        tftService.eventAction();
     }
 
     public void run() {

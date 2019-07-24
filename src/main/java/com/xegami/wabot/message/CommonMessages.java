@@ -19,9 +19,9 @@ public class CommonMessages extends BaseMessages {
     public static String about() {
         String message = "";
 
-        message += "*wabot* es un bot de WhatsApp (standalone) creado por Xegami." + n()
+        message += "*wabot* es un bot de WhatsAppContacts (standalone) creado por Xegami." + n()
                 + n()
-                + "_Apuntando a → Apex Legends._" + n()
+                + "_Apuntando a → Teamfight Tactics - RIOT DEV API._" + n()
                 + "_Código fuente → https://github.com/xegami/wabot_";
 
         return message;

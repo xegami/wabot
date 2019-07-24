@@ -1,74 +1,65 @@
 package com.xegami.wabot.service;
 
-import com.google.gson.Gson;
 import com.xegami.wabot.core.Bot;
 import com.xegami.wabot.core.Constants;
-import com.xegami.wabot.http.apex.ApexController;
-import com.xegami.wabot.message.ApexMessages;
+import com.xegami.wabot.http.tft.TftController;
 import com.xegami.wabot.message.CommonMessages;
-import com.xegami.wabot.persistance.ApexCrud;
-import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
-import com.xegami.wabot.pojo.domain.apex.ApexPlayerMain;
-import com.xegami.wabot.pojo.domain.apex.Mozambiques;
-import com.xegami.wabot.util.ApexComparators;
+import com.xegami.wabot.message.TftMessages;
+import com.xegami.wabot.persistance.TftRepository;
+import com.xegami.wabot.pojo.domain.tft.TftPlayer;
+import com.xegami.wabot.pojo.dto.tft.LeagueEntryDTO;
+import com.xegami.wabot.pojo.values.WabotValues;
+import com.xegami.wabot.util.TftComparators;
 import com.xegami.wabot.util.Utils;
+import com.xegami.wabot.util.enums.Ranks;
+import com.xegami.wabot.util.enums.Tiers;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TftService {
 
-    private ApexCrud apexCrud;
-    private ApexController apexController;
+    private TftRepository tftRepository;
+    private TftController tftController;
     private DateTime blockTimeStamp;
-    private int resetDayStamp;
 
     public TftService() {
-        apexCrud = new ApexCrud();
-        apexController = new ApexController();
+        tftRepository = new TftRepository();
+        tftController = new TftController();
     }
 
-    // TODO: command parser class
     public String commandAction(String commandLine) {
         String message = null;
 
         try {
-            if (commandLine.startsWith("/")) {
+            if (commandLine.startsWith("!")) {
                 String command = commandLine.split(" ")[0];
 
                 switch (command) {
-                    case "/stats":
+                    case "!stats":
                         message = cmdStats(commandLine);
                         break;
 
-                    case "/today":
-                        message = cmdToday(commandLine);
-                        break;
-
-                    case "/ranking":
+                    case "!ranking":
                         message = cmdRanking();
                         break;
 
-                    case "/mains":
-                        message = cmdMains();
+                    case "!help":
+                        message = cmdHelp();
                         break;
 
-                    case "/info":
-                        message = cmdInfo();
-                        break;
-
-                    case "/all":
+                    case "!all":
                         message = cmdAll();
                         break;
 
-                    case "/about":
+                    case "!about":
                         message = cmdAbout();
+                        break;
+
+                    case "!reload":
+                        message = cmdReload();
                         break;
 
                     default:
@@ -87,163 +78,72 @@ public class TftService {
     }
 
     public void eventAction() {
-        int currentDay = DateTime.now().getDayOfYear();
-        List<ApexPlayer> apexPlayers = apexCrud.findAll();
+        List<TftPlayer> tftPlayers = tftRepository.findAll();
 
-        if (apexPlayers.size() == 0) {
+        if (tftPlayers.size() == 0) {
             throw new IllegalStateException("No hay jugadores que trackear.");
         }
 
-        if (isResetTime() && currentDay != resetDayStamp) { // 09:00 am
-            apexPlayers.sort(ApexComparators.byTodayKillsDescendant());
-            Bot.getInstance().sendMessage(ApexMessages.reset(apexPlayers));
-
-            for (ApexPlayer a : apexPlayers) {
-                a.setStartingKills(-1); // -1 stands for resetted
-                apexCrud.update(a);
-            }
-
-            resetDayStamp = currentDay;
-
-            return;
-        }
-
-        for (ApexPlayer a : apexPlayers) {
-            System.out.println(LocalTime.now() + " Tracking ==> " + a.getUsername() + " (" + a.getPlatform() + ") ");
+        for (TftPlayer tftPlayerDDBB : tftPlayers) {
+            System.out.println(LocalTime.now() + " Tracking ==> " + tftPlayerDDBB.getSummonerName());
 
             try {
-                ApexPlayer result = apexPlayerDataAction(a.getUsername(), a.getPlatform());
+                TftPlayer tftPlayerNew = tftPlayerDataAction(tftPlayerDDBB.getSummonerName());
 
-                ApexPlayer newApexPlayer = new ApexPlayer();
-                newApexPlayer.setKills(result.getKills());
-                newApexPlayer.setLevel(result.getLevel());
-                newApexPlayer.setPlatform(result.getPlatform());
-                newApexPlayer.setSource(result.getSource());
-                newApexPlayer.setUsername(result.getUsername());
-                newApexPlayer.setUsernameHandle(result.getUsernameHandle());
-                newApexPlayer.setLegends(result.getLegends());
+                if (Tiers.valueOf(tftPlayerNew.getTier()).ordinal() > Tiers.valueOf(tftPlayerDDBB.getTier()).ordinal()
+                        || Ranks.valueOf(tftPlayerNew.getRank()).ordinal() > Ranks.valueOf(tftPlayerDDBB.getRank()).ordinal()) {
+                    System.out.println("TIER UP! " + tftPlayerNew + " " + tftPlayerNew.getTier());
+                    Bot.getInstance().sendMessage(TftMessages.tierUp(tftPlayerNew.getSummonerName(), tftPlayerNew.getTier(), tftPlayerNew.getRank()));
 
-                if (a.getStartingKills() == null || a.getStartingKills() == -1) {
-                    newApexPlayer.setStartingKills(result.getKills());
-                } else {
-                    newApexPlayer.setStartingKills(a.getStartingKills());
+                } else if (Tiers.valueOf(tftPlayerNew.getTier()).ordinal() < Tiers.valueOf(tftPlayerDDBB.getTier()).ordinal()
+                        || Ranks.valueOf(tftPlayerNew.getRank()).ordinal() < Ranks.valueOf(tftPlayerDDBB.getRank()).ordinal()) {
+                    System.out.println("TIER DROP! " + tftPlayerNew + " " + tftPlayerNew.getTier());
+                    Bot.getInstance().sendMessage(TftMessages.tierDrop(tftPlayerNew.getSummonerName(), tftPlayerNew.getTier(), tftPlayerNew.getRank()));
                 }
 
-                int kills = result.getKills() - a.getKills();
-
-                if (kills >= 7) {
-                    System.out.println(LocalTime.now() + " killer!" + " (" + kills + ") ");
-                    Bot.getInstance().sendMessage(ApexMessages.killer(result.getUsernameHandle(), kills));
-                }
-
-                apexCrud.update(newApexPlayer);
-
-                Utils.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
+                tftRepository.update(tftPlayerNew);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
+            Utils.sleep(Constants.EVENT_TRACKER_SLEEP_TIME);
         }
     }
 
-    private ApexPlayer apexPlayerDataAction(String username, String platform) throws IOException {
-        return apexController.getApexPlayerData(username, platform);
+    private TftPlayer tftPlayerDataAction(String username) throws IOException {
+        LeagueEntryDTO leagueEntryDTO = tftController.getTftSummonerLeagueEntries(username);
+
+        return new TftPlayer(
+                leagueEntryDTO.getQueueType(), leagueEntryDTO.getSummonerName(), leagueEntryDTO.isHotStreak(), leagueEntryDTO.getWins(), leagueEntryDTO.isVeteran(), leagueEntryDTO.getLosses(), leagueEntryDTO.getRank(), leagueEntryDTO.getTier(), leagueEntryDTO.isInactive(), leagueEntryDTO.isFreshBlood(), leagueEntryDTO.getLeagueId(), leagueEntryDTO.getSummonerId(), leagueEntryDTO.getLeaguePoints()
+        );
     }
 
     private String parseUsername(String commandLine) {
-        String[] splittedCommandLine = commandLine.split(" ");
+        String[] splittedCommandLine = commandLine.split(" ", 2);
 
         return splittedCommandLine[1];
     }
 
-    private String parsePlatform(String commandLine) {
-        String platform;
-        String[] splittedCommandLine = commandLine.split(" ", 3);
-
-        if (splittedCommandLine.length < 3) {
-            ApexPlayer apexPlayerDb = apexCrud.findByUsername(parseUsername(commandLine));
-            if (apexPlayerDb != null) {
-                platform = apexPlayerDb.getPlatform();
-                return platform;
-
-            } else {
-                throw new IllegalStateException("_Plataforma no especificada (pc, ps4 o xbox)._");
-            }
-        }
-
-        switch (splittedCommandLine[2]) {
-            case "pc":
-            case "origin":
-                platform = "5";
-                break;
-            case "psn":
-            case "ps4":
-                platform = "2";
-                break;
-            case "xbox":
-            case "xb1":
-                platform = "1";
-                break;
-            default:
-                throw new IllegalStateException("_Esa plataforma no existe (debe ser pc, ps4 o xbox)._");
-        }
-
-        return platform;
-    }
-
-    private boolean isResetTime() {
-        int hour = LocalTime.now().getHourOfDay();
-        int minute = LocalTime.now().getMinuteOfHour();
-
-        return hour == 9 && minute == 0;
-    }
-
     private String cmdStats(String commandLine) throws Exception {
         String username = parseUsername(commandLine);
-        ApexPlayer apexPlayer = apexPlayerDataAction(username, platform);
 
-        return ApexMessages.stats(apexPlayer);
+        TftPlayer tftPlayer = tftPlayerDataAction(username);
+
+        return TftMessages.stats(tftPlayer);
     }
 
-    private String cmdToday(String commandLine) throws Exception {
-        if (commandLine.split(" ").length == 1) {
-            List<ApexPlayer> apexPlayers = apexCrud.findAll();
-            apexPlayers.sort(ApexComparators.byTodayKillsDescendant());
-
-            return ApexMessages.todayRanking(apexPlayers);
-        }
-
-        String username = parseUsername(commandLine);
-        ApexPlayer apexPlayerDb = apexCrud.findByUsername(username);
-
-        if (apexPlayerDb != null) {
-            ApexPlayer apexPlayer = apexPlayerDataAction(username, apexPlayerDb.getPlatform());
-
-            if (apexPlayerDb.getStartingKills() == null || apexPlayerDb.getStartingKills() == -1) {
-                throw new IllegalStateException("_Todavía no tiene datos, ejecuta el comando más tarde._");
-            }
-
-            int kills = apexPlayer.getKills() - apexPlayerDb.getStartingKills();
-
-            return ApexMessages.today(apexPlayer.getUsernameHandle(), kills);
-
-        } else {
-            throw new IllegalStateException("_Este jugador no se está trackeando._");
-        }
-
+    private String cmdHelp() {
+        return TftMessages.help();
     }
 
-    private String cmdInfo() {
-        return ApexMessages.info();
-    }
 
     private String cmdRanking() {
-        List<ApexPlayer> apexPlayers = apexCrud.findAll();
+        List<TftPlayer> tftPlayers = tftRepository.findAll();
 
-        apexPlayers.sort(ApexComparators.byKillsDescendant());
+        tftPlayers.sort(TftComparators.byTierRankWinrate());
 
-        return ApexMessages.ranking(apexPlayers);
+        return TftMessages.ranking(tftPlayers);
     }
 
     private void checkForBlock(int blockTime) {
@@ -268,124 +168,26 @@ public class TftService {
     private String cmdAll() {
         checkForBlock(30);
 
-        try {
-            Mozambiques mozambiques = new Gson().fromJson(new FileReader(Constants.MOZAMBIQUES_DATA_PATH), Mozambiques.class);
-            return CommonMessages.all(mozambiques.getContacts());
-
-        } catch (FileNotFoundException e) {
-            throw new IllegalStateException("_Archivo de datos no encontrado._");
-        }
+        return CommonMessages.all(Bot.getInstance().getValues().getWhatsAppContacts().getContactNames());
     }
 
     private String cmdAbout() {
         return CommonMessages.about();
     }
 
-    private String cmdMains() {
-        List<ApexPlayer> apexPlayers = apexCrud.findAll();
-        List<ApexPlayerMain> mains = new ArrayList<>();
-        String username = "";
-        int topKills;
+    private String cmdReload() {
+        Bot.getInstance().loadOrReloadValues();
+        WabotValues wabotValues = Bot.getInstance().getValues();
 
-        // 1. bloodhound
-        topKills = 0;
-        for (ApexPlayer a : apexPlayers) {
-            int kills = a.getLegends().getBloodhoundKills();
-            if (kills > topKills) {
-                topKills = kills;
-                username = a.getUsernameHandle();
+        for (String summonerName : wabotValues.getWhatsAppContacts().getLolUsernames()) {
+            try {
+                tftRepository.update(tftPlayerDataAction(summonerName));
+            } catch (Exception e) {
+
             }
         }
-        mains.add(new ApexPlayerMain(username, "Bloodhound", topKills));
 
-        // 2. gibraltar
-        topKills = 0;
-        for (ApexPlayer a : apexPlayers) {
-            int kills = a.getLegends().getGibraltarKills();
-            if (kills > topKills) {
-                topKills = kills;
-                username = a.getUsernameHandle();
-            }
-        }
-        mains.add(new ApexPlayerMain(username, "Gibraltar", topKills));
-
-        // 3. lifeline
-        topKills = 0;
-        for (ApexPlayer a : apexPlayers) {
-            int kills = a.getLegends().getLifelineKills();
-            if (kills > topKills) {
-                topKills = kills;
-                username = a.getUsernameHandle();
-            }
-        }
-        mains.add(new ApexPlayerMain(username, "Lifeline", topKills));
-
-        // 4. pathfinder
-        topKills = 0;
-        for (ApexPlayer a : apexPlayers) {
-            int kills = a.getLegends().getPathfinderKills();
-            if (kills > topKills) {
-                topKills = kills;
-                username = a.getUsernameHandle();
-            }
-        }
-        mains.add(new ApexPlayerMain(username, "Pathfinder", topKills));
-
-        // 5. octane
-        topKills = 0;
-        for (ApexPlayer a : apexPlayers) {
-            int kills = a.getLegends().getOctaneKills();
-            if (kills > topKills) {
-                topKills = kills;
-                username = a.getUsernameHandle();
-            }
-        }
-        mains.add(new ApexPlayerMain(username, "Octane", topKills));
-
-        // 6. wraith
-        for (ApexPlayer a : apexPlayers) {
-            int kills = a.getLegends().getWraithKills();
-            if (kills > topKills) {
-                topKills = kills;
-                username = a.getUsernameHandle();
-            }
-        }
-        mains.add(new ApexPlayerMain(username, "Wraith", topKills));
-
-        // 7. bangalore
-        topKills = 0;
-        for (ApexPlayer a : apexPlayers) {
-            int kills = a.getLegends().getBangaloreKills();
-            if (kills > topKills) {
-                topKills = kills;
-                username = a.getUsernameHandle();
-            }
-        }
-        mains.add(new ApexPlayerMain(username, "Bangalore", topKills));
-
-        // 8. caustic
-        topKills = 0;
-        for (ApexPlayer a : apexPlayers) {
-            int kills = a.getLegends().getCausticKills();
-            if (kills > topKills) {
-                topKills = kills;
-                username = a.getUsernameHandle();
-            }
-        }
-        mains.add(new ApexPlayerMain(username, "Caustic", topKills));
-
-        // 9. mirage
-        topKills = 0;
-        for (ApexPlayer a : apexPlayers) {
-            int kills = a.getLegends().getMirageKills();
-            if (kills > topKills) {
-                topKills = kills;
-                username = a.getUsernameHandle();
-            }
-        }
-        mains.add(new ApexPlayerMain(username, "Mirage", topKills));
-
-        return ApexMessages.mains(mains);
+        return "_Hecho._";
     }
 
 }

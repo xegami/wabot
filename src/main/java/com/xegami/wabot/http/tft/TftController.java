@@ -1,11 +1,9 @@
 package com.xegami.wabot.http.tft;
 
 import com.google.gson.Gson;
-import com.xegami.wabot.pojo.domain.apex.ApexPlayer;
-import com.xegami.wabot.pojo.domain.apex.Legends;
-import com.xegami.wabot.pojo.dto.apex.ApexPlayerDataDto;
-import com.xegami.wabot.pojo.dto.apex.ChildrenDto;
-import com.xegami.wabot.pojo.dto.apex.StatsDto;
+import com.xegami.wabot.core.Bot;
+import com.xegami.wabot.pojo.dto.tft.LeagueEntryDTO;
+import com.xegami.wabot.pojo.dto.tft.SummonerDTO;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -20,105 +18,40 @@ public class TftController {
         client = new OkHttpClient();
     }
 
-    public ApexPlayer getSummonerEntries(String username) throws IOException {
-        String usernameHandle, source;
-        int level, kills;
-        level = kills = 0;
-        final String url = TftEndpoints.TFT_API_GET_SUMMONER_ENTRIES_URL + username;
+    private SummonerDTO getSummoner(String username) throws IOException {
+        final String url = TftEndpoints.TFT_API_GET_SUMMONER_BY_NAME_URL + username.replace(" ", "%20");
 
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader(TftEndpoints.TFT_API_KEY, TftEndpoints.TFT_API_HEADER_VALUE)
+                .addHeader("X-Riot-Token", Bot.getInstance().getValues().getApiKeys().getTft().getApiKey())
                 .build();
         Response response = client.newCall(request).execute();
         String jsonString = response.body().string();
 
-        ApexPlayerDataDto apexPlayerDataDto = new Gson().fromJson(jsonString, ApexPlayerDataDto.class);
-        usernameHandle = apexPlayerDataDto.getData().getMetadata().getPlatformUserHandle();
-
-        StatsDto[] stats = apexPlayerDataDto.getData().getStats();
-        for (int i = 0; i < stats.length; i++) {
-            String key = stats[i].getMetadata().getKey();
-            switch (key) {
-                case "Level":
-                    level = stats[i].getValue().intValue();
-                    break;
-                case "Kills":
-                    kills = stats[i].getValue().intValue();
-                    break;
-            }
-        }
-
-        Legends legends = new Legends();
-        ChildrenDto[] children = apexPlayerDataDto.getData().getChildren();
-        for (int i = 0; i < children.length; i++) {
-            String name = children[i].getMetadata().getLegend_name();
-
-            StatsDto[] legendStats = children[i].getStats();
-            for (int o = 0; o < legendStats.length; o++) {
-                String key = legendStats[o].getMetadata().getKey();
-                Integer value = legendStats[o].getValue().intValue();
-
-                if (key.equals("Kills")) {
-                    switch (name) {
-                        case "Bloodhound":
-                            legends.setBloodhoundKills(value);
-                            break;
-                        case "Gibraltar":
-                            legends.setGibraltarKills(value);
-                            break;
-                        case "Octane":
-                            legends.setOctaneKills(value);
-                            break;
-                        case "Wraith":
-                            legends.setWraithKills(value);
-                            break;
-                        case "Pathfinder":
-                            legends.setPathfinderKills(value);
-                            break;
-                        case "Bangalore":
-                            legends.setBangaloreKills(value);
-                            break;
-                        case "Lifeline":
-                            legends.setLifelineKills(value);
-                            break;
-                        case "Caustic":
-                            legends.setCausticKills(value);
-                            break;
-                        case "Mirage":
-                            legends.setMirageKills(value);
-                            break;
-                    }
-                }
-            }
-        }
-
-        source = buildSource(username, platform);
-
-        return new ApexPlayer(username, usernameHandle, platform, level, kills, source, legends);
+        return new Gson().fromJson(jsonString, SummonerDTO.class);
     }
 
-    private String buildSource(String username, String platformCode) {
-        final String baseUrl = "https://apex.tracker.gg/profile";
-        String platform = null;
+    public LeagueEntryDTO getTftSummonerLeagueEntries(String username) throws IOException {
+        String summonerId = getSummoner(username).getId();
 
-        switch (platformCode) {
-            case "5":
-                platform = "pc";
-                break;
-            case "2":
-                platform = "psn";
-                break;
-            case "1":
-                platform = "xbl";
-                break;
+        final String url = TftEndpoints.TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID + summonerId;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("X-Riot-Token", Bot.getInstance().getValues().getApiKeys().getTft().getApiKey())
+                .build();
+        Response response = client.newCall(request).execute();
+        String jsonString = response.body().string();
+
+        LeagueEntryDTO[] leagueEntryDTOs = new Gson().fromJson(jsonString, LeagueEntryDTO[].class);
+
+        for (LeagueEntryDTO entry : leagueEntryDTOs) {
+            if (entry.getQueueType().equals("RANKED_TFT")) {
+                return entry;
+            }
         }
 
-        if (platform == null) {
-            return "";
-        }
-
-        return baseUrl + "/" + platform + "/" + username;
+        return null;
     }
 
 }
