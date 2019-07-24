@@ -12,15 +12,9 @@ public final class Constants {
 
     public static final String CHROMEDRIVER_PATH = BASE_PATH + "chromedriver\\chromedriver.exe";
 
-    private static final String APEX_PLAYERS_DB_PATH_PROD = BASE_PATH + "nitrite\\apex_players.db";
-    private static final String APEX_PLAYERS_DB_PATH_TEST = BASE_PATH + "nitrite\\apex_players_test.db";
-    public static final String APEX_PLAYERS_DB_PATH = Main.DEBUG ? APEX_PLAYERS_DB_PATH_TEST : APEX_PLAYERS_DB_PATH_PROD;
-
     private static final String TFT_PLAYERS_DB_PATH_PROD = BASE_PATH + "nitrite\\tft_players.db";
     private static final String TFT_PLAYERS_DB_PATH_TEST = BASE_PATH + "nitrite\\tft_players_test.db";
     public static final String TFT_PLAYERS_DB_PATH = Main.DEBUG ? TFT_PLAYERS_DB_PATH_TEST : TFT_PLAYERS_DB_PATH_PROD;
-
-    public static final String FORTNITE_PLAYERS_DB_PATH = BASE_PATH + "nitrite\\fortnite_players.db";
 
     public static final String WABOT_VALUES_PATH = BASE_PATH + "json\\wabot_values.json";
 
