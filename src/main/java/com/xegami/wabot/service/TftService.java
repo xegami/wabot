@@ -156,7 +156,6 @@ public class TftService {
         return TftMessages.help();
     }
 
-
     private String cmdRanking() {
         List<TftPlayer> tftPlayers = tftRepository.findAll();
 
@@ -210,3 +209,5 @@ public class TftService {
     }
 
 }
+
+

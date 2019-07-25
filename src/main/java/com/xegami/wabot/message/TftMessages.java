@@ -25,7 +25,7 @@ public class TftMessages extends BaseMessages {
     public static String tierUp(String summonerName, String tier, String rank) {
         String message = "";
 
-        message += "*" + summonerName + "*, ¡HA SUBIDO A " + tier + " " + rank + "!";
+        message += "⬆ *" + summonerName + "* ha subido a *" + tier + " " + rank + "*";
 
         return message;
     }
@@ -33,7 +33,7 @@ public class TftMessages extends BaseMessages {
     public static String tierDrop(String summonerName, String tier, String rank) {
         String message = "";
 
-        message += "*" + summonerName + "*, ha dropeado a " + tier + " " + rank;
+        message += "⬇ *" + summonerName + "* ha dropeado a *" + tier + " " + rank + "*";
 
         return message;
     }
