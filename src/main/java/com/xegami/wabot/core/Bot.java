@@ -9,8 +9,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;

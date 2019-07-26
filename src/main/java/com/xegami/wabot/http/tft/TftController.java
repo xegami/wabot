@@ -4,12 +4,9 @@ import com.google.gson.Gson;
 import com.xegami.wabot.core.Bot;
 import com.xegami.wabot.pojo.dto.tft.LeagueEntryDTO;
 import com.xegami.wabot.pojo.dto.tft.SummonerDTO;
-import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.internal.http2.Header;
-import org.openqa.selenium.Keys;
 
 import java.io.IOException;
 
