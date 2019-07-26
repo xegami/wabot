@@ -6,7 +6,7 @@ Checkout the *Constants* class in the *core* folder. There, add the last Seleniu
 a .json file where you put your chat friends contact names and LoL names (or whatever game you adapt the bot at) aswell as the API keys you need.
 
 So now, just "java -cp wabot.jar com.xegami.wabot.Main" the compiled .jar you can find in the *releases* tab an it will start running. 
-Take in consideration that you would need an alternative WhatsApp account/number to have access to the WhatsApp web page.
+Take in consideration that you will need an alternative WhatsApp account/number to have access to the WhatsApp web page.
 
 ## How to use
 All the commands avaliable that I made are in the *TftService* class. Modify them at your wish.
