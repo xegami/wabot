@@ -1,6 +1,10 @@
 package com.xegami.wabot.message;
 
 import com.xegami.wabot.pojo.domain.tft.TftPlayer;
+import com.xegami.wabot.util.enums.Ranks;
+import com.xegami.wabot.util.enums.Tiers;
+import okhttp3.Headers;
+import okhttp3.Response;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -51,16 +55,36 @@ public class TftMessages extends BaseMessages {
     }
 
     public static String ranking(List<TftPlayer> tftPlayers) {
-        String message = "";
+        String message = "", averageTier, averageRank;
+        int cont = 0, tiersSum = 0, ranksSum = 0;
 
-        message += "*RANKING GENERAL*" + n()
+        message += "*RANKING DEL GRUPO*" + n()
                 + n();
 
-        int cont = 1;
         for (TftPlayer tftPlayer : tftPlayers) {
-            message += "```#" + String.format("%02d", cont) + "``` → *" + tftPlayer.getSummonerName() + "* en *" + tftPlayer.getTier() + " " + tftPlayer.getRank() + "*" + n();
-
             cont++;
+            message += "```#" + String.format("%02d", cont) + "``` → *" + tftPlayer.getSummonerName() + "* en *" + tftPlayer.getTier() + " " + tftPlayer.getRank() + "*" + n();
+            tiersSum += Tiers.valueOf(tftPlayer.getTier()).ordinal();
+            ranksSum += Ranks.valueOf(tftPlayer.getRank()).ordinal();
+        }
+
+        averageTier = Tiers.values()[tiersSum / cont].name();
+        averageRank = Ranks.values()[ranksSum / cont].name();
+
+        message += n()
+                + "_Promedio: " + averageTier + " " + averageRank + "_";
+
+        return message;
+    }
+
+    public static String response(Response response) {
+        String message = "";
+        int code = response.code();
+        Headers headers = response.headers();
+
+        message += "Code → " + code + n();
+        for (int i = 0; i < headers.size(); i++) {
+            message += headers.name(i) + " → " + headers.get(headers.name(i)) + n();
         }
 
         return message;

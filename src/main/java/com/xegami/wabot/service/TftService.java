@@ -13,6 +13,7 @@ import com.xegami.wabot.util.TftComparators;
 import com.xegami.wabot.util.Utils;
 import com.xegami.wabot.util.enums.Ranks;
 import com.xegami.wabot.util.enums.Tiers;
+import okhttp3.Response;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
@@ -62,6 +63,10 @@ public class TftService {
                         message = cmdReload();
                         break;
 
+                    case "!response":
+                        message = cmdResponse();
+                        break;
+
                     default:
                         message = "_Ese comando no existe._";
                 }
@@ -93,10 +98,10 @@ public class TftService {
                 int code = getLeagueStatusCode(tftPlayerNew, tftPlayerDDBB);
 
                 if (code == 1) {
-                    System.out.println("TIER UP! " + tftPlayerNew);
+                    System.out.println("TIER UP! " + tftPlayerNew.getSummonerName());
                     Bot.getInstance().sendMessage(TftMessages.tierUp(tftPlayerNew.getSummonerName(), tftPlayerNew.getTier(), tftPlayerNew.getRank()));
                 } else if (code == -1) {
-                    System.out.println("TIER DROP! " + tftPlayerNew);
+                    System.out.println("TIER DROP! " + tftPlayerNew.getSummonerName());
                     Bot.getInstance().sendMessage(TftMessages.tierDrop(tftPlayerNew.getSummonerName(), tftPlayerNew.getTier(), tftPlayerNew.getRank()));
                 }
 
@@ -201,11 +206,20 @@ public class TftService {
             try {
                 tftRepository.update(tftPlayerDataAction(summonerName));
             } catch (Exception e) {
-
+                // fuck it
             }
         }
 
         return "_Hecho._";
+    }
+
+    private String cmdResponse() {
+        try {
+            return TftMessages.response(tftController.getResponse());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalStateException("_Imposible obtener respuesta._");
+        }
     }
 
 }

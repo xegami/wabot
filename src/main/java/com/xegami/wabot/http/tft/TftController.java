@@ -4,9 +4,12 @@ import com.google.gson.Gson;
 import com.xegami.wabot.core.Bot;
 import com.xegami.wabot.pojo.dto.tft.LeagueEntryDTO;
 import com.xegami.wabot.pojo.dto.tft.SummonerDTO;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.internal.http2.Header;
+import org.openqa.selenium.Keys;
 
 import java.io.IOException;
 
@@ -32,8 +35,7 @@ public class TftController {
     }
 
     public LeagueEntryDTO getTftSummonerLeagueEntries(String username) throws IOException {
-        String summonerId = getSummoner(username).getId();
-
+        final String summonerId = getSummoner(username).getId();
         final String url = TftEndpoints.TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID + summonerId;
 
         Request request = new Request.Builder()
@@ -52,6 +54,18 @@ public class TftController {
         }
 
         return null;
+    }
+
+    public Response getResponse() throws IOException {
+        final String summonerId = "RBNNU3ElRcOQSuUt1KUNJgQVnv6JkKDobIut5ZLfQ91X2uk";
+        final String url = TftEndpoints.TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID + summonerId;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("X-Riot-Token", Bot.getInstance().getValues().getApiKeys().getTft().getApiKey())
+                .build();
+
+        return client.newCall(request).execute();
     }
 
 }
