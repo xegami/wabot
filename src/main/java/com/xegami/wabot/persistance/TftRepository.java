@@ -12,11 +12,10 @@ import java.util.List;
 
 public class TftRepository {
 
-    private Nitrite db;
     private ObjectRepository<TftPlayer> repository;
 
     public TftRepository() {
-        db = Nitrite.builder()
+        Nitrite db = Nitrite.builder()
                 .compressed()
                 .filePath(Constants.TFT_PLAYERS_DB_PATH)
                 .openOrCreate();
@@ -46,7 +45,7 @@ public class TftRepository {
         return repository.find().toList();
     }
 
-    public TftPlayer findBySummonerName(String summonerName) {
+    private TftPlayer findBySummonerName(String summonerName) {
         return repository.find(ObjectFilters.eq("summonerName", summonerName)).firstOrDefault();
     }
 
