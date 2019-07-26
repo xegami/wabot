@@ -9,6 +9,8 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;
@@ -56,9 +58,9 @@ public class Bot {
     public static Bot getInstance() {
         if (instance != null) {
             return instance;
+        } else {
+            throw new IllegalStateException("Bot.class no tiene instancia");
         }
-
-        return null;
     }
 
     private void joinChatGroup() {
