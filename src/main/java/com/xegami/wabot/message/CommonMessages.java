@@ -16,14 +16,7 @@ public class CommonMessages extends BaseMessages {
         return message;
     }
 
-    public static String about() {
-        String message = "";
-
-        message += "*wabot* es un bot de WhatsApp (standalone) creado por Xegami." + n()
-                + n()
-                + "_Apuntando a → Teamfight Tactics - RIOT DEV API._" + n()
-                + "_Código fuente → https://github.com/xegami/wabot_";
-
-        return message;
+    public static String source() {
+        return "https://github.com/xegami/wabot";
     }
 }

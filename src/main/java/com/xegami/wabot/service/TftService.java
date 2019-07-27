@@ -55,8 +55,8 @@ public class TftService {
                         message = cmdAll();
                         break;
 
-                    case "!about":
-                        message = cmdAbout();
+                    case "!source":
+                        message = cmdSource();
                         break;
 
                     case "!reload":
@@ -75,7 +75,7 @@ public class TftService {
         } catch (IllegalStateException e) {
             message = e.getMessage();
         } catch (Exception e) {
-            message = "_Error, ¿has puesto bien el usuario?_";
+            message = "_Nope._";
             e.printStackTrace();
         }
 
@@ -194,8 +194,8 @@ public class TftService {
         return CommonMessages.all(Bot.getInstance().getValues().getWhatsAppContacts().getContactNames());
     }
 
-    private String cmdAbout() {
-        return CommonMessages.about();
+    private String cmdSource() {
+        return CommonMessages.source();
     }
 
     private String cmdReload() {

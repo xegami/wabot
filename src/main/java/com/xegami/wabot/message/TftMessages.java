@@ -14,7 +14,7 @@ public class TftMessages extends BaseMessages {
 
     public static String stats(TftPlayer tftPlayer) {
         String message = "";
-        double winratePercent = tftPlayer.getWins() / tftPlayer.getLosses() * 100;
+        double winratePercent = tftPlayer.getWins() / (tftPlayer.getWins() + tftPlayer.getLosses()) * 100;
 
         message += "Stats de *" + tftPlayer.getSummonerName() + "*:" + n()
                 + n()
@@ -48,7 +48,7 @@ public class TftMessages extends BaseMessages {
         message += "1. *!stats (usuario)*" + n()
                 + "2. *!ranking*" + n()
                 + "3. *!all*" + n()
-                + "4. *!about*" + n()
+                + "4. *!source*" + n()
                 + "5. *!help*" + n();
 
         return message;

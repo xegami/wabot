@@ -54,8 +54,7 @@ public class TftController {
     }
 
     public Response getResponse() throws IOException {
-        final String summonerId = "RBNNU3ElRcOQSuUt1KUNJgQVnv6JkKDobIut5ZLfQ91X2uk";
-        final String url = TftEndpoints.TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID + summonerId;
+        final String url = TftEndpoints.TFT_API_GET_SUMMONER_BY_NAME_URL + "Tryndamere";
 
         Request request = new Request.Builder()
                 .url(url)
