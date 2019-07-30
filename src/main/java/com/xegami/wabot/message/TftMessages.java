@@ -68,8 +68,15 @@ public class TftMessages extends BaseMessages {
             ranksSum += Ranks.valueOf(tftPlayer.getRank()).ordinal();
         }
 
-        averageTier = Tiers.values()[tiersSum / cont].name();
-        averageRank = Ranks.values()[ranksSum / cont].name();
+        double result = ((double) (tiersSum * 4 + ranksSum) / cont) / 4;
+        if (result == Math.floor(result)) {
+            averageTier = Tiers.values()[(int) Math.floor(result) - 1].name();
+            averageRank = Ranks.I.name();
+        } else {
+            averageTier = Tiers.values()[(int) Math.floor(result)].name();
+            double rankDecimals = result - (int) result;
+            averageRank = Ranks.values()[(int) (5 - 1 / rankDecimals)].name();
+        }
 
         message += n()
                 + "_Promedio: " + averageTier + " " + averageRank + "_";
