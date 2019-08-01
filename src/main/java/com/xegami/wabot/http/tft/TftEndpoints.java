@@ -1,18 +1,26 @@
 package com.xegami.wabot.http.tft;
 
-public final class TftEndpoints {
+public class TftEndpoints {
 
     /**
      * @apiNote TFT API
      * https://developer.riotgames.com
      */
 
-    private static final String TFT_API_BASE_URL = "https://euw1.api.riotgames.com";
-    public static final String TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID = TFT_API_BASE_URL + "/lol/league/v4/entries/by-summoner/";
-    public static final String TFT_API_GET_SUMMONER_BY_NAME_URL = TFT_API_BASE_URL + "/lol/summoner/v4/summoners/by-name/";
+    private static final String EUW_URL = "https://euw1";
+    private static final String TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID = ".api.riotgames.com/lol/league/v4/entries/by-summoner/";
+    private static final String TFT_API_GET_SUMMONER_BY_NAME_URL = ".api.riotgames.com/lol/summoner/v4/summoners/by-name/";
 
-    private TftEndpoints() {
+    protected String getSummonerSearchUrl(String username, String region) {
+        final String head = region == null ? EUW_URL : "https://" + region;
 
+        return head + TFT_API_GET_SUMMONER_BY_NAME_URL + username.replace(" ", "%20").trim();
+    }
+
+    protected String getLeagueEntriesUrl(String summonerId, String region) {
+        final String head = region == null ? EUW_URL : "https://" + region;
+
+        return head + TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID + summonerId;
     }
 
 }

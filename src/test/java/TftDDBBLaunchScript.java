@@ -4,6 +4,7 @@
 import com.google.gson.Gson;
 import com.xegami.wabot.Main;
 import com.xegami.wabot.core.Constants;
+import com.xegami.wabot.http.tft.TftController;
 import com.xegami.wabot.http.tft.TftEndpoints;
 import com.xegami.wabot.persistance.TftRepository;
 import com.xegami.wabot.pojo.domain.tft.TftPlayer;
@@ -20,7 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class TftDDBBLaunchScript {
+public class TftDDBBLaunchScript extends TftController {
 
     private TftRepository tftRepository;
     private WabotValues wabotValues;
@@ -73,7 +74,7 @@ public class TftDDBBLaunchScript {
     }
 
     private SummonerDTO getSummoner(String username) throws IOException {
-        final String url = TftEndpoints.TFT_API_GET_SUMMONER_BY_NAME_URL + username;
+        final String url = getSummonerSearchUrl(username, null) ;
 
         Request request = new Request.Builder()
                 .url(url)
@@ -85,7 +86,7 @@ public class TftDDBBLaunchScript {
         return new Gson().fromJson(jsonString, SummonerDTO.class);
     }
 
-    public LeagueEntryDTO getTftSummonerLeagueEntries(String username) throws IOException {
+    private LeagueEntryDTO getTftSummonerLeagueEntries(String username) throws IOException {
         LeagueEntryDTO leagueEntryDTO = null;
         String summonerId = getSummoner(username).getId();
 
@@ -93,7 +94,7 @@ public class TftDDBBLaunchScript {
             return null;
         }
 
-        final String url = TftEndpoints.TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID + summonerId;
+        final String url = getLeagueEntriesUrl(summonerId, null);
 
         Request request = new Request.Builder()
                 .url(url)

@@ -10,7 +10,7 @@ import okhttp3.Response;
 
 import java.io.IOException;
 
-public class TftController {
+public class TftController extends TftEndpoints {
 
     private OkHttpClient client;
 
@@ -18,8 +18,8 @@ public class TftController {
         client = new OkHttpClient();
     }
 
-    private SummonerDTO getSummoner(String username) throws IOException {
-        final String url = TftEndpoints.TFT_API_GET_SUMMONER_BY_NAME_URL + username.replace(" ", "%20").trim();
+    private SummonerDTO getSummoner(String username, String region) throws IOException {
+        final String url = super.getSummonerSearchUrl(username, region);
 
         Request request = new Request.Builder()
                 .url(url)
@@ -31,9 +31,9 @@ public class TftController {
         return new Gson().fromJson(jsonString, SummonerDTO.class);
     }
 
-    public LeagueEntryDTO getTftSummonerLeagueEntries(String username) throws IOException {
-        final String summonerId = getSummoner(username).getId();
-        final String url = TftEndpoints.TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID + summonerId;
+    public LeagueEntryDTO getTftSummonerLeagueEntries(String username, String region) throws IOException {
+        final String summonerId = getSummoner(username, region).getId();
+        final String url = super.getLeagueEntriesUrl(summonerId, region);
 
         Request request = new Request.Builder()
                 .url(url)
@@ -54,7 +54,7 @@ public class TftController {
     }
 
     public Response getResponse() throws IOException {
-        final String url = TftEndpoints.TFT_API_GET_SUMMONER_BY_NAME_URL + "Tryndamere";
+        final String url = super.getSummonerSearchUrl("tryndamere", "na1");
 
         Request request = new Request.Builder()
                 .url(url)

@@ -67,6 +67,10 @@ public class TftService {
                         message = cmdResponse();
                         break;
 
+                    case "!regions":
+                        message = cmdRegions();
+                        break;
+
                     default:
                         message = "_Ese comando no existe._";
                 }
@@ -93,7 +97,7 @@ public class TftService {
             System.out.println(LocalTime.now() + " Tracking ==> " + tftPlayerDDBB.getSummonerName());
 
             try {
-                TftPlayer tftPlayerNew = tftPlayerDataAction(tftPlayerDDBB.getSummonerName());
+                TftPlayer tftPlayerNew = tftPlayerDataAction(tftPlayerDDBB.getSummonerName(), null);
 
                 int code = getLeagueStatusCode(tftPlayerNew, tftPlayerDDBB);
 
@@ -135,24 +139,25 @@ public class TftService {
         return 0;
     }
 
-    private TftPlayer tftPlayerDataAction(String username) throws IOException {
-        LeagueEntryDTO leagueEntryDTO = tftController.getTftSummonerLeagueEntries(username);
+    private TftPlayer tftPlayerDataAction(String username, String region) throws IOException {
+        LeagueEntryDTO leagueEntryDTO = tftController.getTftSummonerLeagueEntries(username, region);
 
         return new TftPlayer(
                 leagueEntryDTO.getQueueType(), leagueEntryDTO.getSummonerName(), leagueEntryDTO.isHotStreak(), leagueEntryDTO.getWins(), leagueEntryDTO.isVeteran(), leagueEntryDTO.getLosses(), leagueEntryDTO.getRank(), leagueEntryDTO.getTier(), leagueEntryDTO.isInactive(), leagueEntryDTO.isFreshBlood(), leagueEntryDTO.getLeagueId(), leagueEntryDTO.getSummonerId(), leagueEntryDTO.getLeaguePoints()
         );
     }
 
-    private String parseUsername(String commandLine) {
-        String[] splittedCommandLine = commandLine.split(" ", 2);
-
-        return splittedCommandLine[1];
-    }
-
     private String cmdStats(String commandLine) throws Exception {
-        String username = parseUsername(commandLine);
+        String region = null;
+        String username = commandLine.split(" ", 2)[1];
 
-        TftPlayer tftPlayer = tftPlayerDataAction(username);
+        if (username.contains("-")) {
+            String[] sarray = username.split("-");
+            username = sarray[0];
+            region = sarray[1];
+        }
+
+        TftPlayer tftPlayer = tftPlayerDataAction(username, region);
 
         return TftMessages.stats(tftPlayer);
     }
@@ -204,7 +209,7 @@ public class TftService {
 
         for (String summonerName : wabotValues.getWhatsAppContacts().getLolUsernames()) {
             try {
-                tftRepository.update(tftPlayerDataAction(summonerName));
+                tftRepository.update(tftPlayerDataAction(summonerName, null));
             } catch (Exception e) {
                 // fuck it
             }
@@ -220,6 +225,10 @@ public class TftService {
             e.printStackTrace();
             throw new IllegalStateException("_Imposible obtener respuesta._");
         }
+    }
+
+    private String cmdRegions() {
+        return TftMessages.regions();
     }
 
 }

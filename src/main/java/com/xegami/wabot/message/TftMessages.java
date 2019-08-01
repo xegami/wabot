@@ -45,11 +45,12 @@ public class TftMessages extends BaseMessages {
     public static String help() {
         String message = "";
 
-        message += "1. *!stats (usuario)*" + n()
+        message += "1. *!stats scarra (-region)*" + n()
                 + "2. *!ranking*" + n()
                 + "3. *!all*" + n()
                 + "4. *!source*" + n()
-                + "5. *!help*" + n();
+                + "5. *!help*" + n()
+                + "6. *!regions*";
 
         return message;
     }
@@ -109,6 +110,10 @@ public class TftMessages extends BaseMessages {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
 
         return bd.doubleValue();
+    }
+
+    public static String regions() {
+        return "*ru, kr, br1, oc1, jp1, na1, eun1, euw1, tr1, la1, la2*";
     }
 
 }
