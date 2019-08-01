@@ -1,11 +1,10 @@
 package com.xegami.wabot.http.tft;
 
+/**
+ * @apiNote TFT API
+ * https://developer.riotgames.com
+ */
 public class TftEndpoints {
-
-    /**
-     * @apiNote TFT API
-     * https://developer.riotgames.com
-     */
 
     private static final String EUW_URL = "https://euw1";
     private static final String TFT_API_GET_LEAGUE_ENTRIES_BY_SUMMONER_ID = ".api.riotgames.com/lol/league/v4/entries/by-summoner/";
