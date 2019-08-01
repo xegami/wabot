@@ -8,7 +8,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterService implements StatusListener {
 
-    private static final long LOL_OFFICIAL_ID = 577401044L;
+    private static final long MORTDOG_ID = 16464000L;
 
     public TwitterService() {
         ApiKeys apiKeys = Bot.getInstance().getValues().getApiKeys();
@@ -22,7 +22,7 @@ public class TwitterService implements StatusListener {
 
         TwitterStream stream = new TwitterStreamFactory(cb.build()).getInstance();
         stream.addListener(this);
-        stream.filter(new FilterQuery().follow(LOL_OFFICIAL_ID));
+        stream.filter(new FilterQuery().follow(MORTDOG_ID));
     }
 
     @Override
@@ -44,8 +44,8 @@ public class TwitterService implements StatusListener {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onStatus(Status status) {
-        if (status.getUser().getId() == LOL_OFFICIAL_ID && !status.getText().startsWith("RT") && status.getText().contains("TFT") && status.getText().contains("Patch")) {
-            Bot.getInstance().sendMessage(TwitterMessages.tuit(status));
+        if (status.getUser().getId() == MORTDOG_ID && !status.getText().startsWith("RT") && !status.isRetweet()) {
+            Bot.getInstance().sendMessageDelayed(TwitterMessages.tuit(status), 10000); // 10 secs delay for the thumb
         }
     }
 

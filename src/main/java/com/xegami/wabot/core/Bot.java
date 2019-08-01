@@ -3,6 +3,7 @@ package com.xegami.wabot.core;
 import com.google.gson.Gson;
 import com.xegami.wabot.pojo.values.WabotValues;
 import com.xegami.wabot.service.TftService;
+import com.xegami.wabot.service.TwitterService;
 import com.xegami.wabot.util.Utils;
 import org.joda.time.LocalTime;
 import org.openqa.selenium.*;
@@ -50,7 +51,7 @@ public class Bot {
 
     private void initServices() {
         tftService = new TftService();
-        //new TwitterService(); // doesn't need instance
+        new TwitterService(); // doesn't need instance
     }
 
     public static Bot getInstance() {
@@ -73,6 +74,16 @@ public class Bot {
 
         ChromeDriver driver = (ChromeDriver) browser;
         driver.getKeyboard().sendKeys(message);
+        driver.getKeyboard().pressKey(Keys.ENTER);
+    }
+
+    public void sendMessageDelayed(String message, int delay) {
+        WebElement input = browser.findElement(By.xpath("//div[contains(@spellcheck, 'true')]"));
+        input.click();
+
+        ChromeDriver driver = (ChromeDriver) browser;
+        driver.getKeyboard().sendKeys(message);
+        Utils.sleep(delay);
         driver.getKeyboard().pressKey(Keys.ENTER);
     }
 
