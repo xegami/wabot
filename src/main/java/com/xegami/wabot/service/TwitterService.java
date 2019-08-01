@@ -44,7 +44,10 @@ public class TwitterService implements StatusListener {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onStatus(Status status) {
-        if (status.getUser().getId() == MORTDOG_ID && !status.getText().startsWith("RT") && !status.isRetweet()) {
+        if (status.getUser().getId() == MORTDOG_ID
+                && !status.getText().startsWith("RT")
+                && !status.isRetweet()
+                && !status.getText().startsWith("@")) {
             Bot.getInstance().sendMessageDelayed(TwitterMessages.tuit(status), 10000); // 10 secs delay for the thumb
         }
     }
