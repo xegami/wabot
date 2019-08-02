@@ -10,8 +10,11 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +38,7 @@ public class Bot {
 
     public void loadOrReloadValues() {
         try {
-            wabotValues = new Gson().fromJson(new FileReader(Constants.WABOT_VALUES_PATH), WabotValues.class);
+            wabotValues = new Gson().fromJson(new InputStreamReader(new FileInputStream(Constants.WABOT_VALUES_PATH), StandardCharsets.UTF_8), WabotValues.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(-1);
