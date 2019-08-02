@@ -49,4 +49,8 @@ public class TftRepository {
         return repository.find(ObjectFilters.eq("summonerName", summonerName)).firstOrDefault();
     }
 
+    public void clean() {
+        repository.remove(ObjectFilters.ALL);
+    }
+
 }

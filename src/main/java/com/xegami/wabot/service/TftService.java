@@ -207,6 +207,8 @@ public class TftService {
         Bot.getInstance().loadOrReloadValues();
         WabotValues wabotValues = Bot.getInstance().getValues();
 
+        tftRepository.clean();
+
         for (String summonerName : wabotValues.getWhatsAppContacts().getLolUsernames()) {
             try {
                 tftRepository.update(tftPlayerDataAction(summonerName, null));
