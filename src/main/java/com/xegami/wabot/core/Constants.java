@@ -18,7 +18,7 @@ public final class Constants {
 
     public static final String WABOT_VALUES_PATH = BASE_PATH + "json\\wabot_values.json";
 
-    public static final int EVENT_TRACKER_SLEEP_TIME = 7000;
+    public static final int EVENT_TRACKER_SLEEP_TIME = 6000;
     public static final int COMMAND_TRACKER_SLEEP_TIME = 500;
 
     private Constants() {

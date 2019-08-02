@@ -16,6 +16,7 @@ import com.xegami.wabot.util.enums.Tiers;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
+import org.openqa.selenium.Keys;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +26,7 @@ public class TftService {
     private TftRepository tftRepository;
     private TftController tftController;
     private DateTime blockTimeStamp;
+    private int eventActionErrorsCount = 0;
 
     public TftService() {
         tftRepository = new TftRepository();
@@ -94,6 +96,11 @@ public class TftService {
         }
 
         for (TftPlayer tftPlayerDDBB : tftPlayers) {
+            if (eventActionErrorsCount >= 50) {
+                eventActionErrorsCount = 0;
+                Bot.getInstance().sendMessage("_⚠ Se han registrado más de 50 llamadas erróneas a la API_ @Xegami" + Keys.ENTER);
+            }
+
             System.out.println(LocalTime.now() + " Tracking ==> " + tftPlayerDDBB.getSummonerName());
 
             try {
@@ -112,6 +119,7 @@ public class TftService {
                 tftRepository.update(tftPlayerNew);
 
             } catch (Exception e) {
+                eventActionErrorsCount++;
                 e.printStackTrace();
             }
 
